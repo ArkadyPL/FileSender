@@ -12,13 +12,14 @@ public class FileSender {
         String MyIP = null;
         try {
             MyIP = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Hello! Your IP is : " + MyIP );
+        } catch (UnknownHostException e){ }
         JFrame frame = new JFrame("File Sender");
         frame.setSize( 800, 600); // Set frame size
         frame.setLocationRelativeTo(null); // Put frame in center of the screen
+        JLabel IPlabel = new JLabel("Hello! Your IP is : " + MyIP);
+        JPanel panel = new JPanel();
+        panel.add(IPlabel);
+        frame.add(panel);
         frame.setVisible(true);
     }
     //Komentarz testowy
