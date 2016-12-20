@@ -21,4 +21,5 @@ public class FileSender {
         frame.setLocationRelativeTo(null); // Put frame in center of the screen
         frame.setVisible(true);
     }
+    //Komentarz testowy
 }
