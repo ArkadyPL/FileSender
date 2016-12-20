@@ -12,6 +12,5 @@ public class FileSender {
         frame.setSize( 800, 600); // Set frame size
         frame.setLocationRelativeTo(null); // Put frame in center of the screen
         frame.setVisible(true);
-        //small change for git testing
     }
 }
