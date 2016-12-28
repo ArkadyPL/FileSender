@@ -1,15 +1,11 @@
 package com.filesender;
 
 import javax.swing.*;
-import javax.swing.event.TreeModelListener;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.net.*;
 import java.io.*;
-/**
- * Created by Arek on 20.12.2016.
- */
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 public class FileSender {
     public static void main(String[] args) {
         URL whatismyip = null;
@@ -44,11 +40,13 @@ public class FileSender {
 
         // Create a TreeModel object to represent our tree of files
         FileTreeModel model = new FileTreeModel(root);
-
+        Object ptr = null;
         // Create a JTree and tell it to display our model
         JTree tree = new JTree();
         tree.setModel(model);
+        JPanel panel = new JPanel();
 
+        panel.setLayout(new GridLayout(1,2));
         // The JTree can get big, so allow it to scroll.
         JScrollPane scrollpane = new JScrollPane(tree);
 
@@ -57,12 +55,22 @@ public class FileSender {
         frame.setSize( 1000, 600); // Set frame size
         frame.setLocationRelativeTo(null); // Put frame in center of the screen
         JLabel IPlabel = new JLabel("       Hello! Your IP is : " + ip);
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(1,2));
         panel.add(scrollpane);
         panel.add(IPlabel);
+
         frame.add(panel);
         frame.setVisible(true);
 
+        tree.addTreeSelectionListener(new TreeSelectionListener() {
+            public void valueChanged(TreeSelectionEvent e) {
+                Object object = e.getPath().getLastPathComponent();
+                if (object instanceof File){
+                    File file = (File) object;
+                }
+                System.out.println("You selected " + object);
+                JLabel fileLabel2 = new JLabel("You point at: " + object);
+                panel.add(fileLabel2);
+            }
+        });
     }
 }
