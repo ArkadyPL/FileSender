@@ -6,8 +6,70 @@ import java.net.*;
 import java.io.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+
+ class SendFile{
+    static ServerSocket receiver = null;
+    static OutputStream out = null;
+    static Socket socket = null;
+    static File myFile = new File("C:\\Users\\hieptq\\Desktop\\AtomSetup.exe");
+    /*static int count;*/
+    static byte[] buffer = new byte[(int) myFile.length()];
+    public static void work() throws IOException{
+        receiver = new ServerSocket(9099);
+        socket = receiver.accept();
+        System.out.println("Accepted connection from : " + socket);
+        FileInputStream fis = new FileInputStream(myFile);
+        BufferedInputStream in = new BufferedInputStream(fis);
+        in.read(buffer,0,buffer.length);
+        out = socket.getOutputStream();
+        System.out.println("Sending files");
+        out.write(buffer,0, buffer.length);
+        out.flush();
+        /*while ((count = in.read(buffer)) > 0){
+            out.write(buffer,0,count);
+            out.flush();
+        }*/
+        out.close();
+        in.close();
+        socket.close();
+        System.out.println("Finished sending");
+
+
+
+    }
+
+}
+
+ class ReceiveFile{
+    static Socket socket = null;
+    static int maxsize = 999999999;
+    static int byteread;
+    static int current = 0;
+    public static void work() throws FileNotFoundException, IOException{
+        byte[] buffer = new byte[maxsize];
+        Socket socket = new Socket("localhost", 9099);
+        InputStream is = socket.getInputStream();
+        File test = new File("D:\\AtomSetup.exe");
+        test.createNewFile();
+        FileOutputStream fos = new FileOutputStream(test);
+        BufferedOutputStream out = new BufferedOutputStream(fos);
+        byteread = is.read(buffer, 0, buffer.length);
+        current = byteread;
+        while ((byteread = is.read(buffer, 0, buffer.length)) != -1) {
+            out.write(buffer, 0, byteread);
+        }
+
+        out.flush();
+        socket.close();
+        fos.close();
+        is.close();
+
+    }
+}
+
 public class FileSender {
     public static void main(String[] args) {
+        //GETTING IP
         URL whatismyip = null;
         try {
             whatismyip = new URL("http://checkip.amazonaws.com");
@@ -29,9 +91,10 @@ public class FileSender {
             e.printStackTrace();
         }
         System.out.println(ip);
+        //END OF GETTING IP
 
+        //SETTING UP GUI WITH FILE PATHS TREE
         JFrame frame = new JFrame("File Sender");
-
         //tree
         // Figure out where in the filesystem to start displaying
         File root;
@@ -61,6 +124,7 @@ public class FileSender {
         frame.add(panel);
         frame.setVisible(true);
 
+        //LISTENER GETS CURRENTLY POINTED DIRECTORY
         tree.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
                 Object object = e.getPath().getLastPathComponent();
@@ -68,9 +132,12 @@ public class FileSender {
                     File file = (File) object;
                 }
                 System.out.println("You selected " + object);
-                JLabel fileLabel2 = new JLabel("You point at: " + object);
-                panel.add(fileLabel2);
             }
         });
+        try {
+            SendFile.work();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
