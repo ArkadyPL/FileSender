@@ -11,11 +11,11 @@ import javax.swing.event.TreeSelectionListener;
     static ServerSocket receiver = null;
     static OutputStream out = null;
     static Socket socket = null;
-    static File myFile = new File("C:\\Users\\hieptq\\Desktop\\AtomSetup.exe");
+    static File myFile = new File("C:\\Users\\Piotr\\Desktop\\test\\tekst.txt");
     /*static int count;*/
     static byte[] buffer = new byte[(int) myFile.length()];
-    public static void work() throws IOException{
-        receiver = new ServerSocket(9099);
+    public static int work() throws IOException{
+        receiver = new ServerSocket(9999);
         socket = receiver.accept();
         System.out.println("Accepted connection from : " + socket);
         FileInputStream fis = new FileInputStream(myFile);
@@ -33,42 +33,35 @@ import javax.swing.event.TreeSelectionListener;
         in.close();
         socket.close();
         System.out.println("Finished sending");
-
-
-
+        return 3;
     }
-
 }
 
- class ReceiveFile{
+class ReceiveFile{
     static Socket socket = null;
     static int maxsize = 999999999;
     static int byteread;
     static int current = 0;
     public static void work() throws FileNotFoundException, IOException{
-        byte[] buffer = new byte[maxsize];
-        Socket socket = new Socket("localhost", 9099);
-        InputStream is = socket.getInputStream();
-        File test = new File("D:\\AtomSetup.exe");
-        test.createNewFile();
-        FileOutputStream fos = new FileOutputStream(test);
-        BufferedOutputStream out = new BufferedOutputStream(fos);
-        byteread = is.read(buffer, 0, buffer.length);
-        current = byteread;
-        while ((byteread = is.read(buffer, 0, buffer.length)) != -1) {
-            out.write(buffer, 0, byteread);
+        //byte[] buffer = new byte[maxsize];
+        InetAddress adr = InetAddress.getByName("192.168.2.84");
+        Socket socket = new Socket(adr,9999);
+        InputStream in = socket.getInputStream();
+        OutputStream out = new FileOutputStream("C:\\Users\\pmore\\Desktop\\test\\tekst.txt");
+        int count;
+        byte[] buffer = new byte[8192];
+        while((count =in.read(buffer)) > 0) {
+            out.write(buffer,0,count);
         }
-
+        System.out.print("done");
         out.flush();
         socket.close();
-        fos.close();
-        is.close();
-
     }
 }
 
 public class FileSender {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnknownHostException {
+        System.out.println(Inet4Address.getLocalHost().getHostAddress());
         //GETTING IP
         URL whatismyip = null;
         try {
@@ -117,7 +110,7 @@ public class FileSender {
         //frame.add(scrollpane, "Center");
         frame.setSize( 1000, 600); // Set frame size
         frame.setLocationRelativeTo(null); // Put frame in center of the screen
-        JLabel IPlabel = new JLabel("       Hello! Your IP is : " + ip);
+        JLabel IPlabel = new JLabel("       Moje  ip : " + ip);
         panel.add(scrollpane);
         panel.add(IPlabel);
 
