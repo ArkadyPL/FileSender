@@ -6,11 +6,15 @@ import java.net.*;
 import java.io.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseAdapter;
+import javax.swing.tree.TreePath;
 
 public class FileSender {
+    static Object current_file = null;
     public static void main(String[] args) throws UnknownHostException {
         System.out.println(Inet4Address.getLocalHost().getHostAddress());
-
         //GETTING IP
         URL whatismyip = null;
         try {
@@ -46,40 +50,50 @@ public class FileSender {
 
         // Create a TreeModel object to represent our tree of files
         FileTreeModel model = new FileTreeModel(root);
-        Object ptr = null;
         // Create a JTree and tell it to display our model
         JTree tree = new JTree();
         tree.setModel(model);
         JPanel panel = new JPanel();
-
-        panel.setLayout(new GridLayout(1,2));
+        panel.setLayout(new GridLayout(2,2));
         // The JTree can get big, so allow it to scroll.
         JScrollPane scrollpane = new JScrollPane(tree);
-
+        JScrollPane scrollpane2 = new JScrollPane();
         // Display it all in a window and make the window appear
-        //frame.add(scrollpane, "Center");
+         // frame.add(scrollpane, "Center");
         frame.setSize( 1000, 600); // Set frame size
         frame.setLocationRelativeTo(null); // Put frame in center of the screen
-        JLabel IPlabel = new JLabel("       Moje  ip : " + ip);
+        JLabel fileLabel = new JLabel("       Current file : " + current_file);
+        JLabel IPlabel = new JLabel("      My local ip : " + Inet4Address.getLocalHost().getHostAddress());
         panel.add(scrollpane);
+        panel.add(scrollpane2);
         panel.add(IPlabel);
+        panel.add(fileLabel);
         frame.add(panel);
         frame.setVisible(true);
-        //LISTENER GETS CURRENTLY POINTED DIRECTORY
-        tree.addTreeSelectionListener(new TreeSelectionListener() {
-            public void valueChanged(TreeSelectionEvent e) {
-                Object object = e.getPath().getLastPathComponent();
-                if (object instanceof File){
-                    File file = (File) object;
+        //LISTENER GETS CURRENTLY POINTED DIRECTORY. sends on double click
+
+        MouseListener ml = new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                int selRow = tree.getRowForLocation(e.getX(), e.getY());
+                TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
+
+                if(selRow != -1) {
+                    if(e.getClickCount() == 1) {
+                        System.out.println("Single"+selPath);
+                        fileLabel.setText("       Current file : " + selPath.getLastPathComponent().toString());
+                    }
+                    else if(e.getClickCount() == 2) {
+
+                        System.out.println("Double"+selRow);
+                        try {
+                            Server.work(selPath.getLastPathComponent().toString(), tree);
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
                 }
-                System.out.println("You selected " + object);
             }
-        });
-        //STARTING AS A SERVER - CLIENT ON OTHER PC
-        try {
-            Server.work();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        };
+        tree.addMouseListener(ml);
     }
 }

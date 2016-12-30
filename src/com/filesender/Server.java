@@ -3,21 +3,36 @@ package com.filesender;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import javax.swing.*;
+import java.awt.*;
+import java.net.*;
+import java.io.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseAdapter;
+import javax.swing.tree.TreePath;
 
-/**
- * Created by Piotr on 29.12.2016.
- */
 public class Server {
     static ServerSocket receiver = null;
     static OutputStream out = null;
     static Socket socket = null;
-    static File myFile = new File("C:\\Users\\Piotr\\Desktop\\test\\tekst.txt");
+
     /*static int count;*/
-    static byte[] buffer = new byte[(int) myFile.length()];
-    public static int work() throws IOException {
+
+    public static int work(String current_file, JTree tree) throws IOException {
+        System.out.println("server to send: " + current_file);
+
+        File myFile = new File(current_file);
+        byte[] buffer = new byte[(int) myFile.length()];
         receiver = new ServerSocket(9999);
         socket = receiver.accept();
         System.out.println("Accepted connection from : " + socket);
+        ObjectOutputStream outToClient = new ObjectOutputStream(socket.getOutputStream());
+        outToClient.writeObject(tree);
+
+        /* CURRENTLY OFF to deal with tree
         FileInputStream fis = new FileInputStream(myFile);
         BufferedInputStream in = new BufferedInputStream(fis);
         in.read(buffer,0,buffer.length);
@@ -30,7 +45,7 @@ public class Server {
             out.flush();
         }*/
         out.close();
-        in.close();
+      //  in.close();
         socket.close();
         System.out.println("Finished sending");
         return 3;
