@@ -10,7 +10,7 @@ import javax.swing.tree.DefaultTreeModel;
 public class Client {
     public static void work(JTree clientTree, JFrame frame, JScrollPane pane) throws FileNotFoundException, IOException, ClassNotFoundException {
         //byte[] buffer = new byte[maxsize];
-        InetAddress adr = InetAddress.getByName("192.168.2.84");
+        InetAddress adr = InetAddress.getByName(Inet4Address.getLocalHost().getHostAddress());
         Socket socket = new Socket(adr,9999);
         InputStream in = socket.getInputStream();
         // OutputStream out = new FileOutputStream((String) current_file);
@@ -21,7 +21,6 @@ public class Client {
         DefaultMutableTreeNode new1 = new DefaultMutableTreeNode(serverTree);
         System.out.println("ROOOOT " +new1);
         while(serverTree != null) {
-
             try {
                 serverTree= inFromServer.readObject();
             }
@@ -30,9 +29,9 @@ public class Client {
                 break;
             }
             DefaultMutableTreeNode new2 = new DefaultMutableTreeNode(serverTree);
+            new2.setAllowsChildren(true);
             new1.add(new2);
             System.out.println("Latter: " + new2);
-
         }
         System.out.println("G SHIT: ");
         clientTree.setModel(new DefaultTreeModel(new1));
