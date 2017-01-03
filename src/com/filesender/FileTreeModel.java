@@ -8,7 +8,7 @@ import java.io.File;
 /**
  * Created by Arek on 23.12.2016.
  */
-public class FileTreeModel implements TreeModel {
+public class FileTreeModel implements TreeModel,java.io.Serializable {
     // We specify the root directory when we create the model.
     protected File root;
     public FileTreeModel(File root) { this.root = root; }

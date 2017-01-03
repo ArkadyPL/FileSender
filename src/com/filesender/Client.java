@@ -1,32 +1,45 @@
 package com.filesender;
 
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 import javax.swing.*;
-import java.awt.*;
 import java.net.*;
-import java.io.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseAdapter;
-import javax.swing.tree.TreePath;
-/**
- * Created by Piotr on 29.12.2016.
- */
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+
 public class Client {
-    public static void work(Object current_file, JTree clientTree) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public static void work(JTree clientTree, JFrame frame, JScrollPane pane) throws FileNotFoundException, IOException, ClassNotFoundException {
         //byte[] buffer = new byte[maxsize];
         InetAddress adr = InetAddress.getByName("192.168.2.84");
         Socket socket = new Socket(adr,9999);
         InputStream in = socket.getInputStream();
-        OutputStream out = new FileOutputStream((String) current_file);
+        // OutputStream out = new FileOutputStream((String) current_file);
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
-        JTree serverTree=null;
-        serverTree = (JTree)inFromServer.readObject();
-        clientTree = serverTree;
+        Object serverTree;
+
+        serverTree = inFromServer.readObject();
+        DefaultMutableTreeNode new1 = new DefaultMutableTreeNode(serverTree);
+        System.out.println("ROOOOT " +new1);
+        while(serverTree != null) {
+
+            try {
+                serverTree= inFromServer.readObject();
+            }
+            catch (java.io.EOFException e) {
+                System.out.println("chill");
+                break;
+            }
+            DefaultMutableTreeNode new2 = new DefaultMutableTreeNode(serverTree);
+            new1.add(new2);
+            System.out.println("Latter: " + new2);
+
+        }
+        System.out.println("G SHIT: ");
+        clientTree.setModel(new DefaultTreeModel(new1));
+        frame.repaint();
+        frame.revalidate();
+        //  System.out.println("Childreon "+serverTree.getChildCount(serverTree.getRoot()));
+
 
         /*
         int count;
@@ -34,8 +47,8 @@ public class Client {
         while((count =in.read(buffer)) > 0) {
             out.write(buffer,0,count);
         }*/
-        System.out.print("done");
-        out.flush();
+        System.out.print("Server file tree received");
+        //out.flush();
         socket.close();
     }
 }

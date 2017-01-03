@@ -3,35 +3,31 @@ package com.filesender;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import javax.swing.*;
-import java.awt.*;
-import java.net.*;
-import java.io.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseAdapter;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeModel;
+
 
 public class Server {
-    static ServerSocket receiver = null;
     static OutputStream out = null;
     static Socket socket = null;
 
     /*static int count;*/
 
-    public static int work(String current_file, JTree tree) throws IOException {
+    public static int work(String current_file,  TreeModel clientTreeModel, ServerSocket sock) throws IOException {
         System.out.println("server to send: " + current_file);
 
-        File myFile = new File(current_file);
-        byte[] buffer = new byte[(int) myFile.length()];
-        receiver = new ServerSocket(9999);
-        socket = receiver.accept();
+       // File myFile = new File(current_file);
+       // byte[] buffer = new byte[(int) myFile.length()];
+
+        socket = sock.accept();
+        System.out.println("parento " + clientTreeModel.getRoot());
+        System.out.println("childo "+clientTreeModel.getChildCount(clientTreeModel.getRoot()));
+        Object new1 = clientTreeModel.getRoot();
         System.out.println("Accepted connection from : " + socket);
         ObjectOutputStream outToClient = new ObjectOutputStream(socket.getOutputStream());
-        outToClient.writeObject(tree);
-
+        outToClient.writeObject(new1);
+        for(int i = 0; i < clientTreeModel.getChildCount(new1);i++) {
+            outToClient.writeObject(clientTreeModel.getChild(new1,i));
+        }
         /* CURRENTLY OFF to deal with tree
         FileInputStream fis = new FileInputStream(myFile);
         BufferedInputStream in = new BufferedInputStream(fis);
@@ -44,7 +40,7 @@ public class Server {
             out.write(buffer,0,count);
             out.flush();
         }*/
-        out.close();
+        //out.close();
       //  in.close();
         socket.close();
         System.out.println("Finished sending");

@@ -4,8 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.*;
 import java.io.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseAdapter;
@@ -13,7 +11,13 @@ import javax.swing.tree.TreePath;
 
 public class FileSender {
     static Object current_file = null;
-    public static void main(String[] args) throws UnknownHostException {
+    static ServerSocket receiver = null;
+
+    public static void main(String[] args) throws IOException {
+
+        receiver = new ServerSocket(9999);
+
+
         System.out.println(Inet4Address.getLocalHost().getHostAddress());
         //GETTING IP
         URL whatismyip = null;
@@ -23,13 +27,13 @@ public class FileSender {
             e.printStackTrace();
         }
         BufferedReader in = null;
-        try {
+      /* try {
             in = new BufferedReader(new InputStreamReader(
                     whatismyip.openStream()));
         } catch (IOException e) {
             e.printStackTrace();
-        }
-
+        }*/
+        /*
         String ip = null; //you get the IP as a String
         try {
             ip = in.readLine();
@@ -38,10 +42,11 @@ public class FileSender {
         }
         System.out.println(ip);
         //END OF GETTING IP
-
+        */
 
         //SETTING UP GUI WITH FILE PATHS TREE
         JFrame frame = new JFrame("File Sender");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //tree
         // Figure out where in the filesystem to start displaying
         File root;
@@ -53,6 +58,7 @@ public class FileSender {
         // Create a JTree and tell it to display our model
         JTree tree = new JTree();
         tree.setModel(model);
+
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(2,2));
         // The JTree can get big, so allow it to scroll.
@@ -86,7 +92,7 @@ public class FileSender {
 
                         System.out.println("Double"+selRow);
                         try {
-                            Server.work(selPath.getLastPathComponent().toString(), tree);
+                            Server.work(selPath.getLastPathComponent().toString(), tree.getModel(),receiver);
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }
