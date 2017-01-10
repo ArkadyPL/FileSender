@@ -13,8 +13,7 @@ import javax.swing.tree.TreePath;
 public class FileSender {
     static String localIP = null;
     static String remoteIP = null;
-    static boolean isConnected = false;
-    static volatile boolean isListening = true;
+    static volatile boolean isConnected = false;
     static Socket connectionSocket = null;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
@@ -71,7 +70,7 @@ public class FileSender {
             Boolean isValid = new IPAddressValidator().validate(remoteIP);
             System.out.println("Connection button clicked. Remote IP value: " + remoteIP  + "\tGiven IP address is " + (isValid ? "valid" : "not valid"));
             if(isValid) {
-                isListening = false;
+                isConnected = true;
                 try {
                     System.out.println("Trying to connect to remote server...");
                     connectionSocket = new Socket(remoteIP, 9990);
@@ -112,12 +111,13 @@ public class FileSender {
                         System.out.println("Single clicked : " + selPath.getLastPathComponent());
                     }
                     else if(e.getClickCount() == 2) {
-                        System.out.print("Double click on row #" + selRow + "\t File: " + selPath.getLastPathComponent());
+                        System.out.println("Double click on row #" + selRow + "\t File: " + selPath.getLastPathComponent());
                         if(isConnected){
                             //todo: send clicked file
+                            System.out.println("Sending choosen file...");
                         }
                         else {
-                            System.out.println(" !Not connected yet!");
+                            System.out.println("!Not connected yet!");
                         }
                     }
                 }

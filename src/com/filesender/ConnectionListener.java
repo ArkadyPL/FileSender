@@ -12,7 +12,7 @@ import static com.filesender.FileSender.isConnected;
  */
 public class ConnectionListener {
         public static Socket ListenForIncomingConnections() throws IOException {
-            Socket connectedSocket = null;
+            Socket connectedSocket;
             ServerSocket serverSocket = new ServerSocket(9990);
 
             System.out.println("Waiting for incoming connections...");
