@@ -8,9 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import java.io.*;
-import javax.swing.plaf.synth.SynthTextAreaUI;
 import javax.swing.tree.TreePath;
-import static com.filesender.Connectioner.*;
 
 public class FileSender {
     static String localIP = null;
@@ -74,18 +72,21 @@ public class FileSender {
             System.out.println("Connection button clicked. Remote IP value: " + remoteIP  + "\tGiven IP address is " + (isValid ? "valid" : "not valid"));
             if(isValid) {
                 isListening = false;
-                //todo: initiate connection
                 try {
+                    System.out.println("Trying to connect to remote server...");
                     connectionSocket = new Socket(remoteIP, 9990);
-                } catch (IOException e) {
+                } catch (ConnectException e) {
+                    System.out.println("Remote is not available...");
+                } catch (Exception e) {
                     System.out.println("Connection error...");
-                    e.printStackTrace();
                 }
-
-                try {
-                    Connectioner.ConnectToServer(connectionSocket);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (connectionSocket != null) {
+                    System.out.println("Connected to remote!");
+                    try {
+                        Connectioner.ConnectToServer(connectionSocket);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -125,7 +126,7 @@ public class FileSender {
         localTree.addMouseListener(mouseListener);
 
         connectionSocket = ConnectionListener.ListenForIncomingConnections();
-        //todo: act with new connection
+        //todo: receive remote commands and process them
 
         //Receiver.work(remoteTree, frame, remoteTreePane);
     }
