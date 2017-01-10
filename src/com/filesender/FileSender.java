@@ -11,13 +11,9 @@ import javax.swing.tree.TreePath;
 
 public class FileSender {
     static Object current_file = null;
-    static ServerSocket receiver = null;
+    static ServerSocket senderSocket = null;
 
-    public static void main(String[] args) throws IOException {
-
-        receiver = new ServerSocket(9999);
-
-
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         System.out.println(Inet4Address.getLocalHost().getHostAddress());
         //GETTING IP
         URL whatismyip = null;
@@ -56,16 +52,17 @@ public class FileSender {
         // Create a TreeModel object to represent our tree of files
         FileTreeModel model = new FileTreeModel(root);
         // Create a JTree and tell it to display our model
-        JTree tree = new JTree();
-        tree.setModel(model);
+        JTree localTree = new JTree();
+        JTree remoteTree = new JTree();
+        localTree.setModel(model);
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(2,2));
         // The JTree can get big, so allow it to scroll.
-        JScrollPane scrollpane = new JScrollPane(tree);
-        JScrollPane scrollpane2 = new JScrollPane();
+        JScrollPane scrollpane = new JScrollPane(localTree);
+        JScrollPane scrollpane2 = new JScrollPane(remoteTree);
         // Display it all in a window and make the window appear
-         // frame.add(scrollpane, "Center");
+        // frame.add(scrollpane, "Center");
         frame.setSize( 1000, 600); // Set frame size
         frame.setLocationRelativeTo(null); // Put frame in center of the screen
         JLabel fileLabel = new JLabel("       Current file : " + current_file);
@@ -80,8 +77,8 @@ public class FileSender {
 
         MouseListener ml = new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                int selRow = tree.getRowForLocation(e.getX(), e.getY());
-                TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
+                int selRow = localTree.getRowForLocation(e.getX(), e.getY());
+                TreePath selPath = localTree.getPathForLocation(e.getX(), e.getY());
 
                 if(selRow != -1) {
                     if(e.getClickCount() == 1) {
@@ -89,10 +86,17 @@ public class FileSender {
                         fileLabel.setText("       Current file : " + selPath.getLastPathComponent().toString());
                     }
                     else if(e.getClickCount() == 2) {
+                        ServerSocket sock = null;
+                        try {
+                            sock = new ServerSocket(9990);
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                        //todo: if sock port number == 9990, find another
 
                         System.out.println("Double"+selRow);
                         try {
-                            Server.work(selPath.getLastPathComponent().toString(), tree.getModel(),receiver);
+                            Sender.work(selPath.getLastPathComponent().toString(), localTree.getModel(), sock);
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }
@@ -100,6 +104,8 @@ public class FileSender {
                 }
             }
         };
-        tree.addMouseListener(ml);
+        localTree.addMouseListener(ml);
+
+        Receiver.work(remoteTree, frame, scrollpane2);
     }
 }

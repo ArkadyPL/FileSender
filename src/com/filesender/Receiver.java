@@ -7,11 +7,25 @@ import java.net.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-public class Client {
+public class Receiver {
     public static void work(JTree clientTree, JFrame frame, JScrollPane pane) throws FileNotFoundException, IOException, ClassNotFoundException {
         //byte[] buffer = new byte[maxsize];
         InetAddress adr = InetAddress.getByName(Inet4Address.getLocalHost().getHostAddress());
-        Socket socket = new Socket(adr,9999);
+        Socket socket = null;
+        while(true) {
+            try{
+                socket = new Socket(adr, 9990);
+            }
+            catch (Exception e){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                continue;
+            }
+            break;
+        }
         InputStream in = socket.getInputStream();
         // OutputStream out = new FileOutputStream((String) current_file);
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
