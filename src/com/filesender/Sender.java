@@ -21,21 +21,21 @@ public class Sender {
     static Queue queue = new LinkedList();
     public static void sendTree(ObjectOutputStream ostream, TreeModel localTreeModel) throws IOException {
 
-        Object new1;
-        new1 = localTreeModel.getRoot();
-        queue.add(new1);
+        Object rootObj;
+        rootObj = localTreeModel.getRoot();
+        queue.add(rootObj);
         while(queue.isEmpty() != true ) {
-            new1 = queue.peek();
+            rootObj = queue.peek();
             to_send ts = new to_send(queue.peek(),true);
             ostream.writeObject(queue);
-            for(int i = 0; i < localTreeModel.getChildCount(new1);i++) {
-                if(localTreeModel.isLeaf(localTreeModel.getChild(new1,i)) == true) {
+            for(int i = 0; i < localTreeModel.getChildCount(rootObj);i++) {
+                if(localTreeModel.isLeaf(localTreeModel.getChild(rootObj,i)) == true) {
                     //System.out.print("DICK\n");
                 }
                 else {
-                    to_send ts2 = new to_send(localTreeModel.getChild(new1,i),true);
+                    to_send ts2 = new to_send(localTreeModel.getChild(rootObj,i),true);
                     ostream.writeObject(queue);
-                    queue.add(localTreeModel.getChild(new1,i));
+                    queue.add(localTreeModel.getChild(rootObj,i));
                 }
             }
             queue.poll();
