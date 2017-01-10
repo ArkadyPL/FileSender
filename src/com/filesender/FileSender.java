@@ -8,15 +8,16 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import java.io.*;
+import javax.swing.plaf.synth.SynthTextAreaUI;
 import javax.swing.tree.TreePath;
 import static com.filesender.Connectioner.*;
 
 public class FileSender {
-    static ServerSocket senderSocket = null;
     static String localIP = null;
     static String remoteIP = null;
     static boolean isConnected = false;
     static volatile boolean isListening = true;
+    static Socket connectionSocket = null;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         localIP = Inet4Address.getLocalHost().getHostAddress();
@@ -74,6 +75,18 @@ public class FileSender {
             if(isValid) {
                 isListening = false;
                 //todo: initiate connection
+                try {
+                    connectionSocket = new Socket(remoteIP, 9990);
+                } catch (IOException e) {
+                    System.out.println("Connection error...");
+                    e.printStackTrace();
+                }
+
+                try {
+                    Connectioner.ConnectToServer(connectionSocket);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
         controlPanel.add(connectButon);
@@ -111,7 +124,7 @@ public class FileSender {
         };
         localTree.addMouseListener(mouseListener);
 
-        Socket connectionSocket = ConnectionListener.ListenForIncomingConnections();
+        connectionSocket = ConnectionListener.ListenForIncomingConnections();
         //todo: act with new connection
 
         //Receiver.work(remoteTree, frame, remoteTreePane);

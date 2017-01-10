@@ -17,4 +17,10 @@ public class Connectioner {
         System.out.println("Message is: " + message);
         return;
     }
+
+    public static void ConnectToServer(Socket clientSocket) throws IOException {
+        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+        out.println("Hello my dear friend!");
+        return;
+    }
 }

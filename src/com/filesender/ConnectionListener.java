@@ -20,7 +20,6 @@ public class ConnectionListener {
             System.out.println("Not waiting for incoming connections.");
             if(!isConnected){
                 Connectioner.ConnectToClient(connectedSocket);
-
             }
             return connectedSocket;
         }
