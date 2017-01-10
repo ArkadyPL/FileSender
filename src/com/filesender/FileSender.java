@@ -9,6 +9,7 @@ import java.awt.event.*;
 import java.net.*;
 import java.io.*;
 import javax.swing.tree.TreePath;
+import static com.filesender.Connectioner.*;
 
 public class FileSender {
     static ServerSocket senderSocket = null;
@@ -110,7 +111,8 @@ public class FileSender {
         };
         localTree.addMouseListener(mouseListener);
 
-        ConnectionListener.ListenForIncomingConnections();
+        Socket connectionSocket = ConnectionListener.ListenForIncomingConnections();
+        //todo: act with new connection
 
         //Receiver.work(remoteTree, frame, remoteTreePane);
     }

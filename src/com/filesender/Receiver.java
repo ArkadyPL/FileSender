@@ -51,7 +51,7 @@ public class Receiver {
         clientTree.setModel(new DefaultTreeModel(new1));
         frame.repaint();
         frame.revalidate();
-        //  System.out.println("Childreon "+serverTree.getChildCount(serverTree.getRoot()));
+        //  System.out.println("Children "+serverTree.getChildCount(serverTree.getRoot()));
 
 
         /*
