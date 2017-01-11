@@ -12,7 +12,7 @@ import javax.swing.tree.TreePath;
 
 public class FileSender {
     static String localIP = null;
-    static String remoteIP = null;
+    static InetAddress remoteIP = null;
     static volatile boolean isConnected = false;
     static Socket connectionSocket = null;
 
@@ -67,8 +67,12 @@ public class FileSender {
 
         connectButon.setAlignmentY(Component.CENTER_ALIGNMENT);
         connectButon.addActionListener(ae -> {
-            remoteIP = remoteIPTextField.getText();
-            Boolean isValid = new IPAddressValidator().validate(remoteIP);
+            try {
+                remoteIP = InetAddress.getByName(remoteIPTextField.getText());
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+            Boolean isValid = new IPAddressValidator().validate(remoteIPTextField.getText());
             System.out.println("Connection button clicked. Remote IP value: " + remoteIP  + "\tGiven IP address is " + (isValid ? "valid" : "not valid"));
             if(isValid) {
                 try {
@@ -85,13 +89,6 @@ public class FileSender {
                     try {
                         Connectioner.ConnectToServer(connectionSocket);
                     } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        Receiver.work(remoteTree,frame);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
@@ -133,7 +130,7 @@ public class FileSender {
         };
         localTree.addMouseListener(mouseListener);
 
-        connectionSocket = ConnectionListener.ListenForIncomingConnections(localTree.getModel());
+        connectionSocket = ConnectionListener.ListenForIncomingConnections(localTree.getModel(),remoteTree,frame,remoteIP);
         //todo: receive remote commands and process them
 
         //Receiver.work(remoteTree, frame, remoteTreePane);

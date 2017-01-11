@@ -8,29 +8,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 public class Receiver {
-    public static void work(JTree clientTree, JFrame frame) throws FileNotFoundException, IOException, ClassNotFoundException {
-        //byte[] buffer = new byte[maxsize];
-        InetAddress adr = InetAddress.getByName(Inet4Address.getLocalHost().getHostAddress());
-        Socket socket = null;
-        while(true) {
-            try{
-                socket = new Socket(adr, 9990);
-            }
-            catch (Exception e){
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-                continue;
-            }
-            break;
-        }
+    public static void work(JTree clientTree, JFrame frame, Socket socket) throws FileNotFoundException, IOException, ClassNotFoundException {
+
         InputStream in = socket.getInputStream();
         // OutputStream out = new FileOutputStream((String) current_file);
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
         Object serverTree;
-
         serverTree = inFromServer.readObject();
         DefaultMutableTreeNode new1 = new DefaultMutableTreeNode(serverTree);
         System.out.println("ROOOOT " +new1);
