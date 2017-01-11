@@ -10,8 +10,6 @@ import javax.swing.tree.DefaultTreeModel;
 public class Receiver {
     public static void work(JTree clientTree, JFrame frame, Socket socket) throws FileNotFoundException, IOException, ClassNotFoundException {
 
-        InputStream in = socket.getInputStream();
-        // OutputStream out = new FileOutputStream((String) current_file);
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
         Object serverTree;
         serverTree = inFromServer.readObject();
@@ -19,7 +17,7 @@ public class Receiver {
         System.out.println("ROOOOT " +new1);
         while(serverTree != null) {
             try {
-                serverTree= inFromServer.readObject();
+                serverTree = inFromServer.readObject();
             }
             catch (java.io.EOFException e) {
                 System.out.println("chill");

@@ -15,25 +15,12 @@ import static com.filesender.FileSender.isConnected;
  * Created by arkadiusz.ryszewski on 10.01.2017.
  */
 public class ConnectionListener {
-        public static Socket ListenForIncomingConnections(TreeModel localTreeModel, JTree remoteTree, JFrame frame, InetAddress _adr) throws IOException, ClassNotFoundException {
-            Socket connectedSocket;
-            ServerSocket serverSocket = new ServerSocket(9990);
-
-            System.out.println("Waiting for incoming connections...");
-            connectedSocket = serverSocket.accept();
-            System.out.println("Connection accepted-!");
-
-            if(!isConnected){
-                System.out.println("DICK");
-                //Connectioner.ConnectToClient(connectedSocket);
-                ObjectOutputStream outToClient = new ObjectOutputStream(connectedSocket.getOutputStream());
-                Sender.sendTree(outToClient,localTreeModel);
-            }
-            else {
-                connectedSocket = new Socket(_adr, 9990);
-                System.out.println("Pussy");
-                Receiver.work(remoteTree,frame,connectedSocket);
-            }
-            return connectedSocket;
-        }
+    public static Socket ListenForIncomingConnections(TreeModel localTreeModel, ServerSocket serverSocket) throws IOException, ClassNotFoundException {
+        Socket connectedSocket;
+        System.out.println("Waiting for incoming connections...");
+        connectedSocket = serverSocket.accept();
+        System.out.println("Connection accepted-!");
+        Sender.sendTree(connectedSocket,localTreeModel,serverSocket);
+        return connectedSocket;
+    }
 }

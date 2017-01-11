@@ -19,27 +19,32 @@ public class Sender {
     static OutputStream out = null;
     static Socket socket = null;
     static Queue queue = new LinkedList();
-    public static void sendTree(ObjectOutputStream ostream, TreeModel localTreeModel) throws IOException {
+    public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, ServerSocket servSock) throws IOException, ClassNotFoundException {
+        ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
         Object rootObj;
-        rootObj = localTreeModel.getRoot();
+        rootObj = localTreeModel.getChild(localTreeModel.getRoot(),14);
         queue.add(rootObj);
         while(queue.isEmpty() != true ) {
             rootObj = queue.peek();
             to_send ts = new to_send(queue.peek(),true);
-            ostream.writeObject(queue);
+            ostream.writeObject(ts.node);
             for(int i = 0; i < localTreeModel.getChildCount(rootObj);i++) {
                 if(localTreeModel.isLeaf(localTreeModel.getChild(rootObj,i)) == true) {
                 }
                 else {
                     to_send ts2 = new to_send(localTreeModel.getChild(rootObj,i),true);
-                    ostream.writeObject(queue);
+                    System.out.println("sending: " + ts2.node);
+                    ostream.writeObject(ts2.node);
                     queue.add(localTreeModel.getChild(rootObj,i));
                 }
             }
             queue.poll();
         }
+        ostream.close();
+        System.out.println("SENDING DONE");
+        connectedSocket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
     }
-    public static int work(String current_file,  TreeModel localTreeModel, ServerSocket sock) throws IOException {
+   /* public static int work(String current_file,  TreeModel localTreeModel, ServerSocket sock) throws IOException, ClassNotFoundException {
         System.out.println("server to send: " + current_file);
 
         // File myFile = new File(current_file);
@@ -52,7 +57,7 @@ public class Sender {
         System.out.println("childo " +localTreeModel.getChildCount(localTreeModel.getRoot()));
         System.out.println("Accepted connection from : " + socket);
         ObjectOutputStream outToClient = new ObjectOutputStream(socket.getOutputStream());
-        Sender.sendTree(outToClient, localTreeModel);
+        Sender.sendTree(socket, localTreeModel,);
 
         /* CURRENTLY OFF to deal with tree
         FileInputStream fis = new FileInputStream(myFile);
@@ -65,11 +70,12 @@ public class Sender {
         /*while ((count = in.read(buffer)) > 0){
             out.write(buffer,0,count);
             out.flush();
-        }*/
+        }
         //out.close();
         //  in.close();
         socket.close();
         System.out.println("Finished sending");
         return 3;
-    }
+    }*/
+
 }

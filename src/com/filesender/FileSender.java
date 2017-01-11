@@ -15,11 +15,11 @@ public class FileSender {
     static InetAddress remoteIP = null;
     static volatile boolean isConnected = false;
     static Socket connectionSocket = null;
-
+    static ServerSocket serverSocket = null;
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         localIP = Inet4Address.getLocalHost().getHostAddress();
         System.out.println("Your IP address is: " + localIP);
-
+        serverSocket = new ServerSocket(9990);
         //SETTING UP GUI WITH FILE PATHS TREE
         JFrame frame = new JFrame("File Sender");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,8 +43,8 @@ public class FileSender {
         contentPane.add(toolbar, BorderLayout.NORTH);
 
         // Figure out where in the filesystem to start displaying
-        File root = new File(System.getProperty("user.home")/*.substring(0, 3)*/);
-
+       // File root = new File(System.getProperty("user.home")/*.substring(0, 3)*/);
+        File root = new File("C:\\");
         // Create a TreeModel object to represent our tree of files
         FileTreeModel model = new FileTreeModel(root);
         // Create a JTree and tell it to display our model
@@ -87,8 +87,15 @@ public class FileSender {
                     isConnected = true;
                     System.out.println("Connected to remote!");
                     try {
-                        Connectioner.ConnectToServer(connectionSocket);
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        Receiver.work(remoteTree,frame,connectionSocket);
                     } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
@@ -130,7 +137,7 @@ public class FileSender {
         };
         localTree.addMouseListener(mouseListener);
 
-        connectionSocket = ConnectionListener.ListenForIncomingConnections(localTree.getModel(),remoteTree,frame,remoteIP);
+        connectionSocket = ConnectionListener.ListenForIncomingConnections(localTree.getModel(),serverSocket);
         //todo: receive remote commands and process them
 
         //Receiver.work(remoteTree, frame, remoteTreePane);
