@@ -20,7 +20,6 @@ public class Sender {
     static Socket socket = null;
     static Queue queue = new LinkedList();
     public static void sendTree(ObjectOutputStream ostream, TreeModel localTreeModel) throws IOException {
-
         Object rootObj;
         rootObj = localTreeModel.getRoot();
         queue.add(rootObj);
@@ -40,7 +39,6 @@ public class Sender {
             queue.poll();
         }
     }
-
     public static int work(String current_file,  TreeModel localTreeModel, ServerSocket sock) throws IOException {
         System.out.println("server to send: " + current_file);
 

@@ -71,7 +71,6 @@ public class FileSender {
             Boolean isValid = new IPAddressValidator().validate(remoteIP);
             System.out.println("Connection button clicked. Remote IP value: " + remoteIP  + "\tGiven IP address is " + (isValid ? "valid" : "not valid"));
             if(isValid) {
-
                 try {
                     System.out.println("Trying to connect to remote server...");
                     connectionSocket = new Socket(remoteIP, 9990);
@@ -86,6 +85,13 @@ public class FileSender {
                     try {
                         Connectioner.ConnectToServer(connectionSocket);
                     } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        Receiver.work(remoteTree,frame);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
@@ -127,7 +133,7 @@ public class FileSender {
         };
         localTree.addMouseListener(mouseListener);
 
-        connectionSocket = ConnectionListener.ListenForIncomingConnections();
+        connectionSocket = ConnectionListener.ListenForIncomingConnections(localTree.getModel());
         //todo: receive remote commands and process them
 
         //Receiver.work(remoteTree, frame, remoteTreePane);
