@@ -17,7 +17,7 @@ public class ConnectionListener {
 
             System.out.println("Waiting for incoming connections...");
             connectedSocket = serverSocket.accept();
-            System.out.println("Not waiting for incoming connections.");
+            System.out.println("Connection accepted");
             if(!isConnected){
                 Connectioner.ConnectToClient(connectedSocket);
             }

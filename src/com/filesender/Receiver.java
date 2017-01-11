@@ -8,7 +8,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 public class Receiver {
-    public static void work(JTree clientTree, JFrame frame, JScrollPane pane) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public static void work(JTree clientTree, JFrame frame) throws FileNotFoundException, IOException, ClassNotFoundException {
         //byte[] buffer = new byte[maxsize];
         InetAddress adr = InetAddress.getByName(Inet4Address.getLocalHost().getHostAddress());
         Socket socket = null;

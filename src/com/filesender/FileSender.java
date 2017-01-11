@@ -64,13 +64,14 @@ public class FileSender {
         JTextField remoteIPTextField = new JTextField(30);
         controlPanel.add(remoteIPTextField);
         JButton connectButon = new JButton("Connect");
+
         connectButon.setAlignmentY(Component.CENTER_ALIGNMENT);
         connectButon.addActionListener(ae -> {
             remoteIP = remoteIPTextField.getText();
             Boolean isValid = new IPAddressValidator().validate(remoteIP);
             System.out.println("Connection button clicked. Remote IP value: " + remoteIP  + "\tGiven IP address is " + (isValid ? "valid" : "not valid"));
             if(isValid) {
-                isConnected = true;
+
                 try {
                     System.out.println("Trying to connect to remote server...");
                     connectionSocket = new Socket(remoteIP, 9990);
@@ -80,6 +81,7 @@ public class FileSender {
                     System.out.println("Connection error...");
                 }
                 if (connectionSocket != null) {
+                    isConnected = true;
                     System.out.println("Connected to remote!");
                     try {
                         Connectioner.ConnectToServer(connectionSocket);
@@ -95,7 +97,7 @@ public class FileSender {
         frame.setSize( 1000, 600); // Set frame size
         frame.setLocationRelativeTo(null); // Put frame in center of the screen
         panel.add(localTreePane);
-        //panel.add(remoteTreePane);
+        panel.add(remoteTreePane);
         panel.add(controlPanel);
         frame.add(panel);
         frame.setVisible(true);

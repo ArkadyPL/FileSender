@@ -30,7 +30,6 @@ public class Sender {
             ostream.writeObject(queue);
             for(int i = 0; i < localTreeModel.getChildCount(rootObj);i++) {
                 if(localTreeModel.isLeaf(localTreeModel.getChild(rootObj,i)) == true) {
-                    //System.out.print("DICK\n");
                 }
                 else {
                     to_send ts2 = new to_send(localTreeModel.getChild(rootObj,i),true);
@@ -40,7 +39,6 @@ public class Sender {
             }
             queue.poll();
         }
-
     }
 
     public static int work(String current_file,  TreeModel localTreeModel, ServerSocket sock) throws IOException {
