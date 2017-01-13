@@ -13,6 +13,7 @@ public class Receiver {
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
         Object serverTree;
         serverTree = inFromServer.readObject();
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("...");
         DefaultMutableTreeNode new1 = new DefaultMutableTreeNode(serverTree);
         System.out.println("ROOOOT " +new1);
         while(serverTree != null) {
@@ -26,10 +27,12 @@ public class Receiver {
             DefaultMutableTreeNode new2 = new DefaultMutableTreeNode(serverTree);
             new2.setAllowsChildren(true);
             new1.add(new2);
+
             System.out.println("Latter: " + new2);
         }
         System.out.println("G SHIT: ");
-        clientTree.setModel(new DefaultTreeModel(new1));
+        root.add(new1);
+        clientTree.setModel(new DefaultTreeModel(root));
         frame.repaint();
         frame.revalidate();
         //  System.out.println("Children "+serverTree.getChildCount(serverTree.getRoot()));

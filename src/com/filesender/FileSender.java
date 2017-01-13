@@ -43,14 +43,15 @@ public class FileSender {
         contentPane.add(toolbar, BorderLayout.NORTH);
 
         // Figure out where in the filesystem to start displaying
-       // File root = new File(System.getProperty("user.home")/*.substring(0, 3)*/);
-        File root = new File("C:\\");
+        File root = new File(System.getProperty("user.home"));
+        //File root = new File("C:\\");
         // Create a TreeModel object to represent our tree of files
         FileTreeModel model = new FileTreeModel(root);
         // Create a JTree and tell it to display our model
         JTree localTree = new JTree();
         JTree remoteTree = new JTree();
         localTree.setModel(model);
+
 
         //GUI CREATION
         JPanel panel = new JPanel();
@@ -136,6 +137,34 @@ public class FileSender {
             }
         };
         localTree.addMouseListener(mouseListener);
+
+        MouseListener mouseListenerRemote = new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                int selRow = localTree.getRowForLocation(e.getX(), e.getY());
+                TreePath selPath = localTree.getPathForLocation(e.getX(), e.getY());
+
+                if(selRow != -1) {
+                    if(e.getClickCount() == 1) {
+                        System.out.println("Single clicked : " + selPath.getLastPathComponent());
+                    }
+                    else if(e.getClickCount() == 2) {
+                        System.out.println("Double click on row #" + selRow + "\t File: " + selPath.getLastPathComponent());
+                        if(isConnected){
+                            //todo: send clicked file
+                            System.out.println("Sending choosen file...");
+                        }
+                        else {
+                            System.out.println("!Not connected yet!");
+                        }
+                    }
+                }
+            }
+        };
+        remoteTree.addMouseListener(mouseListenerRemote);
+
+
+
+
 
         connectionSocket = ConnectionListener.ListenForIncomingConnections(localTree.getModel(),serverSocket);
         //todo: receive remote commands and process them
