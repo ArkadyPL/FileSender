@@ -27,14 +27,14 @@ public class Sender {
         while(queue.isEmpty() != true ) {
             rootObj = queue.peek();
             to_send ts = new to_send(queue.peek(),true);
-            ostream.writeObject(ts.node);
+            ostream.writeObject(ts);
             for(int i = 0; i < localTreeModel.getChildCount(rootObj);i++) {
                 if(localTreeModel.isLeaf(localTreeModel.getChild(rootObj,i)) == true) {
                 }
                 else {
                     to_send ts2 = new to_send(localTreeModel.getChild(rootObj,i),true);
                     System.out.println("sending: " + ts2.node);
-                    ostream.writeObject(ts2.node);
+                    ostream.writeObject(ts2);
                     queue.add(localTreeModel.getChild(rootObj,i));
                 }
             }

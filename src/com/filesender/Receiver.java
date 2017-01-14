@@ -13,26 +13,25 @@ public class Receiver {
         operation basicOperation = new operation(1,null,null);
         ostream.writeObject(basicOperation);
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
-        Object serverTree;
-        serverTree = inFromServer.readObject();
+        to_send serverTreeNode;
+        serverTreeNode = (to_send)inFromServer.readObject();
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("...");
-        DefaultMutableTreeNode new1 = new DefaultMutableTreeNode(serverTree);
+        DefaultMutableTreeNode new1 = new DefaultMutableTreeNode(serverTreeNode.node);
         System.out.println("ROOOOT " +new1);
-        while(serverTree != null) {
+        while(serverTreeNode != null) {
             try {
-                serverTree = inFromServer.readObject();
+                serverTreeNode = (to_send)inFromServer.readObject();
             }
             catch (java.io.EOFException e) {
                 System.out.println("chill");
                 break;
             }
-            DefaultMutableTreeNode new2 = new DefaultMutableTreeNode(serverTree);
+            DefaultMutableTreeNode new2 = new DefaultMutableTreeNode(serverTreeNode.node);
             new2.setAllowsChildren(true);
             new1.add(new2);
-
             System.out.println("Latter: " + new2);
         }
-        System.out.println("G SHIT: ");
+        System.out.println("Tree received");
         root.add(new1);
         clientTree.setModel(new DefaultTreeModel(root));
         frame.repaint();
