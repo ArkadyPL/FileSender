@@ -37,9 +37,10 @@ public class ConnectionListener {
         ObjectInputStream inFromServer = new ObjectInputStream(connectedSocket.getInputStream());
         operation basicOp;
         basicOp = (operation)inFromServer.readObject();
-        inFromServer.close();
+
         while(true) {
             if(basicOp.opID == 1) {
+                System.out.println("Operation ID 1 executed");
                 Sender.sendTree(connectedSocket,localTreeModel,serverSocket);
                 break;
             }

@@ -12,7 +12,6 @@ public class Receiver {
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
         operation basicOperation = new operation(1,null,null);
         ostream.writeObject(basicOperation);
-        ostream.close();
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
         Object serverTree;
         serverTree = inFromServer.readObject();
