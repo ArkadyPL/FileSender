@@ -28,11 +28,10 @@ public class Receiver {
             }
             DefaultMutableTreeNode new2 = new DefaultMutableTreeNode(serverTreeNode.node);
             new2.setAllowsChildren(true);
-            new1.add(new2);
+            root.add(new2);
             System.out.println("Latter: " + new2);
         }
         System.out.println("Tree received");
-        root.add(new1);
         clientTree.setModel(new DefaultTreeModel(root));
         frame.repaint();
         frame.revalidate();

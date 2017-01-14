@@ -23,23 +23,23 @@ public class Sender {
         ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
         Object rootObj;
         rootObj = localTreeModel.getChild(localTreeModel.getRoot(),14);
-        queue.add(rootObj);
-        while(queue.isEmpty() != true ) {
-            rootObj = queue.peek();
-            to_send ts = new to_send(queue.peek(),true);
-            ostream.writeObject(ts);
-            for(int i = 0; i < localTreeModel.getChildCount(rootObj);i++) {
-                if(localTreeModel.isLeaf(localTreeModel.getChild(rootObj,i)) == true) {
-                }
-                else {
-                    to_send ts2 = new to_send(localTreeModel.getChild(rootObj,i),true);
-                    System.out.println("sending: " + ts2.node);
-                    ostream.writeObject(ts2);
-                    queue.add(localTreeModel.getChild(rootObj,i));
-                }
+        to_send ts = new to_send(rootObj,true);
+        ostream.writeObject(ts);
+        for(int i = 0; i < localTreeModel.getChildCount(rootObj);i++) {
+            if(localTreeModel.isLeaf(localTreeModel.getChild(rootObj,i)) == true) {
+                to_send ts2 = new to_send(localTreeModel.getChild(rootObj,i),false);
+                System.out.println("sending: " + ts2.node);
+                ostream.writeObject(ts2);
+                queue.add(localTreeModel.getChild(rootObj,i));
             }
-            queue.poll();
+            else {
+                to_send ts2 = new to_send(localTreeModel.getChild(rootObj,i),true);
+                System.out.println("sending: " + ts2.node);
+                ostream.writeObject(ts2);
+                queue.add(localTreeModel.getChild(rootObj,i));
+            }
         }
+
         ostream.close();
         System.out.println("SENDING DONE");
         connectedSocket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
