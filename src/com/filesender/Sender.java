@@ -22,6 +22,7 @@ public class Sender {
     public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, ServerSocket servSock) throws IOException, ClassNotFoundException {
         ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
         Object rootObj;
+        ostream.close();
         rootObj = localTreeModel.getChild(localTreeModel.getRoot(),14);
         queue.add(rootObj);
         while(queue.isEmpty() != true ) {

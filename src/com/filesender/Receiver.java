@@ -9,7 +9,10 @@ import javax.swing.tree.DefaultTreeModel;
 
 public class Receiver {
     public static void work(JTree clientTree, JFrame frame, Socket socket) throws FileNotFoundException, IOException, ClassNotFoundException {
-
+        ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
+        operation basicOperation = new operation(1,null,null);
+        ostream.writeObject(basicOperation);
+        ostream.close();
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
         Object serverTree;
         serverTree = inFromServer.readObject();
