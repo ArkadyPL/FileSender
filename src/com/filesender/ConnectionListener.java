@@ -47,7 +47,7 @@ public class ConnectionListener {
                 break;
             }
             else if(basicOp.opID == 2) {
-                //todo: Send file
+                Sender.sendFile(basicOp.argument1,localTreeModel,connectedSocket);
             }
         }
         return connectedSocket;

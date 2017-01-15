@@ -18,7 +18,6 @@ class to_send implements java.io.Serializable {
 
 public class Sender {
     static OutputStream out = null;
-    static Socket socket = null;
     static Queue queue = new LinkedList();
     public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, ServerSocket servSock, operation rooot) throws IOException, ClassNotFoundException {
         ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
@@ -50,22 +49,11 @@ public class Sender {
         System.out.println("SENDING DONE");
         connectedSocket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
     }
-   /* public static int work(String current_file,  TreeModel localTreeModel, ServerSocket sock) throws IOException, ClassNotFoundException {
-        System.out.println("server to send: " + current_file);
-
-        // File myFile = new File(current_file);
-        // byte[] buffer = new byte[(int) myFile.length()];
-
-        //accept starts new connection between local and current socket
-        //todo: before .accept; ping to check if remote app is available
-        socket = sock.accept();
-        System.out.println("parento " + localTreeModel.getRoot());
-        System.out.println("childo " +localTreeModel.getChildCount(localTreeModel.getRoot()));
-        System.out.println("Accepted connection from : " + socket);
-        ObjectOutputStream outToClient = new ObjectOutputStream(socket.getOutputStream());
-        Sender.sendTree(socket, localTreeModel,);
-
-        /* CURRENTLY OFF to deal with tree
+    public static int sendFile(String current_file,  TreeModel localTreeModel, Socket socket) throws IOException, ClassNotFoundException {
+        System.out.println("File to send: " + current_file);
+        File myFile = new File(current_file);
+        byte[] buffer = new byte[(int) myFile.length()];
+        out = socket.getOutputStream();
         FileInputStream fis = new FileInputStream(myFile);
         BufferedInputStream in = new BufferedInputStream(fis);
         in.read(buffer,0,buffer.length);
@@ -76,12 +64,12 @@ public class Sender {
         /*while ((count = in.read(buffer)) > 0){
             out.write(buffer,0,count);
             out.flush();
-        }
+        }*/
         //out.close();
-        //  in.close();
-        socket.close();
+        //in.close();
+
         System.out.println("Finished sending");
         return 3;
-    }*/
+    }
 
 }

@@ -7,5 +7,5 @@ import java.util.Stack;
  */
 public class globals {
     public static Object previousDir = null;
-    public static Stack dirStack;
+    public static Stack dirStack = new Stack();
 }
