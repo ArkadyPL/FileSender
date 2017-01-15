@@ -40,16 +40,16 @@ public class ConnectionListener {
         ObjectInputStream inFromServer = new ObjectInputStream(connectedSocket.getInputStream());
         operation basicOp;
         basicOp = (operation)inFromServer.readObject();
-        while(true) {
+
             if(basicOp.opID == 1) {
                 System.out.println("Operation ID 1 executed");
                 Sender.sendTree(connectedSocket,localTreeModel,serverSocket,basicOp);
-                break;
+
             }
             else if(basicOp.opID == 2) {
-                Sender.sendFile(basicOp.argument1,localTreeModel,connectedSocket);
+                Sender.sendFile(basicOp.argument1,localTreeModel,connectedSocket,serverSocket);
             }
-        }
+
         return connectedSocket;
     }
 }

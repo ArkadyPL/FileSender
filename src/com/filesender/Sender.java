@@ -49,7 +49,7 @@ public class Sender {
         System.out.println("SENDING DONE");
         connectedSocket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
     }
-    public static int sendFile(String current_file,  TreeModel localTreeModel, Socket socket) throws IOException, ClassNotFoundException {
+    public static int sendFile(String current_file,  TreeModel localTreeModel, Socket socket,ServerSocket servSock) throws IOException, ClassNotFoundException {
         System.out.println("File to send: " + current_file);
         File myFile = new File(current_file);
         byte[] buffer = new byte[(int) myFile.length()];
@@ -67,8 +67,9 @@ public class Sender {
         }*/
         //out.close();
         //in.close();
-
         System.out.println("Finished sending");
+        socket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
+
         return 3;
     }
 

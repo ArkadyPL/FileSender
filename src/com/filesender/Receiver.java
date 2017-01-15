@@ -64,23 +64,27 @@ public class Receiver {
         }
     }
     public static void receiveFile(Socket socket,String fileName, Object filePath) throws IOException {
+        System.out.println("helloooo");
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
-        operation basicOperation = new operation(2,null,null,filePath);
+        operation basicOperation = new operation(2,fileName,null,filePath);
         ostream.writeObject(basicOperation);
 
-        byte[] buffer = new byte[maxsize];
+        byte[] buffer = new byte[16384];
         InputStream is = socket.getInputStream();
-        File test = new File(fileName);
+        File test = new File("C:\\test\\test.txt");
         test.createNewFile();
         FileOutputStream fos = new FileOutputStream(test);
         BufferedOutputStream out = new BufferedOutputStream(fos);
         byteread = is.read(buffer, 0, buffer.length);
         current = byteread;
-        do{
-            byteread = is.read(buffer, 0, buffer.length - current);
-            if (byteread >= 0) current += byteread;
-        } while (byteread > -1);
-        out.write(buffer, 0, current);
+        while ((byteread = is.read(buffer, 0, buffer.length)) != -1) {
+            System.out.println("tw");
+            out.write(buffer, 0, byteread);
+        }
         out.flush();
+        fos.close();
+        is.close();
+        System.out.println("byeeee");
+
     }
 }
