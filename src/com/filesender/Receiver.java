@@ -6,6 +6,8 @@ import java.io.*;
 import java.net.Socket;
 import javax.swing.*;
 import java.net.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -64,27 +66,30 @@ public class Receiver {
         }
     }
     public static void receiveFile(Socket socket,String fileName, Object filePath) throws IOException {
-        System.out.println("helloooo");
+
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
         operation basicOperation = new operation(2,fileName,null,filePath);
         ostream.writeObject(basicOperation);
-
-        byte[] buffer = new byte[16384];
+        Path p = Paths.get(fileName);
+        String fileSaveName = p.getFileName().toString();
+        byte[] buffer = new byte[maxsize];
         InputStream is = socket.getInputStream();
-        File test = new File("C:\\test\\test.txt");
+        File test = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
         test.createNewFile();
         FileOutputStream fos = new FileOutputStream(test);
         BufferedOutputStream out = new BufferedOutputStream(fos);
         byteread = is.read(buffer, 0, buffer.length);
         current = byteread;
-        while ((byteread = is.read(buffer, 0, buffer.length)) != -1) {
-            System.out.println("tw");
-            out.write(buffer, 0, byteread);
+
+        while (byteread > -1){
+            System.out.println("hello7777oo");
+            byteread = is.read(buffer, 0, buffer.length - current);
+            if (byteread >= 0) current += byteread;
         }
+        out.write(buffer, 0, current);
         out.flush();
         fos.close();
         is.close();
         System.out.println("byeeee");
-
     }
 }
