@@ -1,5 +1,7 @@
 package com.filesender;
 
+import com.filesender.HelperClasses.globals;
+
 import java.io.*;
 import java.net.Socket;
 import javax.swing.*;
@@ -10,6 +12,10 @@ import javax.swing.tree.TreePath;
 
 public class Receiver {
     public static void work(JTree clientTree, JFrame frame, Socket socket,Object dir) throws FileNotFoundException, IOException, ClassNotFoundException {
+        if(globals.previousDir != null) {
+            globals.previousDir = clientTree.getModel().getChild(clientTree.getModel().getRoot(), 0);
+            System.out.println("Eat pussy" + globals.previousDir);
+        }
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
         operation basicOperation = new operation(1,dir.toString(),null,dir);
         ostream.writeObject(basicOperation);
@@ -40,6 +46,10 @@ public class Receiver {
         frame.revalidate();
         TreePath j = new TreePath(new1.getPath());
         clientTree.expandPath(j);
+        if(globals.previousDir == null) {
+            globals.previousDir = clientTree.getModel().getChild(clientTree.getModel().getRoot(), 0);
+            System.out.println("Eat dick" + globals.previousDir);
+        }
         //  System.out.println("Children "+serverTree.getChildCount(serverTree.getRoot()));
 
 

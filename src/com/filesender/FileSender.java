@@ -1,6 +1,7 @@
 package com.filesender;
 
 import com.filesender.HelperClasses.IPAddressValidator;
+import com.filesender.HelperClasses.globals;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.swing.*;
@@ -14,13 +15,16 @@ import javax.swing.event.TreeExpansionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+
+
+
 public class FileSender {
     static String localIP = null;
     static InetAddress remoteIP = null;
     static volatile boolean isConnected = false;
     static Socket connectionSocket = null;
     static ServerSocket serverSocket = null;
-    static Object previousRoot = null;
+
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         localIP = Inet4Address.getLocalHost().getHostAddress();
         System.out.println("Your IP address is: " + localIP);
@@ -176,13 +180,9 @@ public class FileSender {
                 try {
                     if (Objects.equals(path.getParentPath().toString(), "[...]") != true ){
                         connectionSocket = new Socket(remoteIP, 9990);
-                        previousRoot = remoteTree.getModel().getChild(remoteTree.getModel().getRoot(),0);
+                        System.out.println("PREVIOUS ROOT before: "+ globals.previousDir);
                         Receiver.work(remoteTree, frame, connectionSocket, path.getLastPathComponent());
-                    }
-                    else {
-                        if(previousRoot != null && previousRoot != System.getProperty("user.home") ) {
-                            Receiver.work(remoteTree, frame, connectionSocket, previousRoot);
-                        }
+                        System.out.println("PREVIOUS ROOT after: "+ globals.previousDir);
                     }
                 }
                 catch(java.lang.NullPointerException e) {
@@ -201,9 +201,26 @@ public class FileSender {
 
             public void treeCollapsed(TreeExpansionEvent event) {
                 TreePath path = event.getPath();
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
-                String data = node.getUserObject().toString();
-                System.out.println("Collapsed: " + data);
+                System.out.println("Collapsed" +globals.previousDir + " patho: " + path);
+                try {
+                    if (Objects.equals(path.toString(), "[...]") == true ){
+                        System.out.println("PREVIOUS ROOT before: "+ globals.previousDir);
+                        if(globals.previousDir != null) {
+                            connectionSocket = new Socket(remoteIP, 9990);
+                            Receiver.work(remoteTree, frame, connectionSocket, globals.previousDir);
+                        }
+                        System.out.println("PREVIOUS ROOT after: "+ globals.previousDir);
+                    }
+                }
+                catch(java.lang.NullPointerException e) {
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         };
         remoteTree.addTreeExpansionListener(treeExpandListener);
