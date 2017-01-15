@@ -22,12 +22,12 @@ public class Sender {
     static Queue queue = new LinkedList();
     public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, ServerSocket servSock, operation rooot) throws IOException, ClassNotFoundException {
         ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
-        Object rootObj =  null;
+        File rootObj =  null;
         if(Objects.equals(rooot.argument1, "root")) {
-            rootObj = localTreeModel.getRoot();
+            rootObj = new File(localTreeModel.getRoot().toString());
         }
         else {
-            rootObj = rooot.obj1;
+            rootObj = new File(rooot.obj1.toString());
         }
         to_send ts = new to_send(rootObj,true);
         ostream.writeObject(ts);
