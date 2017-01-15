@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.net.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 public class Receiver {
     public static void work(JTree clientTree, JFrame frame, Socket socket,String dir) throws FileNotFoundException, IOException, ClassNotFoundException {
@@ -37,6 +38,8 @@ public class Receiver {
         clientTree.setModel(new DefaultTreeModel(root));
         frame.repaint();
         frame.revalidate();
+        TreePath j = new TreePath(new1.getPath());
+        clientTree.expandPath(j);
         //  System.out.println("Children "+serverTree.getChildCount(serverTree.getRoot()));
 
 
@@ -48,6 +51,6 @@ public class Receiver {
         }*/
         System.out.print("Server file tree received");
         //out.flush();
-        socket.close();
+
     }
 }

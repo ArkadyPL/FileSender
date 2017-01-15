@@ -8,6 +8,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import java.io.*;
+import java.util.Objects;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 public class FileSender {
@@ -16,6 +20,7 @@ public class FileSender {
     static volatile boolean isConnected = false;
     static Socket connectionSocket = null;
     static ServerSocket serverSocket = null;
+
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         localIP = Inet4Address.getLocalHost().getHostAddress();
         System.out.println("Your IP address is: " + localIP);
@@ -149,16 +154,7 @@ public class FileSender {
                     }
                     else if(e.getClickCount() == 2) {
                         System.out.println("Double click on row #" + selRow + "\t File: " + selPath.getLastPathComponent());
-                        //requesting new tree
-                        try {
-                            Object obj = selPath;
-                            if(remoteTree.getModel().isLeaf(selPath) != true)
-                                Receiver.work(remoteTree,frame,connectionSocket,selPath.toString());
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        } catch (ClassNotFoundException e1) {
-                            e1.printStackTrace();
-                        }
+
                         if(isConnected){
                             //todo: send clicked file
                             System.out.println("Sending choosen file...");
@@ -171,6 +167,40 @@ public class FileSender {
             }
         };
         remoteTree.addMouseListener(mouseListenerRemote);
+
+
+        TreeExpansionListener treeExpandListener = new TreeExpansionListener() {
+
+            public void treeExpanded(TreeExpansionEvent event) {
+                TreePath path = event.getPath();
+                try {
+                    if (Objects.equals(path.getParentPath().toString(), "[...]") != true ){
+                        connectionSocket = new Socket(remoteIP, 9990);
+                        Receiver.work(remoteTree, frame, connectionSocket, path.getLastPathComponent().toString());
+                    }
+                }
+                catch(java.lang.NullPointerException e) {
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                //  String data = node.getUserObject().toString();
+
+            }
+
+            public void treeCollapsed(TreeExpansionEvent event) {
+                TreePath path = event.getPath();
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+                String data = node.getUserObject().toString();
+                System.out.println("Collapsed: " + data);
+            }
+        };
+        remoteTree.addTreeExpansionListener(treeExpandListener);
 
 
 
