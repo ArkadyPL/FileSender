@@ -8,15 +8,19 @@ import javax.swing.*;
 import java.net.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 public class Receiver {
+
+    static int maxsize = 999999999;
+    static int byteread;
+    static int current = 0;
     public static void work(JTree clientTree, JFrame frame, Socket socket,Object dir, Boolean back) throws FileNotFoundException, IOException, ClassNotFoundException {
         if(globals.previousDir != null) {
             if(back != true) {
                 globals.previousDir = clientTree.getModel().getChild(clientTree.getModel().getRoot(), 0);
                 globals.dirStack.add(globals.previousDir);
-                System.out.println("Eat pussy" + globals.previousDir);
             }else {
                 if (!globals.dirStack.isEmpty())
                     dir = globals.dirStack.pop();
@@ -30,20 +34,22 @@ public class Receiver {
         serverTreeNode = (to_send)inFromServer.readObject();
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("...");
         DefaultMutableTreeNode new1 = new DefaultMutableTreeNode(serverTreeNode.node);
-        System.out.println("ROOOOT " +new1);
-        while(serverTreeNode != null) {
-            try {
-                serverTreeNode = (to_send)inFromServer.readObject();
+        if(inFromServer == null) {
+            new1.add(new DefaultMutableTreeNode());
+        }
+        else {
+            while (serverTreeNode != null) {
+                try {
+                    serverTreeNode = (to_send) inFromServer.readObject();
+                } catch (java.io.EOFException e) {
+                    break;
+                }
+                DefaultMutableTreeNode new2 = new DefaultMutableTreeNode(serverTreeNode.node);
+                if (serverTreeNode.isRoot == true) {
+                    new2.add(new DefaultMutableTreeNode());
+                }
+                new1.add(new2);
             }
-            catch (java.io.EOFException e) {
-                break;
-            }
-            DefaultMutableTreeNode new2 = new DefaultMutableTreeNode(serverTreeNode.node);
-            if(serverTreeNode.isRoot == true) {
-                new2.add(new DefaultMutableTreeNode());
-            }
-            new1.add(new2);
-            System.out.println("Latter: " + new2);
         }
         System.out.println("Tree received");
         root.add(new1);
@@ -55,19 +61,26 @@ public class Receiver {
         if(globals.previousDir == null) {
             globals.previousDir = clientTree.getModel().getChild(clientTree.getModel().getRoot(), 0);
             globals.dirStack.add(globals.previousDir);
-            System.out.println("Eat dick" + globals.previousDir);
         }
-        //  System.out.println("Children "+serverTree.getChildCount(serverTree.getRoot()));
+    }
+    public static void receiveFile(Socket socket,String fileName, Object filePath) throws IOException {
+        ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
+        operation basicOperation = new operation(2,null,null,filePath);
+        ostream.writeObject(basicOperation);
 
-
-        /*
-        int count;
-        byte[] buffer = new byte[8192];
-        while((count =in.read(buffer)) > 0) {
-            out.write(buffer,0,count);
-        }*/
-        System.out.print("Server file tree received");
-        //out.flush();
-
+        byte[] buffer = new byte[maxsize];
+        InputStream is = socket.getInputStream();
+        File test = new File(fileName);
+        test.createNewFile();
+        FileOutputStream fos = new FileOutputStream(test);
+        BufferedOutputStream out = new BufferedOutputStream(fos);
+        byteread = is.read(buffer, 0, buffer.length);
+        current = byteread;
+        do{
+            byteread = is.read(buffer, 0, buffer.length - current);
+            if (byteread >= 0) current += byteread;
+        } while (byteread > -1);
+        out.write(buffer, 0, current);
+        out.flush();
     }
 }

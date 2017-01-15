@@ -134,13 +134,7 @@ public class FileSender {
                     }
                     else if(e.getClickCount() == 2) {
                         System.out.println("Double click on row #" + selRow + "\t File: " + selPath.getLastPathComponent());
-                        if(isConnected){
-                            //todo: send clicked file
-                            System.out.println("Sending choosen file...");
-                        }
-                        else {
-                            System.out.println("!Not connected yet!");
-                        }
+
                     }
                 }
             }
@@ -158,14 +152,13 @@ public class FileSender {
                     }
                     else if(e.getClickCount() == 2) {
                         System.out.println("Double click on row #" + selRow + "\t File: " + selPath.getLastPathComponent());
+                        try {
+                            connectionSocket = new Socket(remoteIP, 9990);
+                            Receiver.receiveFile(connectionSocket,selPath.getLastPathComponent().toString(),selPath.getLastPathComponent());
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
 
-                        if(isConnected){
-                            //todo: send clicked file
-                            System.out.println("Sending choosen file...");
-                        }
-                        else {
-                            System.out.println("!Not connected yet!");
-                        }
                     }
                 }
             }
