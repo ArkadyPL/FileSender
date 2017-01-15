@@ -15,7 +15,8 @@ import static com.filesender.FileSender.isConnected;
 /*  0 - no task, just connection check
     1 - Rebuild tree for argument as a root
     2 - Send given file
-    3 - Rename given file
+    3 - Receive file of given name
+    4 - Rename given file
  */
 class operation implements java.io.Serializable {
     int opID;
@@ -37,11 +38,10 @@ public class ConnectionListener {
         ObjectInputStream inFromServer = new ObjectInputStream(connectedSocket.getInputStream());
         operation basicOp;
         basicOp = (operation)inFromServer.readObject();
-
         while(true) {
             if(basicOp.opID == 1) {
                 System.out.println("Operation ID 1 executed");
-                Sender.sendTree(connectedSocket,localTreeModel,serverSocket);
+                Sender.sendTree(connectedSocket,localTreeModel,serverSocket,basicOp.argument1);
                 break;
             }
             else if(basicOp.opID == 2) {

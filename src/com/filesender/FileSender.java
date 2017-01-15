@@ -93,7 +93,7 @@ public class FileSender {
                         e.printStackTrace();
                     }
                     try {
-                        Receiver.work(remoteTree,frame,connectionSocket);
+                        Receiver.work(remoteTree,frame,connectionSocket,"root");
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (ClassNotFoundException e) {
@@ -140,8 +140,8 @@ public class FileSender {
 
         MouseListener mouseListenerRemote = new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                int selRow = localTree.getRowForLocation(e.getX(), e.getY());
-                TreePath selPath = localTree.getPathForLocation(e.getX(), e.getY());
+                int selRow = remoteTree.getRowForLocation(e.getX(), e.getY());
+                TreePath selPath = remoteTree.getPathForLocation(e.getX(), e.getY());
 
                 if(selRow != -1) {
                     if(e.getClickCount() == 1) {
@@ -149,6 +149,16 @@ public class FileSender {
                     }
                     else if(e.getClickCount() == 2) {
                         System.out.println("Double click on row #" + selRow + "\t File: " + selPath.getLastPathComponent());
+                        //requesting new tree
+                        try {
+                            Object obj = selPath;
+                            if(remoteTree.getModel().isLeaf(selPath) != true)
+                                Receiver.work(remoteTree,frame,connectionSocket,selPath.toString());
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        } catch (ClassNotFoundException e1) {
+                            e1.printStackTrace();
+                        }
                         if(isConnected){
                             //todo: send clicked file
                             System.out.println("Sending choosen file...");

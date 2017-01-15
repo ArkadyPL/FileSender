@@ -8,9 +8,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 public class Receiver {
-    public static void work(JTree clientTree, JFrame frame, Socket socket) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public static void work(JTree clientTree, JFrame frame, Socket socket,String dir) throws FileNotFoundException, IOException, ClassNotFoundException {
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
-        operation basicOperation = new operation(1,null,null);
+        operation basicOperation = new operation(1,dir,null);
         ostream.writeObject(basicOperation);
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
         to_send serverTreeNode;
@@ -23,15 +23,17 @@ public class Receiver {
                 serverTreeNode = (to_send)inFromServer.readObject();
             }
             catch (java.io.EOFException e) {
-                System.out.println("chill");
                 break;
             }
             DefaultMutableTreeNode new2 = new DefaultMutableTreeNode(serverTreeNode.node);
-            new2.setAllowsChildren(true);
-            root.add(new2);
+            if(serverTreeNode.isRoot == true) {
+                new2.add(new DefaultMutableTreeNode());
+            }
+            new1.add(new2);
             System.out.println("Latter: " + new2);
         }
         System.out.println("Tree received");
+        root.add(new1);
         clientTree.setModel(new DefaultTreeModel(root));
         frame.repaint();
         frame.revalidate();

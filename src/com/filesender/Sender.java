@@ -19,10 +19,15 @@ public class Sender {
     static OutputStream out = null;
     static Socket socket = null;
     static Queue queue = new LinkedList();
-    public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, ServerSocket servSock) throws IOException, ClassNotFoundException {
+    public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, ServerSocket servSock, String rooot) throws IOException, ClassNotFoundException {
         ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
-        Object rootObj;
-        rootObj = localTreeModel.getChild(localTreeModel.getRoot(),14);
+        Object rootObj =  null;
+        if(rooot == "root") {
+            rootObj = localTreeModel.getRoot();
+        }
+        else {
+            rootObj = rooot;
+        }
         to_send ts = new to_send(rootObj,true);
         ostream.writeObject(ts);
         for(int i = 0; i < localTreeModel.getChildCount(rootObj);i++) {
