@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Queue;
 import javax.swing.tree.TreeModel;
 class to_send implements java.io.Serializable {
@@ -22,7 +23,7 @@ public class Sender {
     public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, ServerSocket servSock, String rooot) throws IOException, ClassNotFoundException {
         ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
         Object rootObj =  null;
-        if(rooot == "root") {
+        if(Objects.equals(rooot, "root")) {
             rootObj = localTreeModel.getRoot();
         }
         else {
