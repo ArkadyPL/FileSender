@@ -102,7 +102,7 @@ public class FileSender {
                         e.printStackTrace();
                     }
                     try {
-                        Receiver.work(remoteTree,frame,connectionSocket,"root");
+                        Receiver.work(remoteTree,frame,connectionSocket,"root",false);
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (ClassNotFoundException e) {
@@ -181,7 +181,7 @@ public class FileSender {
                     if (Objects.equals(path.getParentPath().toString(), "[...]") != true ){
                         connectionSocket = new Socket(remoteIP, 9990);
                         System.out.println("PREVIOUS ROOT before: "+ globals.previousDir);
-                        Receiver.work(remoteTree, frame, connectionSocket, path.getLastPathComponent());
+                        Receiver.work(remoteTree, frame, connectionSocket, path.getLastPathComponent(),false);
                         System.out.println("PREVIOUS ROOT after: "+ globals.previousDir);
                     }
                 }
@@ -194,9 +194,6 @@ public class FileSender {
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-
-                //  String data = node.getUserObject().toString();
-
             }
 
             public void treeCollapsed(TreeExpansionEvent event) {
@@ -204,12 +201,18 @@ public class FileSender {
                 System.out.println("Collapsed" +globals.previousDir + " patho: " + path);
                 try {
                     if (Objects.equals(path.toString(), "[...]") == true ){
-                        System.out.println("PREVIOUS ROOT before: "+ globals.previousDir);
-                        if(globals.previousDir != null) {
+                        if(globals.dirStack.isEmpty()) {
                             connectionSocket = new Socket(remoteIP, 9990);
-                            Receiver.work(remoteTree, frame, connectionSocket, globals.previousDir);
+                            Receiver.work(remoteTree,frame,connectionSocket,"root",false);
                         }
-                        System.out.println("PREVIOUS ROOT after: "+ globals.previousDir);
+                        else {
+                            System.out.println("PREVIOUS ROOT before: " + globals.previousDir);
+                            if (globals.dirStack.isEmpty() != true) {
+                                connectionSocket = new Socket(remoteIP, 9990);
+                                Receiver.work(remoteTree, frame, connectionSocket, globals.previousDir, true);
+                            }
+                            System.out.println("PREVIOUS ROOT after: " + globals.previousDir);
+                        }
                     }
                 }
                 catch(java.lang.NullPointerException e) {
@@ -224,10 +227,7 @@ public class FileSender {
             }
         };
         remoteTree.addTreeExpansionListener(treeExpandListener);
-
         connectionSocket = ConnectionListener.ListenForIncomingConnections(localTree.getModel(),serverSocket);
         //todo: receive remote commands and process them
-
-        //Receiver.work(remoteTree, frame, remoteTreePane);
     }
 }

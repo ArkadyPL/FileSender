@@ -11,10 +11,16 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 public class Receiver {
-    public static void work(JTree clientTree, JFrame frame, Socket socket,Object dir) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public static void work(JTree clientTree, JFrame frame, Socket socket,Object dir, Boolean back) throws FileNotFoundException, IOException, ClassNotFoundException {
         if(globals.previousDir != null) {
-            globals.previousDir = clientTree.getModel().getChild(clientTree.getModel().getRoot(), 0);
-            System.out.println("Eat pussy" + globals.previousDir);
+            if(back != true) {
+                globals.previousDir = clientTree.getModel().getChild(clientTree.getModel().getRoot(), 0);
+                globals.dirStack.add(globals.previousDir);
+                System.out.println("Eat pussy" + globals.previousDir);
+            }else {
+                if (!globals.dirStack.isEmpty())
+                    dir = globals.dirStack.pop();
+            }
         }
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
         operation basicOperation = new operation(1,dir.toString(),null,dir);
@@ -48,6 +54,7 @@ public class Receiver {
         clientTree.expandPath(j);
         if(globals.previousDir == null) {
             globals.previousDir = clientTree.getModel().getChild(clientTree.getModel().getRoot(), 0);
+            globals.dirStack.add(globals.previousDir);
             System.out.println("Eat dick" + globals.previousDir);
         }
         //  System.out.println("Children "+serverTree.getChildCount(serverTree.getRoot()));
