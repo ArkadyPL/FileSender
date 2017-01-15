@@ -1,6 +1,7 @@
 package com.filesender;
 
 import javax.swing.event.TreeModelListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import java.io.File;
@@ -25,7 +26,11 @@ public class FileTreeModel implements TreeModel,java.io.Serializable {
         if (children == null) return 0;
         return children.length;
     }
-
+    public int getChildCount2(Object parent) {
+        String[] children = ((File)parent).list();
+        if (children == null) return 0;
+        return children.length;
+    }
     // Fetch any numbered child of a node for the JTree.
     // Our model returns File objects for all nodes in the tree.  The
     // JTree displays these by calling the File.toString() method.
