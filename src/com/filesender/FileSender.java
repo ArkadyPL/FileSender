@@ -176,7 +176,7 @@ public class FileSender {
                 try {
                     if (Objects.equals(path.getParentPath().toString(), "[...]") != true ){
                         connectionSocket = new Socket(remoteIP, 9990);
-                        Receiver.work(remoteTree, frame, connectionSocket, path.getLastPathComponent().toString());
+                        Receiver.work(remoteTree, frame, connectionSocket, path.getLastPathComponent());
                     }
                 }
                 catch(java.lang.NullPointerException e) {

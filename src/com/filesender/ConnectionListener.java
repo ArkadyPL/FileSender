@@ -22,10 +22,12 @@ class operation implements java.io.Serializable {
     int opID;
     String argument1;
     String argument2;
-    public operation(int _ID, String arg1,String arg2) {
+    Object obj1;
+    public operation(int _ID, String arg1,String arg2, Object _obj1) {
         opID = _ID;
         argument1 = arg1;
         argument2 = arg2;
+        obj1 = _obj1;
     }
 }
 
@@ -41,7 +43,7 @@ public class ConnectionListener {
         while(true) {
             if(basicOp.opID == 1) {
                 System.out.println("Operation ID 1 executed");
-                Sender.sendTree(connectedSocket,localTreeModel,serverSocket,basicOp.argument1);
+                Sender.sendTree(connectedSocket,localTreeModel,serverSocket,basicOp);
                 break;
             }
             else if(basicOp.opID == 2) {

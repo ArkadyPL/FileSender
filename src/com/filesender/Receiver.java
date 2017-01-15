@@ -9,9 +9,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 public class Receiver {
-    public static void work(JTree clientTree, JFrame frame, Socket socket,String dir) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public static void work(JTree clientTree, JFrame frame, Socket socket,Object dir) throws FileNotFoundException, IOException, ClassNotFoundException {
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
-        operation basicOperation = new operation(1,dir,null);
+        operation basicOperation = new operation(1,dir.toString(),null,dir);
         ostream.writeObject(basicOperation);
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
         to_send serverTreeNode;
