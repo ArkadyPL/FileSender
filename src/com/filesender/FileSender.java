@@ -20,7 +20,7 @@ public class FileSender {
     static volatile boolean isConnected = false;
     static Socket connectionSocket = null;
     static ServerSocket serverSocket = null;
-
+    static Object previousRoot = null;
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         localIP = Inet4Address.getLocalHost().getHostAddress();
         System.out.println("Your IP address is: " + localIP);
@@ -176,7 +176,13 @@ public class FileSender {
                 try {
                     if (Objects.equals(path.getParentPath().toString(), "[...]") != true ){
                         connectionSocket = new Socket(remoteIP, 9990);
+                        previousRoot = remoteTree.getModel().getChild(remoteTree.getModel().getRoot(),0);
                         Receiver.work(remoteTree, frame, connectionSocket, path.getLastPathComponent());
+                    }
+                    else {
+                        if(previousRoot != null && previousRoot != System.getProperty("user.home") ) {
+                            Receiver.work(remoteTree, frame, connectionSocket, previousRoot);
+                        }
                     }
                 }
                 catch(java.lang.NullPointerException e) {
@@ -201,10 +207,6 @@ public class FileSender {
             }
         };
         remoteTree.addTreeExpansionListener(treeExpandListener);
-
-
-
-
 
         connectionSocket = ConnectionListener.ListenForIncomingConnections(localTree.getModel(),serverSocket);
         //todo: receive remote commands and process them
