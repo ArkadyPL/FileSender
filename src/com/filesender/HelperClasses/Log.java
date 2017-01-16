@@ -23,6 +23,6 @@ public class Log {
     public static void Write(String text){
         System.out.println(text);
         String logText = globals.logTextArea.getText();
-        globals.logTextArea.setText(logText + "\n" + text);
+        globals.logTextArea.setText(text + "\n" + logText);
     }
 }
