@@ -145,13 +145,12 @@ public class FileSender {
             public void mousePressed(MouseEvent e) {
                 int selRow = remoteTree.getRowForLocation(e.getX(), e.getY());
                 TreePath selPath = remoteTree.getPathForLocation(e.getX(), e.getY());
-
                 if(selRow != -1) {
                     if(e.getClickCount() == 1) {
                         System.out.println("Single clicked : " + selPath.getLastPathComponent());
                     }
                     else if(e.getClickCount() == 2) {
-                        if (Objects.equals(selPath.getParentPath().toString(), "[...]") != true) {
+                        if (remoteTree.getModel().isLeaf(new DefaultMutableTreeNode(selPath.toString())) && !Objects.equals(selPath.getLastPathComponent().toString(),"...")) {
                             System.out.println("Double click on row #" + selRow + "\t File: " + selPath.getLastPathComponent());
                             try {
                                 connectionSocket = new Socket(remoteIP, 9990);

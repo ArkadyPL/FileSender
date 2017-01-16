@@ -72,21 +72,19 @@ public class Receiver {
         ostream.writeObject(basicOperation);
         Path p = Paths.get(fileName);
         String fileSaveName = p.getFileName().toString();
-        byte[] buffer = new byte[maxsize];
+
         InputStream is = socket.getInputStream();
         File test = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
         test.createNewFile();
         FileOutputStream fos = new FileOutputStream(test);
         BufferedOutputStream out = new BufferedOutputStream(fos);
-        byteread = is.read(buffer, 0, buffer.length);
-        current = byteread;
 
-        while (byteread > -1){
-            System.out.println("hello7777oo");
-            byteread = is.read(buffer, 0, buffer.length - current);
-            if (byteread >= 0) current += byteread;
+        int count;
+        byte[] buffer = new byte[8192]; // or 4096, or more
+        while ((count = is.read(buffer)) > 0)
+        {
+            out.write(buffer, 0, count);
         }
-        out.write(buffer, 0, current);
         out.flush();
         fos.close();
         is.close();
