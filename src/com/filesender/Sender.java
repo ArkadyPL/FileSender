@@ -33,8 +33,8 @@ public class Sender {
         }
         to_send ts = new to_send(rootObj,true);
         ostream.writeObject(ts);
+        Log.Write("Sending file tree...");
         for(int i = 0; i < localTreeModel.getChildCount(rootObj);i++) {
-            Log.Write("Sending file tree...");
             if( localTreeModel.isLeaf(localTreeModel.getChild(rootObj,i)) ) {
                 to_send ts2 = new to_send(localTreeModel.getChild(rootObj,i),false);
                 Log.WriteTerminal("sending: " + ts2.node);
