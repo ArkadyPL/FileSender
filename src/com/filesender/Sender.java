@@ -1,5 +1,7 @@
 package com.filesender;
 
+import com.filesender.HelperClasses.Log;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -34,25 +36,25 @@ public class Sender {
         for(int i = 0; i < localTreeModel.getChildCount(rootObj);i++) {
             if(localTreeModel.isLeaf(localTreeModel.getChild(rootObj,i)) == true) {
                 to_send ts2 = new to_send(localTreeModel.getChild(rootObj,i),false);
-                System.out.println("sending: " + ts2.node);
+                Log.Write("sending: " + ts2.node);
                 ostream.writeObject(ts2);
                 queue.add(localTreeModel.getChild(rootObj,i));
             }
             else {
                 to_send ts2 = new to_send(localTreeModel.getChild(rootObj,i),true);
-                System.out.println("sending: " + ts2.node);
+                Log.Write("sending: " + ts2.node);
                 ostream.writeObject(ts2);
                 queue.add(localTreeModel.getChild(rootObj,i));
             }
         }
 
         ostream.close();
-        System.out.println("SENDING DONE");
+        Log.WriteTerminal("SENDING DONE");
         connectedSocket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
     }
 
     public static int sendFile(String current_file,  TreeModel localTreeModel, Socket socket,ServerSocket servSock) throws IOException, ClassNotFoundException {
-        System.out.println("File to send: " + current_file);
+        Log.Write("File to send: " + current_file);
         File myFile = new File(current_file);
         byte[] buffer = new byte[(int) myFile.length()];
         out = socket.getOutputStream();
@@ -60,7 +62,7 @@ public class Sender {
         BufferedInputStream in = new BufferedInputStream(fis);
         in.read(buffer,0,buffer.length);
         out = socket.getOutputStream();
-        System.out.println("Sending files");
+        Log.Write("Sending files");
         out.write(buffer,0, buffer.length);
         out.flush();
         /*while ((count = in.read(buffer)) > 0){
@@ -69,7 +71,7 @@ public class Sender {
         }*/
         //out.close();
         //in.close();
-        System.out.println("Finished sending");
+        Log.Write("Finished sending");
         socket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
 
         return 3;

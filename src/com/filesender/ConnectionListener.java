@@ -1,16 +1,13 @@
 package com.filesender;
 
-import javax.swing.*;
+import com.filesender.HelperClasses.Log;
+
 import javax.swing.tree.TreeModel;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import static com.filesender.FileSender.isConnected;
 //   ID LIST
 /*  0 - no task, just connection check
     1 - Rebuild tree for argument as a root
@@ -34,16 +31,18 @@ class operation implements java.io.Serializable {
 public class ConnectionListener {
     public static Socket ListenForIncomingConnections(TreeModel localTreeModel, ServerSocket serverSocket) throws IOException, ClassNotFoundException {
         Socket connectedSocket;
-        System.out.println("Waiting for incoming connections...");
+        Log.Write("Waiting for incoming connections...");
+
         connectedSocket = serverSocket.accept();
-        System.out.println("Connection accepted-!");
+
+        Log.Write("Connection accepted!");
 
         ObjectInputStream inFromServer = new ObjectInputStream(connectedSocket.getInputStream());
         operation basicOp;
         basicOp = (operation)inFromServer.readObject();
 
         if(basicOp.opID == 1) {
-            System.out.println("Operation ID 1 executed");
+            Log.WriteTerminal("Operation ID 1 executed");
             Sender.sendTree(connectedSocket,localTreeModel,serverSocket,basicOp);
         }
         else if(basicOp.opID == 2) {

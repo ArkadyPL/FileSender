@@ -1,16 +1,15 @@
 package com.filesender;
 
+import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.globals;
 
 import java.io.*;
 import java.net.Socket;
 import javax.swing.*;
-import java.net.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 public class Receiver {
@@ -54,7 +53,7 @@ public class Receiver {
                 node1.add(node2);
             }
         }
-        System.out.println("Tree received");
+        Log.WriteTerminal("Tree received");
         root.add(node1);
         remoteTree.setModel(new DefaultTreeModel(root));
         TreePath j = new TreePath(node1.getPath());
@@ -88,6 +87,6 @@ public class Receiver {
         out.flush();
         fos.close();
         is.close();
-        System.out.println("byeeee");
+        Log.WriteTerminal("byeeee");
     }
 }
