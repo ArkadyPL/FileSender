@@ -74,6 +74,7 @@ public class Receiver {
         Path p = Paths.get(fileName);
         String fileSaveName = p.getFileName().toString();
 
+        Log.Write("Receiving the file \"" + fileSaveName + "\"");
         InputStream is = socket.getInputStream();
         File test = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
         test.createNewFile();
@@ -89,6 +90,6 @@ public class Receiver {
         out.flush();
         fos.close();
         is.close();
-        Log.WriteTerminal("byeeee");
+        Log.Write("File \"" + fileSaveName + "\" saved");
     }
 }
