@@ -165,6 +165,7 @@ public class FileSender {
             }
         };
         globals.remoteTree.addTreeExpansionListener(treeExpandListener);
+
         globals.connectionSocket = ConnectionListener.ListenForIncomingConnections(globals.localTree.getModel(),globals.serverSocket);
     }
 }

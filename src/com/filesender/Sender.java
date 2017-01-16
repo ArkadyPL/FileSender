@@ -34,15 +34,16 @@ public class Sender {
         to_send ts = new to_send(rootObj,true);
         ostream.writeObject(ts);
         for(int i = 0; i < localTreeModel.getChildCount(rootObj);i++) {
-            if(localTreeModel.isLeaf(localTreeModel.getChild(rootObj,i)) == true) {
+            Log.Write("Sending file tree...");
+            if( localTreeModel.isLeaf(localTreeModel.getChild(rootObj,i)) ) {
                 to_send ts2 = new to_send(localTreeModel.getChild(rootObj,i),false);
-                Log.Write("sending: " + ts2.node);
+                Log.WriteTerminal("sending: " + ts2.node);
                 ostream.writeObject(ts2);
                 queue.add(localTreeModel.getChild(rootObj,i));
             }
             else {
                 to_send ts2 = new to_send(localTreeModel.getChild(rootObj,i),true);
-                Log.Write("sending: " + ts2.node);
+                Log.WriteTerminal("sending: " + ts2.node);
                 ostream.writeObject(ts2);
                 queue.add(localTreeModel.getChild(rootObj,i));
             }
