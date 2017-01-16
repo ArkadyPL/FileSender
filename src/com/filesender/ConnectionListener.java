@@ -1,26 +1,55 @@
 package com.filesender;
 
+import javax.swing.*;
+import javax.swing.tree.TreeModel;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 import static com.filesender.FileSender.isConnected;
-
-/**
- * Created by arkadiusz.ryszewski on 10.01.2017.
+//   ID LIST
+/*  0 - no task, just connection check
+    1 - Rebuild tree for argument as a root
+    2 - Send given file
+    3 - Receive file of given name
+    4 - Rename given file
  */
-public class ConnectionListener {
-        public static Socket ListenForIncomingConnections() throws IOException {
-            Socket connectedSocket;
-            ServerSocket serverSocket = new ServerSocket(9990);
+class operation implements java.io.Serializable {
+    int opID;
+    String argument1;
+    String argument2;
+    Object obj1;
+    public operation(int _ID, String arg1,String arg2, Object _obj1) {
+        opID = _ID;
+        argument1 = arg1;
+        argument2 = arg2;
+        obj1 = _obj1;
+    }
+}
 
-            System.out.println("Waiting for incoming connections...");
-            connectedSocket = serverSocket.accept();
-            System.out.println("Not waiting for incoming connections.");
-            if(!isConnected){
-                Connectioner.ConnectToClient(connectedSocket);
-            }
-            return connectedSocket;
+public class ConnectionListener {
+    public static Socket ListenForIncomingConnections(TreeModel localTreeModel, ServerSocket serverSocket) throws IOException, ClassNotFoundException {
+        Socket connectedSocket;
+        System.out.println("Waiting for incoming connections...");
+        connectedSocket = serverSocket.accept();
+        System.out.println("Connection accepted-!");
+        ObjectInputStream inFromServer = new ObjectInputStream(connectedSocket.getInputStream());
+        operation basicOp;
+        basicOp = (operation)inFromServer.readObject();
+
+        if(basicOp.opID == 1) {
+            System.out.println("Operation ID 1 executed");
+            Sender.sendTree(connectedSocket,localTreeModel,serverSocket,basicOp);
+
         }
+        else if(basicOp.opID == 2) {
+            Sender.sendFile(basicOp.argument1,localTreeModel,connectedSocket,serverSocket);
+        }
+
+        return connectedSocket;
+    }
 }
