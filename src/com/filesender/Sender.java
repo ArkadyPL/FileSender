@@ -66,12 +66,8 @@ public class Sender {
         Log.Write("Sending files");
         out.write(buffer,0, buffer.length);
         out.flush();
-        /*while ((count = in.read(buffer)) > 0){
-            out.write(buffer,0,count);
-            out.flush();
-        }*/
-        //out.close();
-        //in.close();
+        out.close();
+        in.close();
         Log.Write("Finished sending");
         socket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
 
