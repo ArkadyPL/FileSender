@@ -59,7 +59,14 @@ public class Sender {
         File myFile = new File(current_file);
         byte[] buffer = new byte[(int) myFile.length()];
         out = socket.getOutputStream();
-        FileInputStream fis = new FileInputStream(myFile);
+        FileInputStream fis = null;
+        try {
+             fis = new FileInputStream(myFile);
+        }
+        catch (FileNotFoundException e) {
+            operation op1 = new operation(1,current_file,null,current_file);
+            Sender.sendTree(socket,localTreeModel,servSock,op1);
+        }
         BufferedInputStream in = new BufferedInputStream(fis);
         in.read(buffer,0,buffer.length);
         out = socket.getOutputStream();
