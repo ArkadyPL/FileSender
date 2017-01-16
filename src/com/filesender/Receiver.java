@@ -1,16 +1,15 @@
 package com.filesender;
 
+import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.globals;
 
 import java.io.*;
 import java.net.Socket;
 import javax.swing.*;
-import java.net.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 public class Receiver {
@@ -18,16 +17,17 @@ public class Receiver {
     static int maxsize = 999999999;
     static int byteread;
     static int current = 0;
-    public static void work(JTree clientTree, JFrame frame, Socket socket,Object dir, Boolean back) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public static void buildRemoteTree(JTree remoteTree, Socket socket,Object dir, Boolean back) throws FileNotFoundException, IOException, ClassNotFoundException {
         if(globals.previousDir != null) {
             if(back != true) {
-                globals.previousDir = clientTree.getModel().getChild(clientTree.getModel().getRoot(), 0);
+                globals.previousDir = remoteTree.getModel().getChild(remoteTree.getModel().getRoot(), 0);
                 globals.dirStack.add(globals.previousDir);
             }else {
                 if (!globals.dirStack.isEmpty())
                     dir = globals.dirStack.pop();
             }
         }
+
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
         operation basicOperation = new operation(1,dir.toString(),null,dir);
         ostream.writeObject(basicOperation);
@@ -35,9 +35,9 @@ public class Receiver {
         to_send serverTreeNode;
         serverTreeNode = (to_send)inFromServer.readObject();
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("...");
-        DefaultMutableTreeNode new1 = new DefaultMutableTreeNode(serverTreeNode.node);
+        DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(serverTreeNode.node);
         if(inFromServer == null) {
-            new1.add(new DefaultMutableTreeNode());
+            node1.add(new DefaultMutableTreeNode());
         }
         else {
             while (serverTreeNode != null) {
@@ -46,27 +46,26 @@ public class Receiver {
                 } catch (java.io.EOFException e) {
                     break;
                 }
-                DefaultMutableTreeNode new2 = new DefaultMutableTreeNode(serverTreeNode.node);
+                DefaultMutableTreeNode node2 = new DefaultMutableTreeNode(serverTreeNode.node);
                 if (serverTreeNode.isRoot == true) {
-                    new2.add(new DefaultMutableTreeNode());
+                    node2.add(new DefaultMutableTreeNode());
                 }
-                new1.add(new2);
+                node1.add(node2);
             }
         }
-        System.out.println("Tree received");
-        root.add(new1);
-        clientTree.setModel(new DefaultTreeModel(root));
-        frame.repaint();
-        frame.revalidate();
-        TreePath j = new TreePath(new1.getPath());
-        clientTree.expandPath(j);
+        Log.WriteTerminal("Tree received");
+        root.add(node1);
+        remoteTree.setModel(new DefaultTreeModel(root));
+        TreePath j = new TreePath(node1.getPath());
+        remoteTree.expandPath(j);
         if(globals.previousDir == null) {
-            globals.previousDir = clientTree.getModel().getChild(clientTree.getModel().getRoot(), 0);
+            globals.previousDir = remoteTree.getModel().getChild(remoteTree.getModel().getRoot(), 0);
             globals.dirStack.add(globals.previousDir);
         }
     }
-    public static void receiveFile(Socket socket,String fileName, Object filePath) throws IOException {
 
+    public static void receiveFile(Socket socket, Object filePath) throws IOException {
+        String fileName = filePath.toString();
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
         operation basicOperation = new operation(2,fileName,null,filePath);
         ostream.writeObject(basicOperation);
@@ -88,6 +87,6 @@ public class Receiver {
         out.flush();
         fos.close();
         is.close();
-        System.out.println("byeeee");
+        Log.WriteTerminal("byeeee");
     }
 }
