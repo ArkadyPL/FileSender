@@ -2,7 +2,6 @@ package com.filesender;
 
 import com.filesender.HelperClasses.IPAddressValidator;
 import com.filesender.HelperClasses.globals;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,20 +46,17 @@ public class FileSender {
         toolbar.add(toolbarText1);
         toolbar.add(ipLabel);
 
-
         Container contentPane = frame.getContentPane();
         contentPane.add(toolbar, BorderLayout.NORTH);
 
         // Figure out where in the filesystem to start displaying
-        File root = new File(System.getProperty("user.home"));
-        //File root = new File("C:\\");
+        File root = new File(System.getProperty("user.home").toString().substring(0, 3));
         // Create a TreeModel object to represent our tree of files
         FileTreeModel model = new FileTreeModel(root);
         // Create a JTree and tell it to display our model
         JTree localTree = new JTree();
         JTree remoteTree = new JTree();
         localTree.setModel(model);
-
 
         //GUI CREATION
         JPanel panel = new JPanel();
@@ -73,10 +69,10 @@ public class FileSender {
         controlPanel.add(promptText);
         JTextField remoteIPTextField = new JTextField(30);
         controlPanel.add(remoteIPTextField);
-        JButton connectButon = new JButton("Connect");
+        JButton connectButton = new JButton("Connect");
 
-        connectButon.setAlignmentY(Component.CENTER_ALIGNMENT);
-        connectButon.addActionListener(ae -> {
+        connectButton.setAlignmentY(Component.CENTER_ALIGNMENT);
+        connectButton.addActionListener(ae -> {
             try {
                 remoteIP = InetAddress.getByName(remoteIPTextField.getText());
             } catch (UnknownHostException e) {
@@ -102,16 +98,18 @@ public class FileSender {
                         e.printStackTrace();
                     }
                     try {
-                        Receiver.work(remoteTree,frame,connectionSocket,"root",false);
+                        Receiver.buildRemoteTree(remoteTree,connectionSocket,"root",false);
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
+                    frame.repaint();
+                    frame.revalidate();
                 }
             }
         });
-        controlPanel.add(connectButon);
+        controlPanel.add(connectButton);
 
         // Display it all in a window and make the window appear
         frame.setSize( 1000, 600); // Set frame size
@@ -134,7 +132,7 @@ public class FileSender {
                     }
                     else if(e.getClickCount() == 2) {
                         System.out.println("Double click on row #" + selRow + "\t File: " + selPath.getLastPathComponent());
-
+                        //todo: send file
                     }
                 }
             }
@@ -154,7 +152,7 @@ public class FileSender {
                             System.out.println("Double click on row #" + selRow + "\t File: " + selPath.getLastPathComponent());
                             try {
                                 connectionSocket = new Socket(remoteIP, 9990);
-                                Receiver.receiveFile(connectionSocket, selPath.getLastPathComponent().toString(), selPath.getLastPathComponent());
+                                Receiver.receiveFile(connectionSocket, selPath.getLastPathComponent());
                             } catch (IOException e1) {
                                 e1.printStackTrace();
                             }
@@ -174,7 +172,9 @@ public class FileSender {
                     if (Objects.equals(path.getParentPath().toString(), "[...]") != true ){
                         connectionSocket = new Socket(remoteIP, 9990);
                         System.out.println("PREVIOUS ROOT before: "+ globals.previousDir);
-                        Receiver.work(remoteTree, frame, connectionSocket, path.getLastPathComponent(),false);
+                        Receiver.buildRemoteTree(remoteTree, connectionSocket, path.getLastPathComponent(),false);
+                        frame.repaint();
+                        frame.revalidate();
                         System.out.println("PREVIOUS ROOT after: "+ globals.previousDir);
                     }
                 }
@@ -196,16 +196,18 @@ public class FileSender {
                     if (Objects.equals(path.toString(), "[...]") == true ){
                         if(globals.dirStack.isEmpty()) {
                             connectionSocket = new Socket(remoteIP, 9990);
-                            Receiver.work(remoteTree,frame,connectionSocket,"root",false);
+                            Receiver.buildRemoteTree(remoteTree, connectionSocket,"root",false);
                         }
                         else {
                             System.out.println("PREVIOUS ROOT before: " + globals.previousDir);
                             if (globals.dirStack.isEmpty() != true) {
                                 connectionSocket = new Socket(remoteIP, 9990);
-                                Receiver.work(remoteTree, frame, connectionSocket, globals.previousDir, true);
+                                Receiver.buildRemoteTree(remoteTree, connectionSocket, globals.previousDir, true);
                             }
                             System.out.println("PREVIOUS ROOT after: " + globals.previousDir);
                         }
+                        frame.repaint();
+                        frame.revalidate();
                     }
                 }
                 catch(java.lang.NullPointerException e) {
