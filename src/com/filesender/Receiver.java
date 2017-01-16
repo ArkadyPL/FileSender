@@ -1,6 +1,8 @@
 package com.filesender;
 
 import com.filesender.HelperClasses.Log;
+import com.filesender.HelperClasses.Operation;
+import com.filesender.HelperClasses.ToSend;
 import com.filesender.HelperClasses.globals;
 
 import java.io.*;
@@ -29,11 +31,11 @@ public class Receiver {
         }
 
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
-        operation basicOperation = new operation(1,dir.toString(),null,dir);
+        Operation basicOperation = new Operation(1,dir.toString(),null,dir);
         ostream.writeObject(basicOperation);
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
-        to_send serverTreeNode;
-        serverTreeNode = (to_send)inFromServer.readObject();
+        ToSend serverTreeNode;
+        serverTreeNode = (ToSend)inFromServer.readObject();
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("...");
         DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(serverTreeNode.node);
         if(inFromServer == null) {
@@ -42,7 +44,7 @@ public class Receiver {
         else {
             while (serverTreeNode != null) {
                 try {
-                    serverTreeNode = (to_send) inFromServer.readObject();
+                    serverTreeNode = (ToSend) inFromServer.readObject();
                 } catch (java.io.EOFException e) {
                     break;
                 }
@@ -67,7 +69,7 @@ public class Receiver {
     public static void receiveFile(Socket socket, Object filePath) throws IOException {
         String fileName = filePath.toString();
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
-        operation basicOperation = new operation(2,fileName,null,filePath);
+        Operation basicOperation = new Operation(2,fileName,null,filePath);
         ostream.writeObject(basicOperation);
         Path p = Paths.get(fileName);
         String fileSaveName = p.getFileName().toString();
