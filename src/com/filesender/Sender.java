@@ -19,6 +19,7 @@ class to_send implements java.io.Serializable {
 public class Sender {
     static OutputStream out = null;
     static Queue queue = new LinkedList();
+
     public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, ServerSocket servSock, operation rooot) throws IOException, ClassNotFoundException {
         ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
         File rootObj =  null;
@@ -49,6 +50,7 @@ public class Sender {
         System.out.println("SENDING DONE");
         connectedSocket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
     }
+
     public static int sendFile(String current_file,  TreeModel localTreeModel, Socket socket,ServerSocket servSock) throws IOException, ClassNotFoundException {
         System.out.println("File to send: " + current_file);
         File myFile = new File(current_file);

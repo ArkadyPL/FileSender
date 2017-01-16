@@ -70,7 +70,6 @@ public class FileSender {
         JTextField remoteIPTextField = new JTextField(30);
         controlPanel.add(remoteIPTextField);
         JButton connectButton = new JButton("Connect");
-
         connectButton.setAlignmentY(Component.CENTER_ALIGNMENT);
         connectButton.addActionListener(ae -> {
             try {
@@ -110,13 +109,13 @@ public class FileSender {
             }
         });
         controlPanel.add(connectButton);
+        toolbar.add(controlPanel);
 
         // Display it all in a window and make the window appear
         frame.setSize( 1000, 600); // Set frame size
         frame.setLocationRelativeTo(null); // Put frame in center of the screen
         panel.add(localTreePane);
         panel.add(remoteTreePane);
-        panel.add(controlPanel);
         frame.add(panel);
         frame.setVisible(true);
 
@@ -163,9 +162,10 @@ public class FileSender {
         };
         remoteTree.addMouseListener(mouseListenerRemote);
 
-
+        //When user acts with remoteFileTree
         TreeExpansionListener treeExpandListener = new TreeExpansionListener() {
 
+            //If user expanded the tree
             public void treeExpanded(TreeExpansionEvent event) {
                 TreePath path = event.getPath();
                 try {
@@ -189,6 +189,7 @@ public class FileSender {
                 }
             }
 
+            //If user collapsed the tree
             public void treeCollapsed(TreeExpansionEvent event) {
                 TreePath path = event.getPath();
                 System.out.println("Collapsed" +globals.previousDir + " patho: " + path);
@@ -223,6 +224,5 @@ public class FileSender {
         };
         remoteTree.addTreeExpansionListener(treeExpandListener);
         connectionSocket = ConnectionListener.ListenForIncomingConnections(localTree.getModel(),serverSocket);
-        //todo: receive remote commands and process them
     }
 }
