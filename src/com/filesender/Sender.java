@@ -70,12 +70,11 @@ public class Sender {
             out.write(buffer,0,count);
             out.flush();
         }*/
-        //out.close();
-        //in.close();
+        out.close();
+        in.close();
         Log.Write("Finished sending");
         socket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
-
-        return 3;
+        return 0;
     }
 
 }
