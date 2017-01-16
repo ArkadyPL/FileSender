@@ -70,8 +70,7 @@ public class Sender {
         in.close();
         Log.Write("Finished sending");
         socket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
-
-        return 3;
+        return 0;
     }
 
 }

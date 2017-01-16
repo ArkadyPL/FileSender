@@ -36,7 +36,6 @@ public class FileSender {
         File root = new File(System.getProperty("user.home").substring(0, 3));
         // Create a TreeModel object to represent our tree of files
         FileTreeModel model = new FileTreeModel(root);
-        // Create a JTree and tell it to display our model
 
         globals.localTree.setModel(model);
 

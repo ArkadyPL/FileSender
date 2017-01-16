@@ -72,13 +72,11 @@ public class Receiver {
         Path p = Paths.get(fileName);
         String fileSaveName = p.getFileName().toString();
 
-        Log.Write("Receiving the file \"" + fileSaveName + "\"");
         InputStream is = socket.getInputStream();
         File test = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
         test.createNewFile();
         FileOutputStream fos = new FileOutputStream(test);
         BufferedOutputStream out = new BufferedOutputStream(fos);
-
 
         int count;
         byte[] buffer = new byte[8192]; // or 4096, or more
@@ -89,6 +87,6 @@ public class Receiver {
         out.flush();
         fos.close();
         is.close();
-        Log.Write("File \"" + fileSaveName + "\" saved");
+        Log.WriteTerminal("byeeee");
     }
 }
