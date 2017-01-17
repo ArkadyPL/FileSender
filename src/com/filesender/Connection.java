@@ -17,24 +17,29 @@ import java.security.interfaces.RSAPublicKey;
 public class Connection {
 
     public static void sendKey(Socket socket,TreeModel localTreeModel, ServerSocket serverSocket) throws IOException, ClassNotFoundException, InterruptedException {
+        Log.WriteTerminal("Sending PublicKey:\n" + DatatypeConverter.printHexBinary(globals.pubKey.getEncoded()));
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
-        operation basicOperation = new operation(5, null,null, globals.pubKey);
+        operation basicOperation = new operation(5, globals.localIP,null, globals.pubKey);
         ostream.writeObject(basicOperation);
-        ostream.close();
+
         socket = ConnectionListener.ListenForIncomingConnections(localTreeModel, serverSocket);
     }
     public static void sendBackKey(operation basicOp, TreeModel localTreeModel, ServerSocket serverSocket, Socket connectedSocket) throws IOException, ClassNotFoundException {
         globals.remoteKey = (RSAPublicKey)basicOp.obj1;
-        Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
+        Log.WriteTerminal("Sending back PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
+        connectedSocket = new Socket(globals.remoteIP,9990);
         ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
         operation basicOperation = new operation(6, null,null, globals.pubKey);
         ostream.writeObject(basicOperation);
-        ostream.close();
-        connectedSocket = ConnectionListener.ListenForIncomingConnections(localTreeModel, serverSocket);
+
     }
     public static void getKey(operation basicOp, TreeModel localTreeModel, ServerSocket serverSocket, Socket connectedSocket) throws IOException, ClassNotFoundException {
         globals.remoteKey = (RSAPublicKey)basicOp.obj1;
-        Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
-        connectedSocket = ConnectionListener.ListenForIncomingConnections(localTreeModel, serverSocket);
+        Log.WriteTerminal("Getting PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
+        connectedSocket = new Socket(globals.remoteIP,9990);
+        ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
+        operation basicOperation = new operation(1, "root",null, "root");
+        ostream.writeObject(basicOperation);
+        Receiver.buildRemoteTree(globals.remoteTree,globals.connectionSocket,"root",false);
     }
 }
