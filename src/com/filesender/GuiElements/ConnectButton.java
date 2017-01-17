@@ -15,9 +15,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-/**
- * Created by arkadiusz.ryszewski on 16.01.2017.
- */
 public class ConnectButton extends JButton {
     public ConnectButton(JTextField remoteIPTextField){
         super("Connect");

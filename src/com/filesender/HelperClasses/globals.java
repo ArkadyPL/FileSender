@@ -8,9 +8,6 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Stack;
 
-/**
- * Created by Piotr on 15.01.2017.
- */
 public class globals {
     public static ServerSocket statusSocket = null;
     public static JFrame frame = new JFrame("File Sender");

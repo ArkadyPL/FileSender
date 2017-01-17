@@ -1,9 +1,5 @@
 package com.filesender.HelperClasses;
 
-/**
- * Created by arkadiusz.ryszewski on 17.01.2017.
- */
-
 //   ID LIST
 /*  0 - no task, just connection check
     1 - Rebuild tree for argument as a root

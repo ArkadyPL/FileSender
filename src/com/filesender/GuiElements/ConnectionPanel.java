@@ -2,9 +2,6 @@ package com.filesender.GuiElements;
 
 import javax.swing.*;
 
-/**
- * Created by arkadiusz.ryszewski on 16.01.2017.
- */
 public class ConnectionPanel extends JPanel {
 
     public ConnectionPanel(){

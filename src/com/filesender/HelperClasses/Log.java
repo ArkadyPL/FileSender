@@ -4,9 +4,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by arkadiusz.ryszewski on 16.01.2017.
- */
 public class Log {
     /**
      * Method for displaying log message to terminal only
