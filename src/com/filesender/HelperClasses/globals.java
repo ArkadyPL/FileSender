@@ -31,7 +31,7 @@ public class globals {
     public static Cipher aesCipher = null;
     public static volatile boolean isConnected = false;
 
-    public static byte[] ToByte(Object object){
+    public static byte[] toByte(Object object){
         byte[] result = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutput out = null;
@@ -52,7 +52,7 @@ public class globals {
         return result;
     }
 
-    public static Object ToObject(byte[] enbytedObject){
+    public static Object toObject(byte[] enbytedObject){
         ByteArrayInputStream bis = new ByteArrayInputStream(enbytedObject);
         ObjectInput in = null;
         Object result = null;

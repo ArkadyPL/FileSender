@@ -1,5 +1,6 @@
 package com.filesender;
 
+import com.filesender.Cryptography.RSA;
 import com.filesender.HelperClasses.*;
 
 import java.io.*;
@@ -12,9 +13,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 public class Receiver {
-    static int maxsize = 999999999;
-    static int byteread;
-    static int current = 0;
 
     public static void receiveTree(JTree remoteTree, Socket socket,Object dir, Boolean back) throws FileNotFoundException, IOException, ClassNotFoundException {
         if( !globals.isConnected ) return;
@@ -33,7 +31,7 @@ public class Receiver {
         ostream.writeObject(basicOperation);
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
         ToSend serverTreeNode;
-        serverTreeNode = (ToSend)RSA.decrypt((byte[])inFromServer.readObject());
+        serverTreeNode = (ToSend) RSA.decrypt((byte[])inFromServer.readObject());
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("...");
         DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(serverTreeNode.node);
         if(inFromServer == null) {

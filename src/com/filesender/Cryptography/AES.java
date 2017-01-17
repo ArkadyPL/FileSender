@@ -1,22 +1,26 @@
-package com.filesender.HelperClasses;
+package com.filesender.Cryptography;
+
+import com.filesender.HelperClasses.globals;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import java.io.*;
 import java.security.InvalidKeyException;
 
-public class RSA {
+/**
+ * Created by arkadiusz.ryszewski on 18.01.2017.
+ */
+public class AES {
     public static byte[] encrypt(Object object){
-        byte[] plainText = globals.ToByte(object);
         byte[] cipherText = null;
+        byte[] plainText = globals.toByte(object);
         try {
-            globals.cipher.init(Cipher.ENCRYPT_MODE, globals.remoteKey);
+            globals.aesCipher.init(Cipher.ENCRYPT_MODE, globals.symmetricKey);
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
         try {
-            cipherText = globals.cipher.doFinal(plainText);
+            cipherText = globals.aesCipher.doFinal(plainText);
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
         } catch (BadPaddingException e) {
@@ -26,19 +30,19 @@ public class RSA {
     }
 
     public static Object decrypt(byte[] encryptedObject){
+        byte[] plainText = null;
         try {
-            globals.cipher.init(Cipher.DECRYPT_MODE, globals.privKey);
+            globals.aesCipher.init(Cipher.DECRYPT_MODE, globals.symmetricKey);
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
-        byte[] plainText = new byte[encryptedObject.length*8];
         try {
-            plainText = globals.cipher.doFinal(encryptedObject);
+            plainText = globals.aesCipher.doFinal(encryptedObject);
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
         } catch (BadPaddingException e) {
             e.printStackTrace();
         }
-        return globals.ToObject(plainText);
+        return globals.toObject(plainText);
     }
 }

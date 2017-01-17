@@ -2,7 +2,7 @@ package com.filesender;
 
 import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.Operation;
-import com.filesender.HelperClasses.RSA;
+import com.filesender.Cryptography.RSA;
 import com.filesender.HelperClasses.globals;
 
 import javax.crypto.KeyGenerator;

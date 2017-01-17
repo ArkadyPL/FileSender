@@ -2,7 +2,7 @@ package com.filesender;
 
 import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.Operation;
-import com.filesender.HelperClasses.RSA;
+import com.filesender.Cryptography.RSA;
 import com.filesender.HelperClasses.ToSend;
 
 import java.io.*;
@@ -32,7 +32,7 @@ public class Sender {
         for(int i = 0; i < localTreeModel.getChildCount(rootObj);i++) {
             if( localTreeModel.isLeaf(localTreeModel.getChild(rootObj,i)) ) {
                 ToSend ts2 = new ToSend(localTreeModel.getChild(rootObj,i),false);
-                Log.WriteTerminal("sending: " + ts2.node);
+                //Log.WriteTerminal("sending: " + ts2.node);
                 ostream.writeObject(RSA.encrypt(ts2));
                 queue.add(localTreeModel.getChild(rootObj,i));
             }
