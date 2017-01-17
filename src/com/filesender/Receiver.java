@@ -19,7 +19,7 @@ public class Receiver {
     static int byteread;
     static int current = 0;
 
-    public static void receiveTree(JTree remoteTree, Socket socket,Object dir, Boolean back) throws IOException, ClassNotFoundException {
+    public static void receiveTree(JTree remoteTree, Socket socket,Object dir, Boolean back) throws FileNotFoundException, IOException, ClassNotFoundException {
         if(globals.previousDir != null) {
             if(back != true) {
                 globals.previousDir = remoteTree.getModel().getChild(remoteTree.getModel().getRoot(), 0);
