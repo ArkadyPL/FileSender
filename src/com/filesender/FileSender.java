@@ -31,15 +31,13 @@ public class FileSender {
         globals.statusSocket = new ServerSocket(7899);
         globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
 
-        Cipher cipher = Cipher.getInstance("RSA");
+        globals.cipher = Cipher.getInstance("RSA");
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
         kpg.initialize(512);
         KeyPair kp = kpg.genKeyPair();
         globals.pubKey = (RSAPublicKey) kp.getPublic();
         globals.privKey = (RSAPrivateKey) kp.getPrivate();
         Log.WriteTerminal("Local PublicKey:\n" + DatatypeConverter.printHexBinary(globals.pubKey.getEncoded()));
-
-        cipher.init(Cipher.ENCRYPT_MODE, globals.pubKey);
 
         globals.localIP = Inet4Address.getLocalHost().getHostAddress();
         System.out.println("Your IP address is: " + globals.localIP);

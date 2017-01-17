@@ -1,9 +1,6 @@
 package com.filesender;
 
-import com.filesender.HelperClasses.Log;
-import com.filesender.HelperClasses.Operation;
-import com.filesender.HelperClasses.ToSend;
-import com.filesender.HelperClasses.globals;
+import com.filesender.HelperClasses.*;
 
 import java.io.*;
 import java.net.Socket;
@@ -36,7 +33,7 @@ public class Receiver {
         ostream.writeObject(basicOperation);
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
         ToSend serverTreeNode;
-        serverTreeNode = (ToSend)inFromServer.readObject();
+        serverTreeNode = (ToSend)RSA.decrypt((byte[])inFromServer.readObject());
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("...");
         DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(serverTreeNode.node);
         if(inFromServer == null) {
@@ -45,7 +42,7 @@ public class Receiver {
         else {
             while (serverTreeNode != null) {
                 try {
-                    serverTreeNode = (ToSend) inFromServer.readObject();
+                    serverTreeNode = (ToSend)RSA.decrypt((byte[])inFromServer.readObject());
                 } catch (java.io.EOFException e) {
                     break;
                 }

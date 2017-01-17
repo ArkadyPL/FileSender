@@ -1,5 +1,6 @@
 package com.filesender.HelperClasses;
 
+import javax.crypto.Cipher;
 import javax.swing.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -9,6 +10,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Stack;
 
 public class globals {
+    public static Cipher cipher = null;
     public static ServerSocket statusSocket = null;
     public static JFrame frame = new JFrame("File Sender");
     public static Object previousDir = null;
