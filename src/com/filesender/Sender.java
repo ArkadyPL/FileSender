@@ -16,7 +16,7 @@ public class Sender {
     static OutputStream out = null;
     static Queue queue = new LinkedList();
 
-    public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, ServerSocket servSock, Operation rooot) throws IOException, ClassNotFoundException {
+    public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, Operation rooot) throws IOException, ClassNotFoundException {
         ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
         File rootObj =  null;
         if(Objects.equals(rooot.argument1, "root")) {
@@ -45,10 +45,9 @@ public class Sender {
 
         ostream.close();
         Log.WriteTerminal("SENDING DONE");
-        connectedSocket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
     }
 
-    public static int sendFile(String current_file,  TreeModel localTreeModel, Socket socket,ServerSocket servSock) throws IOException, ClassNotFoundException {
+    public static void sendFile(String current_file,  TreeModel localTreeModel, Socket socket ) throws IOException, ClassNotFoundException {
         Log.Write("File to send: " + current_file);
         File myFile = new File(current_file);
         byte[] buffer = new byte[(int) myFile.length()];
@@ -63,8 +62,6 @@ public class Sender {
         out.close();
         in.close();
         Log.Write("Finished sending");
-        socket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
-        return 0;
     }
 
 }
