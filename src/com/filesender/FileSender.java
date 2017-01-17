@@ -22,6 +22,7 @@ import java.util.Objects;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.xml.bind.DatatypeConverter;
 
@@ -31,6 +32,7 @@ public class FileSender {
     public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
         Log.Write("Started working");
         globals.statusSocket = new ServerSocket(7899);
+        globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
 
         Cipher cipher = Cipher.getInstance("RSA");
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
