@@ -1,5 +1,6 @@
 package com.filesender.GuiElements;
 
+import com.filesender.Connection;
 import com.filesender.HelperClasses.IPAddressValidator;
 import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.globals;
@@ -38,15 +39,14 @@ public class ConnectButton extends JButton {
                     Log.Write("Connection error...");
                 }
                 if (globals.connectionSocket != null) {
-                    globals.isConnected = true;
                     Log.Write("Connected to remote!");
                     try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
+                        Connection.exchangeKeys();
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                     try {
-                        Receiver.buildRemoteTree(globals.remoteTree,globals.connectionSocket,"root",false);
+                        Receiver.receiveTree(globals.remoteTree,globals.connectionSocket,"root",false);
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (ClassNotFoundException e) {

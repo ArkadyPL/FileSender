@@ -10,6 +10,8 @@ package com.filesender.HelperClasses;
     2 - Send given file
     3 - Receive file of given name
     4 - Rename given file
+    5 - accept public key from obj1 and send your public key as obj1
+    6 - accept new public key from obj1
  */
 public class Operation implements java.io.Serializable {
     public int opID;

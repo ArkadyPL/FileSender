@@ -4,11 +4,20 @@ import com.filesender.GuiElements.Toolbar;
 import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.globals;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.math.BigInteger;
 import java.net.*;
 import java.io.*;
+import java.security.*;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.RSAPrivateKeySpec;
+import java.security.spec.RSAPublicKeySpec;
 import java.util.Objects;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
@@ -20,7 +29,19 @@ import javax.swing.tree.TreePath;
 
 public class FileSender {
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+        Log.Write("Started working");
+
+        Cipher cipher = Cipher.getInstance("RSA");
+
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+        kpg.initialize(512);
+        KeyPair kp = kpg.genKeyPair();
+        globals.pubKey = (RSAPublicKey) kp.getPublic();
+        globals.privKey = (RSAPrivateKey) kp.getPrivate();
+
+        cipher.init(Cipher.ENCRYPT_MODE, globals.pubKey);
+
         globals.localIP = Inet4Address.getLocalHost().getHostAddress();
         System.out.println("Your IP address is: " + globals.localIP);
         globals.serverSocket = new ServerSocket(9990);
@@ -113,7 +134,7 @@ public class FileSender {
                     if ( !Objects.equals(path.getParentPath().toString(), "[...]") ){
                         globals.connectionSocket = new Socket(globals.remoteIP, 9990);
                         Log.WriteTerminal("PREVIOUS ROOT before: "+ globals.previousDir);
-                        Receiver.buildRemoteTree(globals.remoteTree, globals.connectionSocket, path.getLastPathComponent(),false);
+                        Receiver.receiveTree(globals.remoteTree, globals.connectionSocket, path.getLastPathComponent(),false);
                         globals.frame.repaint();
                         globals.frame.revalidate();
                         Log.WriteTerminal("PREVIOUS ROOT after: "+ globals.previousDir);
@@ -138,13 +159,13 @@ public class FileSender {
                     if ( Objects.equals(path.toString(), "[...]") ){
                         if(globals.dirStack.isEmpty()) {
                             globals.connectionSocket = new Socket(globals.remoteIP, 9990);
-                            Receiver.buildRemoteTree(globals.remoteTree, globals.connectionSocket,"root",false);
+                            Receiver.receiveTree(globals.remoteTree, globals.connectionSocket,"root",false);
                         }
                         else {
                             Log.WriteTerminal("PREVIOUS ROOT before: " + globals.previousDir);
                             if ( !globals.dirStack.isEmpty() ) {
                                 globals.connectionSocket = new Socket(globals.remoteIP, 9990);
-                                Receiver.buildRemoteTree(globals.remoteTree, globals.connectionSocket, globals.previousDir, true);
+                                Receiver.receiveTree(globals.remoteTree, globals.connectionSocket, globals.previousDir, true);
                             }
                             Log.WriteTerminal("PREVIOUS ROOT after: " + globals.previousDir);
                         }
