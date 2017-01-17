@@ -2,8 +2,10 @@ package com.filesender;
 
 import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.Operation;
+import com.filesender.HelperClasses.RSA;
 import com.filesender.HelperClasses.globals;
 
+import javax.crypto.SecretKey;
 import javax.swing.tree.TreeModel;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
@@ -38,9 +40,12 @@ public class ConnectionListener {
             Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
 
             ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
-            Operation basicOperation = new Operation(6, null,null, globals.pubKey);
-            ostream.writeObject(basicOperation);
+            ostream.writeObject(globals.pubKey);
 
+            ConnectionListener.ListenForIncomingConnections(localTreeModel, serverSocket);
+        }else if(basicOp.opID == 6){
+            globals.symmetricKey = (SecretKey)RSA.decrypt((byte[])basicOp.obj1);
+            Log.WriteTerminal("SymmetricKey:\n" + DatatypeConverter.printHexBinary(globals.symmetricKey.getEncoded()));
             ConnectionListener.ListenForIncomingConnections(localTreeModel, serverSocket);
         }
 
