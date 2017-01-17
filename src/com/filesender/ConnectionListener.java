@@ -8,6 +8,7 @@ import com.filesender.HelperClasses.globals;
 import javax.crypto.SecretKey;
 import javax.swing.tree.TreeModel;
 import javax.xml.bind.DatatypeConverter;
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -42,10 +43,9 @@ public class ConnectionListener {
             ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
             ostream.writeObject(globals.pubKey);
 
-            ConnectionListener.ListenForIncomingConnections(localTreeModel, serverSocket);
-        }else if(basicOp.opID == 6){
-            globals.symmetricKey = (SecretKey)RSA.decrypt((byte[])basicOp.obj1);
+            globals.symmetricKey = (SecretKey)RSA.decrypt((byte[])inFromServer.readObject());
             Log.WriteTerminal("SymmetricKey:\n" + DatatypeConverter.printHexBinary(globals.symmetricKey.getEncoded()));
+
             ConnectionListener.ListenForIncomingConnections(localTreeModel, serverSocket);
         }
 

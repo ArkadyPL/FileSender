@@ -34,7 +34,7 @@ public class FileSender {
         globals.cipher = Cipher.getInstance("RSA");
         globals.aesCipher = Cipher.getInstance("AES");
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(512);
+        kpg.initialize(4096);
         KeyPair kp = kpg.genKeyPair();
         globals.pubKey = (RSAPublicKey) kp.getPublic();
         globals.privKey = (RSAPrivateKey) kp.getPrivate();

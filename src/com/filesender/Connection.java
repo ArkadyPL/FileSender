@@ -40,8 +40,7 @@ public class Connection {
         KeyGen.init(128);
         globals.symmetricKey = KeyGen.generateKey();
         Log.WriteTerminal("SymmetricKey:\n" + DatatypeConverter.printHexBinary(globals.symmetricKey.getEncoded()));
-        basicOperation = new Operation(6, null, null, globals.symmetricKey );
-        ostream.writeObject(RSA.encrypt(basicOperation));
+        ostream.writeObject(RSA.encrypt(globals.symmetricKey));
 
     }
 }
