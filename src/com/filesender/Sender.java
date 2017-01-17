@@ -1,6 +1,7 @@
 package com.filesender;
 
 import com.filesender.HelperClasses.Log;
+import com.filesender.HelperClasses.globals;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -18,7 +19,7 @@ class to_send implements java.io.Serializable {
     }
 }
 
-public class Sender {
+public class Sender extends  Thread {
     static OutputStream out = null;
     static Queue queue = new LinkedList();
 
@@ -48,9 +49,8 @@ public class Sender {
                 queue.add(localTreeModel.getChild(rootObj,i));
             }
         }
-
         ostream.close();
-        Log.WriteTerminal("SENDING DONE");
+        Log.WriteTerminal("New tree sent");
         connectedSocket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
     }
 
@@ -73,10 +73,6 @@ public class Sender {
         Log.Write("Sending files");
         out.write(buffer,0, buffer.length);
         out.flush();
-        /*while ((count = in.read(buffer)) > 0){
-            out.write(buffer,0,count);
-            out.flush();
-        }*/
         out.close();
         in.close();
         Log.Write("Finished sending");

@@ -9,7 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 //   ID LIST
-/*  0 - no task, just connection check
+/*  0 - keepalive - connection test
     1 - Rebuild tree for argument as a root
     2 - Send given file
     3 - Receive file of given name
@@ -30,6 +30,7 @@ class operation implements java.io.Serializable {
 
 public class ConnectionListener {
     public static Socket ListenForIncomingConnections(TreeModel localTreeModel, ServerSocket serverSocket) throws IOException, ClassNotFoundException {
+
         Socket connectedSocket;
         Log.Write("Waiting for incoming connections...");
 
@@ -40,8 +41,10 @@ public class ConnectionListener {
         ObjectInputStream inFromServer = new ObjectInputStream(connectedSocket.getInputStream());
         operation basicOp;
         basicOp = (operation)inFromServer.readObject();
+        if(basicOp.opID == 0) {
 
-        if(basicOp.opID == 1) {
+        }
+        else if(basicOp.opID == 1) {
             Log.WriteTerminal("Operation ID 1 executed");
             Sender.sendTree(connectedSocket,localTreeModel,serverSocket,basicOp);
         }

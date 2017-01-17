@@ -73,7 +73,7 @@ public class FileSender {
                     }
                     else if(e.getClickCount() == 2) {
                         Log.WriteTerminal("Double click on row #" + selRow + "\t File: " + selPath.getLastPathComponent());
-                        //todo: send file
+
                     }
                 }
             }

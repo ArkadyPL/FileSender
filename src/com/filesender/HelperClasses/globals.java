@@ -20,5 +20,5 @@ public class globals {
     public static ServerSocket serverSocket = null;
     public static JTree localTree = new JTree();
     public static JTree remoteTree = new JTree();
-    public static JTextArea logTextArea = new JTextArea("Started working...");;
+    public static JTextArea logTextArea = new JTextArea("Started working...");
 }

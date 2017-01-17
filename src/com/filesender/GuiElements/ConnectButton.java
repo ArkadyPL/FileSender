@@ -2,8 +2,10 @@ package com.filesender.GuiElements;
 
 import com.filesender.HelperClasses.IPAddressValidator;
 import com.filesender.HelperClasses.Log;
+import com.filesender.HelperClasses.ServerStatus;
 import com.filesender.HelperClasses.globals;
 import com.filesender.Receiver;
+import com.filesender.Sender;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,12 +41,11 @@ public class ConnectButton extends JButton {
                 }
                 if (globals.connectionSocket != null) {
                     globals.isConnected = true;
-                    Log.Write("Connected to remote!");
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    ServerStatus connectionStatusChecker = new ServerStatus();
+                    connectionStatusChecker.setDaemon(true);
+                    connectionStatusChecker.start();
+
+                    Log.Write("Connected to: "+ remoteIPTextField.getText());
                     try {
                         Receiver.buildRemoteTree(globals.remoteTree,globals.connectionSocket,"root",false);
                     } catch (IOException e) {
