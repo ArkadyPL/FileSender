@@ -35,6 +35,7 @@ public class ConnectionListener {
         }else if(basicOp.opID == 5){//save new public key from arg1 and send your public key in arg1
             globals.remoteKey = (RSAPublicKey)basicOp.obj1;
             System.out.println("After:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
+            return ConnectionListener.ListenForIncomingConnections(localTreeModel,serverSocket);
         }else if(basicOp.opID == 6){//save new public key from arg1
 
         }
