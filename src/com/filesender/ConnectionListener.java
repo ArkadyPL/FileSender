@@ -1,6 +1,7 @@
 package com.filesender;
 
 import com.filesender.HelperClasses.Log;
+import com.filesender.HelperClasses.globals;
 
 import javax.swing.tree.TreeModel;
 import java.io.IOException;
@@ -37,7 +38,8 @@ public class ConnectionListener {
         connectedSocket = serverSocket.accept();
 
         Log.Write("Connection accepted!");
-
+        if(globals.statusSocket == null)
+            globals.statusSocket = new ServerSocket(7899);
         ObjectInputStream inFromServer = new ObjectInputStream(connectedSocket.getInputStream());
         operation basicOp;
         basicOp = (operation)inFromServer.readObject();

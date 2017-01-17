@@ -84,7 +84,7 @@ public class Receiver {
             out.flush();
             fos.close();
             is.close();
-            Log.WriteTerminal("byeeee");
+            Log.WriteTerminal("File: " + fileSaveName + " downloaded.");
         }
     }
 }

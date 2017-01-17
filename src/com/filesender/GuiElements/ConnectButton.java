@@ -44,7 +44,7 @@ public class ConnectButton extends JButton {
                     ServerStatus connectionStatusChecker = new ServerStatus();
                     connectionStatusChecker.setDaemon(true);
                     connectionStatusChecker.start();
-
+                    globals.remoteTree.setEnabled(true);
                     Log.Write("Connected to: "+ remoteIPTextField.getText());
                     try {
                         Receiver.buildRemoteTree(globals.remoteTree,globals.connectionSocket,"root",false);
