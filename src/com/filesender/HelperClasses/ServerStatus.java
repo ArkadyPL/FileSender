@@ -13,19 +13,19 @@ import java.net.Socket;
 public class ServerStatus extends Thread{
     @Override
     public void run() {
-        System.out.println("YESSS");
-        if(globals.statusSocket == null)
-            try {
-                globals.statusSocket = new ServerSocket(7899);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        Socket s=null;
         while(true) {
             if (globals.remoteIP != null) {
-                try(Socket s = new Socket(globals.remoteIP, 7899)) {
+                try {
+                    s = new Socket(globals.remoteIP, 7899);
                     System.out.println("Server available");
                     s.close();
                 } catch (IOException e) {
+                    try {
+                        s.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                     globals.isConnected = false;
                     Log.Write("Connection lost!");
                     globals.previousDir = null;

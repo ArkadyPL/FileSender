@@ -53,7 +53,9 @@ public class ConnectionListener {
         else if(basicOp.opID == 2) {
             Sender.sendFile(basicOp.argument1,localTreeModel,connectedSocket,serverSocket);
         }
-
+        else if(basicOp.opID == 5){//save new public key from arg1 and send your public key in arg1
+            Connection.somework(basicOp,localTreeModel,serverSocket,connectedSocket);
+        }
         return connectedSocket;
     }
 }

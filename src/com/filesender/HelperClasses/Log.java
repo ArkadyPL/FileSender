@@ -1,5 +1,9 @@
 package com.filesender.HelperClasses;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by arkadiusz.ryszewski on 16.01.2017.
  */
@@ -21,8 +25,10 @@ public class Log {
      * @param text - text to be displayed
      */
     public static void Write(String text){
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        Date date = new Date();
         System.out.println(text);
         String logText = globals.logTextArea.getText();
-        globals.logTextArea.setText(logText + "\n" + text);
+        globals.logTextArea.setText( "[" + dateFormat.format(date) + "] " + text + "\n" + logText);
     }
 }

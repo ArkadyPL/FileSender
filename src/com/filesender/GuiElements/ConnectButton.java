@@ -1,5 +1,6 @@
 package com.filesender.GuiElements;
 
+import com.filesender.Connection;
 import com.filesender.HelperClasses.IPAddressValidator;
 import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.ServerStatus;
@@ -46,6 +47,11 @@ public class ConnectButton extends JButton {
                     connectionStatusChecker.start();
                     globals.remoteTree.setEnabled(true);
                     Log.Write("Connected to: "+ remoteIPTextField.getText());
+                    try {
+                        Connection.exchangeKeys();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     try {
                         Receiver.buildRemoteTree(globals.remoteTree,globals.connectionSocket,"root",false);
                     } catch (IOException e) {

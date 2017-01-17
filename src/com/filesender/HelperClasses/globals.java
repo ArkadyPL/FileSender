@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Stack;
 
 /**
@@ -22,4 +24,7 @@ public class globals {
     public static JTree localTree = new JTree();
     public static JTree remoteTree = new JTree();
     public static JTextArea logTextArea = new JTextArea("Started working...");
+    public static RSAPublicKey pubKey = null;
+    public static RSAPrivateKey privKey = null;
+    public static RSAPublicKey remoteKey = null;
 }
