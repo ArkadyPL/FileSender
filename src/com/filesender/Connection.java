@@ -29,15 +29,15 @@ public class Connection {
         }
 
         globals.remoteKey = (RSAPublicKey)basicOp.obj1;
-        Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
+//        Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
 
     }
     public static void somework(operation basicOp, TreeModel localTreeModel, ServerSocket serverSocket,Socket connectedSocket) throws IOException, ClassNotFoundException {
         globals.remoteKey = (RSAPublicKey)basicOp.obj1;
-        Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
+        //Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
 
         ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
-        operation basicOperation = new operation(6, null,null, globals.pubKey);
+        operation basicOperation = new operation(5, null,null, globals.pubKey);
         ostream.writeObject(basicOperation);
 
         connectedSocket = ConnectionListener.ListenForIncomingConnections(localTreeModel, serverSocket);

@@ -4,24 +4,43 @@ import com.filesender.GuiElements.Toolbar;
 import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.globals;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import java.io.*;
+import java.security.InvalidKeyException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Objects;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-
-
+import javax.xml.bind.DatatypeConverter;
 
 
 public class FileSender {
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         globals.statusSocket = new ServerSocket(7899);
+
+
+        Cipher cipher = Cipher.getInstance("RSA");
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+        kpg.initialize(512);
+        KeyPair kp = kpg.genKeyPair();
+        globals.pubKey = (RSAPublicKey) kp.getPublic();
+        globals.privKey = (RSAPrivateKey) kp.getPrivate();
+        Log.WriteTerminal("Local PublicKey:\n" + DatatypeConverter.printHexBinary(globals.pubKey.getEncoded()));
+
+        cipher.init(Cipher.ENCRYPT_MODE, globals.pubKey);
+
         globals.localIP = Inet4Address.getLocalHost().getHostAddress();
         System.out.println("Your IP address is: " + globals.localIP);
         globals.serverSocket = new ServerSocket(9990);
@@ -166,7 +185,7 @@ public class FileSender {
             }
         };
         globals.remoteTree.addTreeExpansionListener(treeExpandListener);
-
-        globals.connectionSocket = ConnectionListener.ListenForIncomingConnections(globals.localTree.getModel(),globals.serverSocket);
+        Socket init;
+        init = ConnectionListener.ListenForIncomingConnections(globals.localTree.getModel(),globals.serverSocket);
     }
 }
