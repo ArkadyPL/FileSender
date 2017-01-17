@@ -57,7 +57,7 @@ public class ConnectionListener {
             Connection.sendBackKey(basicOp,localTreeModel,serverSocket,connectedSocket);
         }
         else if(basicOp.opID == 6) {
-            Connection.sendBackKey(basicOp,localTreeModel,serverSocket,connectedSocket);
+            Connection.getKey(basicOp,localTreeModel,serverSocket,connectedSocket);
         }
         return connectedSocket;
     }

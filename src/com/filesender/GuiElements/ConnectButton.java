@@ -47,8 +47,12 @@ public class ConnectButton extends JButton {
                     globals.remoteTree.setEnabled(true);
                     Log.Write("Connected to: "+ remoteIPTextField.getText());
                     try {
-                        Connection.sendKey(globals.connectionSocket);
+                        Connection.sendKey(globals.connectionSocket,globals.remoteTree.getModel(),globals.serverSocket);
                     } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     try {

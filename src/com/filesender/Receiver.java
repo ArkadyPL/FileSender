@@ -24,7 +24,6 @@ public class Receiver {
                         dir = globals.dirStack.pop();
                 }
             }
-
             ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
             operation basicOperation = new operation(1, dir.toString(), null, dir);
             ostream.writeObject(basicOperation);
