@@ -20,6 +20,7 @@ public class ServerStatus extends Thread{
                 } catch (IOException e) {
                     globals.isConnected = false;
                     Log.Write("Connection lost!");
+                    globals.previousDir = null;
                     globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
                     break;
                 }

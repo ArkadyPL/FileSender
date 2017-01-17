@@ -17,6 +17,7 @@ public class globals {
     public static InetAddress remoteIP = null;
     public static volatile boolean isConnected = false;
     public static Socket connectionSocket = null;
+    public static ServerSocket statusSocket = null;
     public static ServerSocket serverSocket = null;
     public static JTree localTree = new JTree();
     public static JTree remoteTree = new JTree();

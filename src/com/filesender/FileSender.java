@@ -21,6 +21,7 @@ import javax.swing.tree.TreePath;
 public class FileSender {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
+        globals.statusSocket = new ServerSocket(7899);
         globals.localIP = Inet4Address.getLocalHost().getHostAddress();
         System.out.println("Your IP address is: " + globals.localIP);
         globals.serverSocket = new ServerSocket(9990);
