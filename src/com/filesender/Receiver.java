@@ -20,6 +20,7 @@ public class Receiver {
     static int current = 0;
 
     public static void receiveTree(JTree remoteTree, Socket socket,Object dir, Boolean back) throws FileNotFoundException, IOException, ClassNotFoundException {
+        if( !globals.isConnected ) return;
         if(globals.previousDir != null) {
             if(back != true) {
                 globals.previousDir = remoteTree.getModel().getChild(remoteTree.getModel().getRoot(), 0);
@@ -67,6 +68,7 @@ public class Receiver {
     }
 
     public static void receiveFile(Socket socket, Object filePath) throws IOException {
+        if( !globals.isConnected ) return;
         String fileName = filePath.toString();
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
         Operation basicOperation = new Operation(2,fileName,null,filePath);
