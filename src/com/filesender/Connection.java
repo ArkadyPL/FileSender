@@ -25,5 +25,8 @@ public class Connection {
             e.printStackTrace();
         }
 
+        globals.remoteKey = (RSAPublicKey)basicOp.obj1;
+        Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
+
     }
 }

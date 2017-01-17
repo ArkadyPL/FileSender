@@ -37,17 +37,11 @@ public class ConnectionListener {
             globals.remoteKey = (RSAPublicKey)basicOp.obj1;
             Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
 
-            Socket tempSocket = new Socket(globals.remoteIP, 9990);
-            ObjectOutputStream ostream = new ObjectOutputStream(tempSocket.getOutputStream());
+            ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
             Operation basicOperation = new Operation(6, null,null, globals.pubKey);
             ostream.writeObject(basicOperation);
 
-            ConnectionListener.ListenForIncomingConnections(localTreeModel,serverSocket);
-        }else if(basicOp.opID == 6){//save new public key from arg1
-            globals.remoteKey = (RSAPublicKey)basicOp.obj1;
-            Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
-
-            ConnectionListener.ListenForIncomingConnections(localTreeModel,serverSocket);
+            ConnectionListener.ListenForIncomingConnections(localTreeModel, serverSocket);
         }
 
         return connectedSocket;
