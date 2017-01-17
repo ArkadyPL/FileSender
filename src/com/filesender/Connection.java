@@ -15,12 +15,12 @@ import java.security.interfaces.RSAPublicKey;
 
 public class Connection {
 
-    public static void exchangeKeys() throws IOException {
-        ObjectOutputStream ostream = new ObjectOutputStream(globals.connectionSocket.getOutputStream());
+    public static void exchangeKeys(Socket socket) throws IOException {
+        ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
         operation basicOperation = new operation(5, null,null, globals.pubKey);
         ostream.writeObject(basicOperation);
 
-        ObjectInputStream inFromServer = new ObjectInputStream(globals.connectionSocket.getInputStream());
+        ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
         operation basicOp = null;
         try {
             basicOp = (operation)inFromServer.readObject();
