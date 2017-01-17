@@ -8,6 +8,7 @@ import javax.swing.tree.TreeModel;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.interfaces.RSAPublicKey;
@@ -34,10 +35,17 @@ public class ConnectionListener {
             Sender.sendFile(basicOp.argument1,localTreeModel,connectedSocket,serverSocket);
         }else if(basicOp.opID == 5){//save new public key from arg1 and send your public key in arg1
             globals.remoteKey = (RSAPublicKey)basicOp.obj1;
-            System.out.println("After:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
-            return ConnectionListener.ListenForIncomingConnections(localTreeModel,serverSocket);
-        }else if(basicOp.opID == 6){//save new public key from arg1
+            Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
+            ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
+            Operation basicOperation = new Operation(6, null,null, globals.pubKey);
+            ostream.writeObject(basicOperation);
 
+            ConnectionListener.ListenForIncomingConnections(localTreeModel,serverSocket);
+        }else if(basicOp.opID == 6){//save new public key from arg1
+            globals.remoteKey = (RSAPublicKey)basicOp.obj1;
+            Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
+
+            ConnectionListener.ListenForIncomingConnections(localTreeModel,serverSocket);
         }
 
         return connectedSocket;

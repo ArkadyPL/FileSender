@@ -23,8 +23,7 @@ import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-
-
+import javax.xml.bind.DatatypeConverter;
 
 
 public class FileSender {
@@ -39,6 +38,7 @@ public class FileSender {
         KeyPair kp = kpg.genKeyPair();
         globals.pubKey = (RSAPublicKey) kp.getPublic();
         globals.privKey = (RSAPrivateKey) kp.getPrivate();
+        Log.Write("Local PublicKey:\n" + DatatypeConverter.printHexBinary(globals.pubKey.getEncoded()));
 
         cipher.init(Cipher.ENCRYPT_MODE, globals.pubKey);
 
@@ -186,6 +186,6 @@ public class FileSender {
         };
         globals.remoteTree.addTreeExpansionListener(treeExpandListener);
 
-        globals.connectionSocket = ConnectionListener.ListenForIncomingConnections(globals.localTree.getModel(),globals.serverSocket);
+        globals.connectionSocket = ConnectionListener.ListenForIncomingConnections(globals.localTree.getModel(), globals.serverSocket);
     }
 }

@@ -1,11 +1,14 @@
 package com.filesender;
 
+import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.Operation;
 import com.filesender.HelperClasses.globals;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.security.interfaces.RSAPublicKey;
 
 public class Connection {
 
@@ -14,7 +17,13 @@ public class Connection {
         Operation basicOperation = new Operation(5, null,null, globals.pubKey);
         ostream.writeObject(basicOperation);
 
-        System.out.println("Before:\n" + DatatypeConverter.printHexBinary(globals.pubKey.getEncoded()));
+        ObjectInputStream inFromServer = new ObjectInputStream(globals.connectionSocket.getInputStream());
+        Operation basicOp = null;
+        try {
+            basicOp = (Operation)inFromServer.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 }
