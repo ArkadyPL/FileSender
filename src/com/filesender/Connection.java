@@ -16,17 +16,5 @@ public class Connection {
         ObjectOutputStream ostream = new ObjectOutputStream(globals.connectionSocket.getOutputStream());
         Operation basicOperation = new Operation(5, null,null, globals.pubKey);
         ostream.writeObject(basicOperation);
-
-        ObjectInputStream inFromServer = new ObjectInputStream(globals.connectionSocket.getInputStream());
-        Operation basicOp = null;
-        try {
-            basicOp = (Operation)inFromServer.readObject();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        globals.remoteKey = (RSAPublicKey)basicOp.obj1;
-        Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
-
     }
 }

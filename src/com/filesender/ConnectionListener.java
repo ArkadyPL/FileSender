@@ -39,6 +39,9 @@ public class ConnectionListener {
             ObjectOutputStream ostream = new ObjectOutputStream(globals.connectionSocket.getOutputStream());
             Operation basicOperation = new Operation(6, null,null, globals.pubKey);
             ostream.writeObject(basicOperation);
+        }else if(basicOp.opID == 6){
+            globals.remoteKey = (RSAPublicKey)basicOp.obj1;
+            Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
         }
     }
 }
