@@ -25,7 +25,7 @@ public class RSA {
                 // ignore close exception
             }
         }
-        byte[] cipherText = new byte[0];
+        byte[] cipherText = null;
         try {
             globals.cipher.init(Cipher.ENCRYPT_MODE, globals.remoteKey);
         } catch (InvalidKeyException e) {
@@ -47,7 +47,7 @@ public class RSA {
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
-        byte[] plainText = new byte[0];
+        byte[] plainText = new byte[encryptedObject.length*8];
         try {
             plainText = globals.cipher.doFinal(encryptedObject);
         } catch (IllegalBlockSizeException e) {
