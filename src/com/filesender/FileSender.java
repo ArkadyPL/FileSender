@@ -30,9 +30,9 @@ public class FileSender {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
         Log.Write("Started working");
+        globals.statusSocket = new ServerSocket(7899);
 
         Cipher cipher = Cipher.getInstance("RSA");
-
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
         kpg.initialize(512);
         KeyPair kp = kpg.genKeyPair();

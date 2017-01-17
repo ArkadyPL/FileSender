@@ -12,6 +12,7 @@ import java.util.Stack;
  * Created by Piotr on 15.01.2017.
  */
 public class globals {
+    public static ServerSocket statusSocket = null;
     public static JFrame frame = new JFrame("File Sender");
     public static Object previousDir = null;
     public static Stack dirStack = new Stack();
@@ -25,4 +26,5 @@ public class globals {
     public static RSAPublicKey pubKey = null;
     public static RSAPrivateKey privKey = null;
     public static RSAPublicKey remoteKey = null;
+    public static volatile boolean isConnected = false;
 }

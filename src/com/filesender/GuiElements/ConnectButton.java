@@ -3,6 +3,7 @@ package com.filesender.GuiElements;
 import com.filesender.Connection;
 import com.filesender.HelperClasses.IPAddressValidator;
 import com.filesender.HelperClasses.Log;
+import com.filesender.HelperClasses.ServerStatus;
 import com.filesender.HelperClasses.globals;
 import com.filesender.Receiver;
 
@@ -39,6 +40,10 @@ public class ConnectButton extends JButton {
                     Log.Write("Connection error...");
                 }
                 if (globals.connectionSocket != null) {
+                    globals.isConnected = true;
+                    ServerStatus connectionStatusChecker = new ServerStatus();
+                    connectionStatusChecker.setDaemon(true);
+                    connectionStatusChecker.start();
                     Log.Write("Connected to remote!");
                     try {
                         Connection.exchangeKeys();
