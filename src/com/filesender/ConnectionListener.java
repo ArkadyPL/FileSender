@@ -4,10 +4,13 @@ import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.globals;
 
 import javax.swing.tree.TreeModel;
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.interfaces.RSAPublicKey;
 
 //   ID LIST
 /*  0 - keepalive - connection test
@@ -54,10 +57,12 @@ public class ConnectionListener {
             Sender.sendFile(basicOp.argument1,localTreeModel,connectedSocket,serverSocket);
         }
         else if(basicOp.opID == 5){//save new public key from arg1 and send your public key in arg1
-            Connection.sendBackKey(basicOp,localTreeModel,serverSocket,connectedSocket);
-        }
-        else if(basicOp.opID == 6) {
-            Connection.getKey(basicOp,localTreeModel,serverSocket,connectedSocket);
+            globals.remoteKey = (RSAPublicKey)basicOp.obj1;
+            Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
+            ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
+            operation basicOperation = new operation(6, null,null, globals.pubKey);
+            ostream.writeObject(basicOperation);
+            ConnectionListener.ListenForIncomingConnections(localTreeModel, serverSocket);
         }
         return connectedSocket;
     }
