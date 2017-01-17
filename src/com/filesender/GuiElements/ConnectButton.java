@@ -6,7 +6,6 @@ import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.ServerStatus;
 import com.filesender.HelperClasses.globals;
 import com.filesender.Receiver;
-import com.filesender.Sender;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,7 +47,7 @@ public class ConnectButton extends JButton {
                     globals.remoteTree.setEnabled(true);
                     Log.Write("Connected to: "+ remoteIPTextField.getText());
                     try {
-                        Connection.exchangeKeys(globals.connectionSocket);
+                        Connection.sendKey(globals.connectionSocket);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
