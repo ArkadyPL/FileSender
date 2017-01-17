@@ -51,6 +51,11 @@ public class ConnectButton extends JButton {
                         e.printStackTrace();
                     }
                     try {
+                        globals.connectionSocket = new Socket(globals.remoteIP, 9990);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
                         Receiver.receiveTree(globals.remoteTree,globals.connectionSocket,"root",false);
                     } catch (IOException e) {
                         e.printStackTrace();
