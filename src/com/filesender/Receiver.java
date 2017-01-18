@@ -86,7 +86,7 @@ public class Receiver {
 //                out.write(buffer, 0, count);
 //            }
 
-            Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+            Cipher cipher = Cipher.getInstance("RSA/None/NoPadding\", \"BC\"");
             cipher.init(Cipher.DECRYPT_MODE, globals.pubKey);
             CipherInputStream cipherIn = new CipherInputStream(is, cipher);
 

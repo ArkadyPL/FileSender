@@ -75,7 +75,7 @@ public class Sender extends  Thread {
         out = socket.getOutputStream();
         Log.Write("Sending files");
 
-        Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+        Cipher cipher = Cipher.getInstance("RSA/None/NoPadding\", \"BC\"");
         cipher.init(Cipher.ENCRYPT_MODE, globals.pubKey);
         CipherOutputStream cipherOut = new CipherOutputStream(out, cipher);
         byte[] fileBuffer = new byte[8192];
