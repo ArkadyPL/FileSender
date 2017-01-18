@@ -37,7 +37,7 @@ public class Connection {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        KeyGen.init(128);
+        KeyGen.init(64);
         globals.symmetricKey = KeyGen.generateKey();
         Log.WriteTerminal("SymmetricKey:\n" + DatatypeConverter.printHexBinary(globals.symmetricKey.getEncoded()));
         ostream.writeObject(RSA.encrypt(globals.symmetricKey));
