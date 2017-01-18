@@ -3,9 +3,6 @@ package com.filesender.HelperClasses;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by arkadiusz.ryszewski on 10.01.2017.
- */
 public class IPAddressValidator {
     private Pattern pattern;
     private Matcher matcher;

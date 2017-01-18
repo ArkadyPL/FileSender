@@ -1,7 +1,7 @@
 package com.filesender;
 
-import com.filesender.HelperClasses.Log;
-import com.filesender.HelperClasses.globals;
+import com.filesender.Cryptography.AES;
+import com.filesender.HelperClasses.*;
 
 import java.io.*;
 import java.net.Socket;
@@ -14,10 +14,8 @@ import javax.swing.tree.TreePath;
 
 public class Receiver {
 
-    static int maxsize = 999999999;
-    static int byteread;
-    static int current = 0;
-    public static void buildRemoteTree(JTree remoteTree, Socket socket,Object dir, Boolean back) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public static void receiveTree(JTree remoteTree, Socket socket,Object dir, Boolean back) throws FileNotFoundException, IOException, ClassNotFoundException {
+        if( !globals.isConnected ) return;
         if(globals.previousDir != null) {
             if(back != true) {
                 globals.previousDir = remoteTree.getModel().getChild(remoteTree.getModel().getRoot(), 0);
@@ -29,11 +27,11 @@ public class Receiver {
         }
 
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
-        operation basicOperation = new operation(1,dir.toString(),null,dir);
-        ostream.writeObject(basicOperation);
+        Operation basicOperation = new Operation(1,dir.toString(),null,dir);
+        ostream.writeObject(basicOperation.encryptFields());
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
-        to_send serverTreeNode;
-        serverTreeNode = (to_send)inFromServer.readObject();
+        ToSend serverTreeNode;
+        serverTreeNode = (ToSend)AES.decrypt((byte[])inFromServer.readObject());
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("...");
         DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(serverTreeNode.node);
         if(inFromServer == null) {
@@ -42,7 +40,7 @@ public class Receiver {
         else {
             while (serverTreeNode != null) {
                 try {
-                    serverTreeNode = (to_send) inFromServer.readObject();
+                    serverTreeNode = (ToSend) AES.decrypt((byte[])inFromServer.readObject());
                 } catch (java.io.EOFException e) {
                     break;
                 }
@@ -65,28 +63,34 @@ public class Receiver {
     }
 
     public static void receiveFile(Socket socket, Object filePath) throws IOException {
+        if( !globals.isConnected ) return;
         String fileName = filePath.toString();
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
-        operation basicOperation = new operation(2,fileName,null,filePath);
-        ostream.writeObject(basicOperation);
+        Operation basicOperation = new Operation(2,fileName,null,filePath);
+        ostream.writeObject(basicOperation.encryptFields());
         Path p = Paths.get(fileName);
         String fileSaveName = p.getFileName().toString();
 
-        InputStream is = socket.getInputStream();
-        File test = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
-        test.createNewFile();
-        FileOutputStream fos = new FileOutputStream(test);
+        Log.Write("Receiving the file \"" + fileSaveName + "\"");
+        File encryptedFile = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
+        encryptedFile.createNewFile();
+        FileOutputStream fos = new FileOutputStream(encryptedFile);
         BufferedOutputStream out = new BufferedOutputStream(fos);
 
-        int count;
-        byte[] buffer = new byte[8192]; // or 4096, or more
-        while ((count = is.read(buffer)) > 0)
-        {
-            out.write(buffer, 0, count);
+        ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
+        Operation basicOp = null;
+        try {
+            basicOp = (Operation)inFromServer.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        out.flush();
+        basicOp.decryptFields();
+        int count;
+        out.write((byte[])basicOp.obj1, 0, Integer.parseInt(basicOp.argument1));
+        out.close();
         fos.close();
-        is.close();
-        Log.WriteTerminal("byeeee");
+        inFromServer.close();
+
+        Log.Write("File \"" + fileSaveName + "\" saved");
     }
 }
