@@ -72,11 +72,12 @@ public class Receiver {
         String fileSaveName = p.getFileName().toString();
 
         Log.Write("Receiving the file \"" + fileSaveName + "\"");
-        InputStream is = socket.getInputStream();
         File encryptedFile = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
         encryptedFile.createNewFile();
         FileOutputStream fos = new FileOutputStream(encryptedFile);
         BufferedOutputStream out = new BufferedOutputStream(fos);
+        /*old version
+        InputStream is = socket.getInputStream();
         int count;
         byte[] buffer = new byte[8192]; // or 4096, or more
         while ((count = is.read(buffer)) > 0)
@@ -86,6 +87,25 @@ public class Receiver {
         out.flush();
         fos.close();
         is.close();
+        */
+
+        //new version
+        ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
+        Operation basicOp = null;
+        try {
+            basicOp = (Operation)inFromServer.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        basicOp.decryptFields();
+        byte[] buffer = new byte[Integer.parseInt(basicOp.argument1)];
+        int count;
+        out.write(buffer, 0, buffer.length);
+        out.close();
+        fos.close();
+        inFromServer.close();
+        //new version
+
         Log.Write("File \"" + fileSaveName + "\" saved");
     }
 }

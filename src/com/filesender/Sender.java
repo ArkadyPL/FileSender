@@ -52,15 +52,24 @@ public class Sender {
         Log.Write("File to send: " + current_file);
         File myFile = new File(current_file);
         byte[] buffer = new byte[(int) myFile.length()];
-        out = socket.getOutputStream();
         FileInputStream fis = new FileInputStream(myFile);
         BufferedInputStream in = new BufferedInputStream(fis);
         in.read(buffer,0,buffer.length);
+        /*old version
         out = socket.getOutputStream();
         Log.Write("Sending files");
         out.write(buffer,0, buffer.length);
         out.flush();
         out.close();
+        old version*/
+
+        //new version
+        String length = ((Integer)buffer.length).toString();
+        ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
+        Operation basicOperation = new Operation(10, length,null, buffer);
+        ostream.writeObject(basicOperation.encryptFields());
+        //new version
+
         in.close();
         Log.Write("Finished sending");
         socket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
