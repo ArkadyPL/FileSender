@@ -55,20 +55,10 @@ public class Sender {
         FileInputStream fis = new FileInputStream(myFile);
         BufferedInputStream in = new BufferedInputStream(fis);
         in.read(buffer,0,buffer.length);
-        /*old version
-        out = socket.getOutputStream();
-        Log.Write("Sending files");
-        out.write(buffer,0, buffer.length);
-        out.flush();
-        out.close();
-        old version*/
-
-        //new version
         String length = ((Integer)buffer.length).toString();
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
         Operation basicOperation = new Operation(10, length,null, buffer);
         ostream.writeObject(basicOperation.encryptFields());
-        //new version
 
         in.close();
         Log.Write("Finished sending");

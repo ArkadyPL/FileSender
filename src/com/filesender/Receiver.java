@@ -76,20 +76,7 @@ public class Receiver {
         encryptedFile.createNewFile();
         FileOutputStream fos = new FileOutputStream(encryptedFile);
         BufferedOutputStream out = new BufferedOutputStream(fos);
-        /*old version
-        InputStream is = socket.getInputStream();
-        int count;
-        byte[] buffer = new byte[8192]; // or 4096, or more
-        while ((count = is.read(buffer)) > 0)
-        {
-            out.write(buffer, 0, count);
-        }
-        out.flush();
-        fos.close();
-        is.close();
-        */
 
-        //new version
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
         Operation basicOp = null;
         try {
@@ -98,13 +85,11 @@ public class Receiver {
             e.printStackTrace();
         }
         basicOp.decryptFields();
-        byte[] buffer = new byte[Integer.parseInt(basicOp.argument1)];
         int count;
-        out.write(buffer, 0, buffer.length);
+        out.write((byte[])basicOp.obj1, 0, Integer.parseInt(basicOp.argument1));
         out.close();
         fos.close();
         inFromServer.close();
-        //new version
 
         Log.Write("File \"" + fileSaveName + "\" saved");
     }
