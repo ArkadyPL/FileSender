@@ -31,10 +31,11 @@ public class ConnectionListener {
 
         if(basicOp.opID == 1) {//Rebuild tree for argument as a root
             Log.WriteTerminal("Operation ID 1 executed");
-            Sender.sendTree(connectedSocket,localTreeModel,serverSocket,basicOp);
+            Sender.sendTree(connectedSocket,localTreeModel,serverSocket,basicOp.decryptFields());
         }
         else if(basicOp.opID == 2) {//Send given file
-            Sender.sendFile(basicOp.argument1,localTreeModel,connectedSocket,serverSocket);
+            Sender.sendFile(basicOp.decryptFields().argument1,localTreeModel,connectedSocket,serverSocket);
+
         }else if(basicOp.opID == 5){//save new public key from arg1 and send your public key in arg1
             globals.remoteKey = (RSAPublicKey)basicOp.obj1;
             Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));

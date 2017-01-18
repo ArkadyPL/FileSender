@@ -28,7 +28,7 @@ public class Receiver {
 
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
         Operation basicOperation = new Operation(1,dir.toString(),null,dir);
-        ostream.writeObject(basicOperation);
+        ostream.writeObject(basicOperation.encryptFields());
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
         ToSend serverTreeNode;
         serverTreeNode = (ToSend)AES.decrypt((byte[])inFromServer.readObject());
@@ -67,17 +67,16 @@ public class Receiver {
         String fileName = filePath.toString();
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
         Operation basicOperation = new Operation(2,fileName,null,filePath);
-        ostream.writeObject(basicOperation);
+        ostream.writeObject(basicOperation.encryptFields());
         Path p = Paths.get(fileName);
         String fileSaveName = p.getFileName().toString();
 
         Log.Write("Receiving the file \"" + fileSaveName + "\"");
         InputStream is = socket.getInputStream();
-        File test = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
-        test.createNewFile();
-        FileOutputStream fos = new FileOutputStream(test);
+        File encryptedFile = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
+        encryptedFile.createNewFile();
+        FileOutputStream fos = new FileOutputStream(encryptedFile);
         BufferedOutputStream out = new BufferedOutputStream(fos);
-
         int count;
         byte[] buffer = new byte[8192]; // or 4096, or more
         while ((count = is.read(buffer)) > 0)
@@ -87,6 +86,27 @@ public class Receiver {
         out.flush();
         fos.close();
         is.close();
+        out.close();
+
+
+        File myFile = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
+        buffer = new byte[(int) myFile.length()];
+        FileInputStream fis = new FileInputStream(myFile);
+        BufferedInputStream in = new BufferedInputStream(fis);
+        in.read(buffer,0,buffer.length);
+        myFile.delete();
+
+        buffer = (byte[])AES.decrypt(buffer);
+
+        File newFile = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
+        newFile.createNewFile();
+        fos = new FileOutputStream(newFile);
+        out = new BufferedOutputStream(fos);
+        out.write(buffer, 0, buffer.length);
+        out.flush();
+        fos.close();
+        out.close();
+
         Log.Write("File \"" + fileSaveName + "\" saved");
     }
 }

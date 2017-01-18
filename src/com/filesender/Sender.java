@@ -58,7 +58,7 @@ public class Sender {
         in.read(buffer,0,buffer.length);
         out = socket.getOutputStream();
         Log.Write("Sending files");
-        out.write(buffer,0, buffer.length);
+        out.write(AES.encrypt(buffer),0, buffer.length);
         out.flush();
         out.close();
         in.close();
