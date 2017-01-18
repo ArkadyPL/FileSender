@@ -4,7 +4,9 @@ import com.filesender.GuiElements.Toolbar;
 import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.globals;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import java.awt.*;
@@ -27,13 +29,14 @@ import javax.xml.bind.DatatypeConverter;
 public class FileSender {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException {
+
         globals.statusSocket = new ServerSocket(7899);
         globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
         globals.remoteTree.setEnabled(false);
         globals.logTextArea.setAlignmentX(StyleConstants.ALIGN_CENTER);
         Cipher cipher = Cipher.getInstance("RSA");
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(512);
+        kpg.initialize(1024);
         KeyPair kp = kpg.genKeyPair();
         globals.pubKey = (RSAPublicKey) kp.getPublic();
         globals.privKey = (RSAPrivateKey) kp.getPrivate();
@@ -124,6 +127,10 @@ public class FileSender {
                             } catch (InvalidKeyException e1) {
                                 e1.printStackTrace();
                             } catch (NoSuchProviderException e1) {
+                                e1.printStackTrace();
+                            } catch (IllegalBlockSizeException e1) {
+                                e1.printStackTrace();
+                            } catch (BadPaddingException e1) {
                                 e1.printStackTrace();
                             }
                         }

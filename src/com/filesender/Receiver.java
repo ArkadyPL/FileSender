@@ -5,9 +5,7 @@ import com.filesender.HelperClasses.globals;
 
 import java.io.*;
 import java.net.Socket;
-import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
-import javax.crypto.NoSuchPaddingException;
+import javax.crypto.*;
 import javax.swing.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -66,18 +64,19 @@ public class Receiver {
         }
     }
 
-    public static void receiveFile(Socket socket, Object filePath) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException {
+    public static void receiveFile(Socket socket, Object filePath) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, BadPaddingException, IllegalBlockSizeException {
         if (globals.isConnected) {
             String fileName = filePath.toString();
             ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
             operation basicOperation = new operation(2, fileName, null, filePath);
             ostream.writeObject(basicOperation);
+            ostream.flush();
             Path p = Paths.get(fileName);
             String fileSaveName = p.getFileName().toString();
 
-            InputStream is = socket.getInputStream();
+
             File test = new File(System.getProperty("user.home") + "\\Desktop\\" + fileSaveName);
-            test.createNewFile();
+
           //  FileOutputStream fos = new FileOutputStream(test);
           //  BufferedOutputStream out = new BufferedOutputStream(fos);
 
@@ -86,17 +85,19 @@ public class Receiver {
 //            while ((count = is.read(buffer)) > 0) {
 //                out.write(buffer, 0, count);
 //            }
+            InputStream is = socket.getInputStream();
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.DECRYPT_MODE, globals.remoteKey);
 
-            Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
-            cipher.init(Cipher.DECRYPT_MODE, globals.pubKey);
             CipherInputStream cipherIn = new CipherInputStream(is, cipher);
-
-            byte[] fileBuffer = new byte[8192];
+            test.createNewFile();
+            byte[] fileBuffer = new byte[128];
             FileOutputStream fileWriter = new FileOutputStream(test);
             int bytesRead;
             while((bytesRead = cipherIn.read(fileBuffer)) > 0){
-                fileWriter.write(fileBuffer, 0, bytesRead);
+                fileWriter.write(cipher.doFinal(fileBuffer));
             }
+
             fileWriter.flush();
             fileWriter.close();
             is.close();

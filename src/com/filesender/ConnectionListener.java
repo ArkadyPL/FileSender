@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
 //   ID LIST
@@ -61,10 +62,10 @@ public class ConnectionListener {
             Sender.sendFile(basicOp.argument1,localTreeModel,connectedSocket,serverSocket);
         }
         else if(basicOp.opID == 5){//save new public key from arg1 and send your public key in arg1
-            globals.remoteKey = (RSAPublicKey)basicOp.obj1;
+            globals.remoteKey = (RSAPrivateKey)basicOp.obj1;
             Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
             ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
-            operation basicOperation = new operation(6, null,null, globals.pubKey);
+            operation basicOperation = new operation(6, null,null, globals.privKey);
             ostream.writeObject(basicOperation);
             ConnectionListener.ListenForIncomingConnections(localTreeModel, serverSocket);
         }

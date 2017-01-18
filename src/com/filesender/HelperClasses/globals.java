@@ -26,5 +26,5 @@ public class globals {
     public static JTextArea logTextArea = new JTextArea("Started working...");
     public static RSAPublicKey pubKey = null;
     public static RSAPrivateKey privKey = null;
-    public static RSAPublicKey remoteKey = null;
+    public static RSAPrivateKey remoteKey = null;
 }
