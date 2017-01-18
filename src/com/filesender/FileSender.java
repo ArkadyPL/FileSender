@@ -11,10 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import java.io.*;
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Objects;
@@ -29,7 +26,7 @@ import javax.xml.bind.DatatypeConverter;
 
 public class FileSender {
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException {
         globals.statusSocket = new ServerSocket(7899);
         globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
         globals.remoteTree.setEnabled(false);
@@ -125,6 +122,8 @@ public class FileSender {
                             } catch (NoSuchAlgorithmException e1) {
                                 e1.printStackTrace();
                             } catch (InvalidKeyException e1) {
+                                e1.printStackTrace();
+                            } catch (NoSuchProviderException e1) {
                                 e1.printStackTrace();
                             }
                         }

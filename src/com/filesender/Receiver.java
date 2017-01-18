@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -65,7 +66,7 @@ public class Receiver {
         }
     }
 
-    public static void receiveFile(Socket socket, Object filePath) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public static void receiveFile(Socket socket, Object filePath) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException {
         if (globals.isConnected) {
             String fileName = filePath.toString();
             ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
@@ -86,7 +87,7 @@ public class Receiver {
 //                out.write(buffer, 0, count);
 //            }
 
-            Cipher cipher = Cipher.getInstance("RSA/None/NoPadding\", \"BC\"");
+            Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
             cipher.init(Cipher.DECRYPT_MODE, globals.pubKey);
             CipherInputStream cipherIn = new CipherInputStream(is, cipher);
 

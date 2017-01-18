@@ -8,6 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
@@ -28,7 +29,7 @@ public class Sender extends  Thread {
     static OutputStream out = null;
     static Queue queue = new LinkedList();
 
-    public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, ServerSocket servSock, operation rooot) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, ServerSocket servSock, operation rooot) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException {
         ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
         File rootObj =  null;
         if(Objects.equals(rooot.argument1, "root")) {
@@ -59,7 +60,7 @@ public class Sender extends  Thread {
         connectedSocket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
     }
 
-    public static int sendFile(String current_file,  TreeModel localTreeModel, Socket socket,ServerSocket servSock) throws IOException, ClassNotFoundException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException {
+    public static int sendFile(String current_file,  TreeModel localTreeModel, Socket socket,ServerSocket servSock) throws IOException, ClassNotFoundException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException {
         Log.Write("File to send: " + current_file);
         File myFile = new File(current_file);
         byte[] buffer = new byte[(int) myFile.length()];
@@ -75,7 +76,7 @@ public class Sender extends  Thread {
         out = socket.getOutputStream();
         Log.Write("Sending files");
 
-        Cipher cipher = Cipher.getInstance("RSA/None/NoPadding\", \"BC\"");
+        Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
         cipher.init(Cipher.ENCRYPT_MODE, globals.pubKey);
         CipherOutputStream cipherOut = new CipherOutputStream(out, cipher);
         byte[] fileBuffer = new byte[8192];
