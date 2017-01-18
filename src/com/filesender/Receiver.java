@@ -83,29 +83,6 @@ public class Receiver {
         {
             out.write(buffer, 0, count);
         }
-        out.flush();
-        fos.close();
-        is.close();
-        out.close();
-
-        File myFile = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
-        buffer = new byte[(int) myFile.length()];
-        FileInputStream fis = new FileInputStream(myFile);
-        BufferedInputStream in = new BufferedInputStream(fis);
-        in.read(buffer,0,buffer.length);
-        myFile.delete();
-
-        buffer = (byte[])AES.decrypt(buffer);
-
-        File newFile = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
-        newFile.createNewFile();
-        fos = new FileOutputStream(newFile);
-        out = new BufferedOutputStream(fos);
-        out.write(buffer, 0, buffer.length);
-        out.flush();
-        fos.close();
-        out.close();
-
         Log.Write("File \"" + fileSaveName + "\" saved");
     }
 }
