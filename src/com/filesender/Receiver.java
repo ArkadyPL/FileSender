@@ -1,6 +1,6 @@
 package com.filesender;
 
-import com.filesender.Cryptography.RSA;
+import com.filesender.Cryptography.AES;
 import com.filesender.HelperClasses.*;
 
 import java.io.*;
@@ -31,7 +31,7 @@ public class Receiver {
         ostream.writeObject(basicOperation);
         ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
         ToSend serverTreeNode;
-        serverTreeNode = (ToSend) RSA.decrypt((byte[])inFromServer.readObject());
+        serverTreeNode = (ToSend)AES.decrypt((byte[])inFromServer.readObject());
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("...");
         DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(serverTreeNode.node);
         if(inFromServer == null) {
@@ -40,7 +40,7 @@ public class Receiver {
         else {
             while (serverTreeNode != null) {
                 try {
-                    serverTreeNode = (ToSend)RSA.decrypt((byte[])inFromServer.readObject());
+                    serverTreeNode = (ToSend) AES.decrypt((byte[])inFromServer.readObject());
                 } catch (java.io.EOFException e) {
                     break;
                 }

@@ -2,7 +2,7 @@ package com.filesender;
 
 import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.Operation;
-import com.filesender.Cryptography.RSA;
+import com.filesender.Cryptography.AES;
 import com.filesender.HelperClasses.ToSend;
 
 import java.io.*;
@@ -27,19 +27,19 @@ public class Sender {
             rootObj = new File(rooot.obj1.toString());
         }
         ToSend ts = new ToSend(rootObj,true);
-        ostream.writeObject(RSA.encrypt(ts));
+        ostream.writeObject(AES.encrypt(ts));
         Log.Write("Sending file tree...");
         for(int i = 0; i < localTreeModel.getChildCount(rootObj);i++) {
             if( localTreeModel.isLeaf(localTreeModel.getChild(rootObj,i)) ) {
                 ToSend ts2 = new ToSend(localTreeModel.getChild(rootObj,i),false);
                 //Log.WriteTerminal("sending: " + ts2.node);
-                ostream.writeObject(RSA.encrypt(ts2));
+                ostream.writeObject(AES.encrypt(ts2));
                 queue.add(localTreeModel.getChild(rootObj,i));
             }
             else {
                 ToSend ts2 = new ToSend(localTreeModel.getChild(rootObj,i),true);
                 Log.WriteTerminal("sending: " + ts2.node);
-                ostream.writeObject(RSA.encrypt(ts2));
+                ostream.writeObject(AES.encrypt(ts2));
                 queue.add(localTreeModel.getChild(rootObj,i));
             }
         }
