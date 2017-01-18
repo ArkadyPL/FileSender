@@ -88,7 +88,6 @@ public class Receiver {
         is.close();
         out.close();
 
-
         File myFile = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
         buffer = new byte[(int) myFile.length()];
         FileInputStream fis = new FileInputStream(myFile);
