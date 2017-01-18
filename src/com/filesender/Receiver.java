@@ -79,10 +79,13 @@ public class Receiver {
         BufferedOutputStream out = new BufferedOutputStream(fos);
         int count;
         byte[] buffer = new byte[8192]; // or 4096, or more
-        while ((count = is.read((byte[])AES.decrypt(buffer))) > 0)
+        while ((count = is.read(buffer)) > 0)
         {
             out.write(buffer, 0, count);
         }
+        out.flush();
+        fos.close();
+        is.close();
         Log.Write("File \"" + fileSaveName + "\" saved");
     }
 }
