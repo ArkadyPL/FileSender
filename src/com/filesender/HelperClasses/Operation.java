@@ -43,7 +43,7 @@ public class Operation implements java.io.Serializable {
         this.argument1Encrypted = null;
         this.argument2 = (String)AES.decrypt(this.argument2Encrypted);
         this.argument2Encrypted = null;
-        this.obj1 = AES.encrypt(this.obj1Encrypted);
+        this.obj1 = AES.decrypt(this.obj1Encrypted);
         this.obj1Encrypted = null;
         return this;
     }
