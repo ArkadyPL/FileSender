@@ -64,6 +64,7 @@ public class Sender extends  Thread {
         Log.Write("File to send: " + current_file);
         File myFile = new File(current_file);
         byte[] buffer = new byte[(int) myFile.length()];
+
         out = socket.getOutputStream();
         FileInputStream fis = null;
         try {
@@ -73,10 +74,16 @@ public class Sender extends  Thread {
             operation op1 = new operation(1,current_file,null,current_file);
             Sender.sendTree(socket,localTreeModel,servSock,op1);
         }
+        BufferedInputStream in = new BufferedInputStream(fis);
+        in.read(buffer,0,buffer.length);
         out = socket.getOutputStream();
         Log.Write("Sending files");
-
-        Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
+        out.write(buffer,0, buffer.length);
+        out.flush();
+        out.close();
+        in.close();
+        /*
+        Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, globals.pubKey);
         CipherOutputStream cipherOut = new CipherOutputStream(out, cipher);
         byte[] fileBuffer = new byte[8192];
@@ -87,7 +94,7 @@ public class Sender extends  Thread {
         }
         cipherOut.flush();
         cipherOut.close();
-
+        */
         Log.Write("Finished sending");
         socket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
         return 0;

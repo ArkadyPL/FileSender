@@ -76,16 +76,15 @@ public class Receiver {
 
 
             File test = new File(System.getProperty("user.home") + "\\Desktop\\" + fileSaveName);
-
-          //  FileOutputStream fos = new FileOutputStream(test);
-          //  BufferedOutputStream out = new BufferedOutputStream(fos);
-
-//            int count;
-//            byte[] buffer = new byte[8192]; // or 4096, or more
-//            while ((count = is.read(buffer)) > 0) {
-//                out.write(buffer, 0, count);
-//            }
             InputStream is = socket.getInputStream();
+            FileOutputStream fos = new FileOutputStream(test);
+            BufferedOutputStream out = new BufferedOutputStream(fos);
+            int count;
+            byte[] buffer = new byte[8192]; // or 4096, or more
+            while ((count = is.read(buffer)) > 0) {
+                out.write(buffer, 0, count);
+            }
+          /*
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, globals.remoteKey);
 
@@ -95,11 +94,13 @@ public class Receiver {
             FileOutputStream fileWriter = new FileOutputStream(test);
             int bytesRead;
             while((bytesRead = cipherIn.read(fileBuffer)) > 0){
-                fileWriter.write(cipher.doFinal(fileBuffer));
+                fileWriter.write(fileBuffer);
             }
-
-            fileWriter.flush();
-            fileWriter.close();
+            */
+           // fileWriter.flush();
+           // fileWriter.close();
+            out.flush();
+            fos.close();
             is.close();
             Log.Write("File: " + fileSaveName + " downloaded.");
         }
