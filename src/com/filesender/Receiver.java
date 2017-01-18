@@ -5,9 +5,14 @@ import com.filesender.HelperClasses.globals;
 
 import java.io.*;
 import java.net.Socket;
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -60,7 +65,7 @@ public class Receiver {
         }
     }
 
-    public static void receiveFile(Socket socket, Object filePath) throws IOException {
+    public static void receiveFile(Socket socket, Object filePath) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         if (globals.isConnected) {
             String fileName = filePath.toString();
             ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
@@ -72,18 +77,29 @@ public class Receiver {
             InputStream is = socket.getInputStream();
             File test = new File(System.getProperty("user.home") + "\\Desktop\\" + fileSaveName);
             test.createNewFile();
-            FileOutputStream fos = new FileOutputStream(test);
-            BufferedOutputStream out = new BufferedOutputStream(fos);
+          //  FileOutputStream fos = new FileOutputStream(test);
+          //  BufferedOutputStream out = new BufferedOutputStream(fos);
 
-            int count;
-            byte[] buffer = new byte[8192]; // or 4096, or more
-            while ((count = is.read(buffer)) > 0) {
-                out.write(buffer, 0, count);
+//            int count;
+//            byte[] buffer = new byte[8192]; // or 4096, or more
+//            while ((count = is.read(buffer)) > 0) {
+//                out.write(buffer, 0, count);
+//            }
+
+            Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, globals.pubKey);
+            CipherInputStream cipherIn = new CipherInputStream(is, cipher);
+
+            byte[] fileBuffer = new byte[8192];
+            FileOutputStream fileWriter = new FileOutputStream(test);
+            int bytesRead;
+            while((bytesRead = cipherIn.read(fileBuffer)) > 0){
+                fileWriter.write(fileBuffer, 0, bytesRead);
             }
-            out.flush();
-            fos.close();
+            fileWriter.flush();
+            fileWriter.close();
             is.close();
-            Log.WriteTerminal("File: " + fileSaveName + " downloaded.");
+            Log.Write("File: " + fileSaveName + " downloaded.");
         }
     }
 }

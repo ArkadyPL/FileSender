@@ -20,7 +20,9 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Objects;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
+import javax.swing.text.StyleConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.xml.bind.DatatypeConverter;
 
@@ -29,8 +31,9 @@ public class FileSender {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         globals.statusSocket = new ServerSocket(7899);
-
-
+        globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
+        globals.remoteTree.setEnabled(false);
+        globals.logTextArea.setAlignmentX(StyleConstants.ALIGN_CENTER);
         Cipher cipher = Cipher.getInstance("RSA");
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
         kpg.initialize(512);
@@ -69,6 +72,7 @@ public class FileSender {
         JScrollPane remoteTreePane = new JScrollPane(globals.remoteTree);//Not displayed when not connected
 
         JScrollPane log = new JScrollPane (globals.logTextArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         log.setPreferredSize(new Dimension(1000, 140));
 
         // Display it all in a window and make the window appear
@@ -115,6 +119,12 @@ public class FileSender {
                                 globals.connectionSocket = new Socket(globals.remoteIP, 9990);
                                 Receiver.receiveFile(globals.connectionSocket, selPath.getLastPathComponent());
                             } catch (IOException e1) {
+                                e1.printStackTrace();
+                            } catch (NoSuchPaddingException e1) {
+                                e1.printStackTrace();
+                            } catch (NoSuchAlgorithmException e1) {
+                                e1.printStackTrace();
+                            } catch (InvalidKeyException e1) {
                                 e1.printStackTrace();
                             }
                         }

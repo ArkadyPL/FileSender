@@ -3,6 +3,7 @@ package com.filesender;
 import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.globals;
 
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.tree.TreeModel;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
@@ -10,6 +11,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 
 //   ID LIST
@@ -33,7 +36,7 @@ class operation implements java.io.Serializable {
 }
 
 public class ConnectionListener {
-    public static Socket ListenForIncomingConnections(TreeModel localTreeModel, ServerSocket serverSocket) throws IOException, ClassNotFoundException {
+    public static Socket ListenForIncomingConnections(TreeModel localTreeModel, ServerSocket serverSocket) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
 
         Socket connectedSocket;
         Log.Write("Waiting for incoming connections...");

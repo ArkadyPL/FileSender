@@ -21,11 +21,7 @@ public class ServerStatus extends Thread{
                     System.out.println("Server available");
                     s.close();
                 } catch (IOException e) {
-                    try {
-                        s.close();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
+
                     globals.isConnected = false;
                     Log.Write("Connection lost!");
                     globals.previousDir = null;

@@ -6,9 +6,14 @@ import com.filesender.HelperClasses.globals;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
+import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.tree.TreeModel;
 class to_send implements java.io.Serializable {
     Object node;
@@ -23,7 +28,7 @@ public class Sender extends  Thread {
     static OutputStream out = null;
     static Queue queue = new LinkedList();
 
-    public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, ServerSocket servSock, operation rooot) throws IOException, ClassNotFoundException {
+    public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, ServerSocket servSock, operation rooot) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
         File rootObj =  null;
         if(Objects.equals(rooot.argument1, "root")) {
@@ -54,7 +59,7 @@ public class Sender extends  Thread {
         connectedSocket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
     }
 
-    public static int sendFile(String current_file,  TreeModel localTreeModel, Socket socket,ServerSocket servSock) throws IOException, ClassNotFoundException {
+    public static int sendFile(String current_file,  TreeModel localTreeModel, Socket socket,ServerSocket servSock) throws IOException, ClassNotFoundException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException {
         Log.Write("File to send: " + current_file);
         File myFile = new File(current_file);
         byte[] buffer = new byte[(int) myFile.length()];
@@ -67,14 +72,21 @@ public class Sender extends  Thread {
             operation op1 = new operation(1,current_file,null,current_file);
             Sender.sendTree(socket,localTreeModel,servSock,op1);
         }
-        BufferedInputStream in = new BufferedInputStream(fis);
-        in.read(buffer,0,buffer.length);
         out = socket.getOutputStream();
         Log.Write("Sending files");
-        out.write(buffer,0, buffer.length);
-        out.flush();
-        out.close();
-        in.close();
+
+        Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, globals.pubKey);
+        CipherOutputStream cipherOut = new CipherOutputStream(out, cipher);
+        byte[] fileBuffer = new byte[8192];
+        InputStream fileReader = new BufferedInputStream(fis);
+        int bytesRead;
+        while((bytesRead = fileReader.read(fileBuffer)) > 0){
+            cipherOut.write(fileBuffer, 0, bytesRead);
+        }
+        cipherOut.flush();
+        cipherOut.close();
+
         Log.Write("Finished sending");
         socket = ConnectionListener.ListenForIncomingConnections(localTreeModel,servSock);
         return 0;
