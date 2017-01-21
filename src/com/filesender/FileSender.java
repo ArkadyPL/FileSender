@@ -35,7 +35,7 @@ public class FileSender {
         System.out.println("Your IP address is: " + globals.localIP);
         try { globals.serverSocket = new ServerSocket(9990); } catch (IOException e) { e.printStackTrace(); }
         globals.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        globals.frame.setMinimumSize(new Dimension(820, 300));
+        globals.frame.setMinimumSize(new Dimension(700, 300));
 
         Toolbar toolbar = new Toolbar(globals.localIP);
 

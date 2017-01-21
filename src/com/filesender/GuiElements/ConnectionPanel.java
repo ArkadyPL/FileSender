@@ -10,7 +10,7 @@ public class ConnectionPanel extends JPanel {
     public ConnectionPanel() {
         super();
         this.add(new JLabel("Remote IP:"));
-        JTextField remoteIPTextField = new JTextField(30);
+        JTextField remoteIPTextField = new JTextField(20);
         this.add(remoteIPTextField);
 
         this.add(new JLabel("PIN:"));

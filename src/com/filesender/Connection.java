@@ -26,7 +26,7 @@ public class Connection {
 
 
         Boolean isValid = new IPAddressValidator().validate(remoteIPTextField.getText());
-        Log.WriteTerminal("Connection button clicked. Remote IP value: " + remoteIPTextField.getText()  + "\tGiven IP address is " + (isValid ? "valid" : "not valid"));
+        Log.Write("Connection button clicked. Remote IP value: " + remoteIPTextField.getText()  + "\tGiven IP address is " + (isValid ? "valid" : "not valid"));
         if(isValid) {
             try { globals.remoteIP = InetAddress.getByName(remoteIPTextField.getText()); }
             catch (UnknownHostException e) { e.printStackTrace(); }
