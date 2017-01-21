@@ -20,7 +20,7 @@ public class Connection {
 
    public static void connectToRemote(JTextField remoteIPTextField, JTextField remotePinTF){
         if(remoteIPTextField.getText().equals("") || remotePinTF.getText().equals("")) {
-            Log.Write("Connection failed: remote IP and PIN cannot be empty");
+            Log.Write("Error: remote IP and PIN cannot be empty!");
             return;
         }
         try { globals.remoteIP = InetAddress.getByName(remoteIPTextField.getText()); }
@@ -32,7 +32,8 @@ public class Connection {
             try {
                 Log.Write("Trying to connect to remote server...");
                 globals.connectionSocket = new Socket(globals.remoteIP, 9990);
-            } catch (ConnectException e) { Log.Write("Remote is not available..."); }
+            }
+            catch (ConnectException e) { Log.Write("Remote is not available..."); }
             catch (Exception e) { Log.Write("Connection error..."); }
 
             if (globals.connectionSocket != null) {
