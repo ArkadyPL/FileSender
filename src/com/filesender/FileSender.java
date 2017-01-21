@@ -26,6 +26,7 @@ public class FileSender {
         try { globals.statusSocket = new ServerSocket(7899); } catch (IOException e) { e.printStackTrace(); }
         globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
 
+        globals.generatePIN();
         RSA.initialize();
         AES.initialize();
 

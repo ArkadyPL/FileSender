@@ -22,7 +22,7 @@ public class Toolbar extends JToolBar{
 
         leftPanel.add(new JLabel("Your PIN is: "));
         //We use JTextField to enable selecting PIN with a mouse
-        JTextField localPinTextField = new JTextField(globals.generatePIN());
+        JTextField localPinTextField = new JTextField(globals.localPIN);
         localPinTextField.setEditable(false);
         localPinTextField.setBorder(null);
         localPinTextField.setForeground(UIManager.getColor("Label.foreground"));

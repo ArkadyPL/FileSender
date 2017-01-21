@@ -24,7 +24,7 @@ public class globals {
     public static JTree remoteTree = new JTree();
     public static JTextArea logTextArea = new JTextArea();;
     public static volatile boolean isConnected = false;
-    public static String PIN = null;
+    public static String localPIN = null;
 
     public static byte[] toByte(Object object){
         byte[] result = null;
@@ -68,12 +68,12 @@ public class globals {
     }
 
     public static String generatePIN(){
-        globals.PIN = "";
+        globals.localPIN = "";
         for(int i=0; i<4; i++){
             //Get one random digit and add it to PIN
-            globals.PIN += String.valueOf(Math.random()*10).substring(0,1);
+            globals.localPIN += String.valueOf(Math.random()*10).substring(0,1);
         }
-        Log.Write("Generated PIN is " + globals.PIN);
-        return globals.PIN;
+        Log.Write("Generated PIN is " + globals.localPIN);
+        return globals.localPIN;
     }
 }

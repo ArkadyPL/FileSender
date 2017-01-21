@@ -104,7 +104,7 @@ public class Connection {
 
         //Receive pin and compare to real value
         String tryPin = (String)RSA.decrypt((byte[])inFromServer.readObject());
-        if( !tryPin.equals(globals.PIN) ){
+        if( !tryPin.equals(globals.localPIN) ){
             ostream.writeObject(RSA.encrypt("WRONG_PIN"));
 
             Log.Write("Connection finished: wrong pin value!");
