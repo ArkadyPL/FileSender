@@ -78,21 +78,20 @@ public class Connection {
         ostream.writeObject(RSA.encrypt(remotePin));
 
         //Receive info if pin was ok. If it wasn't ok shut down the connection
-        String result = null;
-        try { result = (String)RSA.decrypt((byte[])inFromServer.readObject()); }
+        Operation response = null;
+        try { response = ((Operation)inFromServer.readObject()).decryptFields(); }
         catch (ClassNotFoundException e) { e.printStackTrace(); }
 
-        if(!result.equals("OK")){//If pin was not correct
+        if(!response.argument1.equals("OK")){//If pin was not correct
             globals.remoteIP = null;
             RSA.remoteKey = null;
             Log.Write("Connection finished: wrong PIN value");
             return false;
         }
-
-        //Receive server's summetric key
-
-        //Send them our symmetric key
-        ostream.writeObject(RSA.encrypt(AES.symmetricKey));
+        //If pin was ok read server's symmetricKey
+        AES.symmetricKey = (SecretKey) response.obj1;
+        Log.WriteTerminal("New SymmetricKey: " + DatatypeConverter.printHexBinary(AES.symmetricKey.getEncoded()));
+        Log.Write("Connection set up properly!");
         return true;
     }
 
@@ -108,16 +107,20 @@ public class Connection {
 
         //Receive pin and compare to real value
         String tryPin = (String)RSA.decrypt((byte[])inFromServer.readObject());
+        Operation message = new Operation(0, null, null, null);
         if( !tryPin.equals(globals.localPIN) ){
-            ostream.writeObject(RSA.encrypt("WRONG_PIN"));
+            //Pin was wrong so we only send info message
+            message.argument1 = "WRONG_PIN";
+            ostream.writeObject(message.encryptFields());
 
             Log.Write("Connection finished: wrong pin value!");
-        }else {//if not wrong, proceed
-            ostream.writeObject(RSA.encrypt("OK"));
+        }else {
+            //pin was alright so we send inform message together with our symmetric key
+            Log.WriteTerminal("Pin ok. Sharing symmetric key...");
+            message.argument1 = "OK";
+            message.obj1 = AES.symmetricKey;
+            ostream.writeObject(RSA.encrypt(message.encryptFields()));
 
-
-            AES.symmetricKey = (SecretKey) RSA.decrypt((byte[]) inFromServer.readObject());
-            Log.WriteTerminal("SymmetricKey:\n" + DatatypeConverter.printHexBinary(AES.symmetricKey.getEncoded()));
             Log.Write("Connection set up properly!");
         }
 

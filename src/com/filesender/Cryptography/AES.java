@@ -44,7 +44,7 @@ public class AES {
 
         KeyGen.init(128);
         AES.symmetricKey = KeyGen.generateKey();
-        Log.WriteTerminal("SymmetricKey:\n" + DatatypeConverter.printHexBinary(AES.symmetricKey.getEncoded()));
+        Log.WriteTerminal("New SymmetricKey: " + DatatypeConverter.printHexBinary(AES.symmetricKey.getEncoded()));
     }
 
     public static void generateCipher(){

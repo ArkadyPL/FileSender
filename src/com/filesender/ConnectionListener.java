@@ -27,7 +27,7 @@ public class ConnectionListener {
 
             ObjectInputStream inFromServer = new ObjectInputStream(connectedSocket.getInputStream());
             Operation basicOp;
-            basicOp = (Operation) inFromServer.readObject();
+            basicOp = (Operation)inFromServer.readObject();
 
             if (basicOp.opID == 1) {//Rebuild tree for argument as a root
                 Log.WriteTerminal("Operation ID 1 executed");
