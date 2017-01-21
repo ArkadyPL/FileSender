@@ -1,14 +1,10 @@
 package com.filesender.HelperClasses;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
 import javax.swing.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Stack;
 
 public class globals {

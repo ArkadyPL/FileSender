@@ -6,7 +6,6 @@ import com.filesender.HelperClasses.globals;
 import javax.crypto.*;
 import javax.xml.bind.DatatypeConverter;
 import java.security.InvalidKeyException;
-import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 
 public class AES {

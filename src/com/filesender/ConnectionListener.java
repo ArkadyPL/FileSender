@@ -2,18 +2,12 @@ package com.filesender;
 
 import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.Operation;
-import com.filesender.Cryptography.RSA;
-import com.filesender.HelperClasses.globals;
 
-import javax.crypto.SecretKey;
 import javax.swing.tree.TreeModel;
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.security.interfaces.RSAPublicKey;
 
 
 public class ConnectionListener {
