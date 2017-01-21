@@ -32,36 +32,15 @@ public class ConnectionListener {
         if(basicOp.opID == 1) {//Rebuild tree for argument as a root
             Log.WriteTerminal("Operation ID 1 executed");
             basicOp.decryptFields();
-            Sender.sendTree(connectedSocket,localTreeModel,serverSocket,basicOp);
+            Sender.sendTree(connectedSocket,localTreeModel,serverSocket, basicOp);
         }
-        else if(basicOp.opID == 2) {//Send given file
+        else if(basicOp.opID == 2) {//Send requested file
             basicOp.decryptFields();
             Sender.sendFile(basicOp.argument1,localTreeModel,connectedSocket,serverSocket);
-
-        }else if(basicOp.opID == 5){//save new public key from arg1 and send your public key in arg1
-            Log.Write("Setting up the connection...");
-            //Receive and save remote public key
-            globals.remoteKey = (RSAPublicKey)basicOp.obj1;
-            Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
-
-            ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
-            ostream.writeObject(globals.pubKey);
-
-            //Receive pin and compare to real value
-            String tryPin = (String)RSA.decrypt((byte[])inFromServer.readObject());
-            if( !tryPin.equals(globals.PIN) ){
-                ostream.writeObject(RSA.encrypt("WRONG_PIN"));
-
-                Log.Write("Connection finished: wrong pin value!");
-            }else {//if not wrong, proceed
-                ostream.writeObject(RSA.encrypt("OK"));
-
-                globals.symmetricKey = (SecretKey) RSA.decrypt((byte[]) inFromServer.readObject());
-                Log.WriteTerminal("SymmetricKey:\n" + DatatypeConverter.printHexBinary(globals.symmetricKey.getEncoded()));
-                Log.Write("Connection set up properly!");
-            }
-
-            ConnectionListener.ListenForIncomingConnections(localTreeModel, serverSocket);
+        }
+        else if(basicOp.opID == 5){//exchange keys server side
+            Connection.exchangeKeysServer(basicOp, connectedSocket, inFromServer);
+            ConnectionListener.ListenForIncomingConnections(localTreeModel,serverSocket);
         }
 
         return connectedSocket;

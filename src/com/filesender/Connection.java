@@ -4,17 +4,21 @@ import com.filesender.HelperClasses.*;
 import com.filesender.Cryptography.RSA;
 
 import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.swing.*;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
+
+import static com.filesender.HelperClasses.globals.serverSocket;
 
 public class Connection {
 
@@ -43,7 +47,7 @@ public class Connection {
                 connectionStatusChecker.start();
                 Log.Write("Connected to remote!");
                 try {
-                    boolean result = Connection.exchangeKeys(remotePinTF.getText());
+                    boolean result = Connection.exchangeKeysClient(remotePinTF.getText());
                     if( !result ) return;//if something went wrong (e.g. pin incorrect)
                 } catch (IOException e) { e.printStackTrace(); }
 
@@ -58,7 +62,7 @@ public class Connection {
         }
     }
 
-    public static boolean exchangeKeys(String remotePin) throws IOException {
+    public static boolean exchangeKeysClient(String remotePin) throws IOException {
         //Send our public key
         ObjectOutputStream ostream = new ObjectOutputStream(globals.connectionSocket.getOutputStream());
         Operation basicOperation = new Operation(5, null,null, globals.pubKey);
@@ -66,11 +70,9 @@ public class Connection {
 
         //Receive their public key
         ObjectInputStream inFromServer = new ObjectInputStream(globals.connectionSocket.getInputStream());
-        try {
-            globals.remoteKey = (RSAPublicKey) inFromServer.readObject();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        try { globals.remoteKey = (RSAPublicKey) inFromServer.readObject(); }
+        catch (ClassNotFoundException e) { e.printStackTrace(); }
+
         Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
 
         //Send encrypted PIN
@@ -78,11 +80,9 @@ public class Connection {
 
         //Receive info if pin was ok. If it wasn't ok shut down the connection
         String result = null;
-        try {
-            result = (String)RSA.decrypt((byte[])inFromServer.readObject());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        try { result = (String)RSA.decrypt((byte[])inFromServer.readObject()); }
+        catch (ClassNotFoundException e) { e.printStackTrace(); }
+
         if(!result.equals("OK")){//If pin was not correct
             globals.remoteIP = null;
             globals.remoteKey = null;
@@ -102,5 +102,31 @@ public class Connection {
         Log.WriteTerminal("SymmetricKey:\n" + DatatypeConverter.printHexBinary(globals.symmetricKey.getEncoded()));
         ostream.writeObject(RSA.encrypt(globals.symmetricKey));
         return true;
+    }
+
+    public static void exchangeKeysServer(Operation basicOp, Socket connectedSocket, ObjectInputStream inFromServer) throws IOException, ClassNotFoundException {
+        Log.Write("Setting up the connection...");
+        //Receive and save remote public key
+        globals.remoteKey = (RSAPublicKey)basicOp.obj1;
+        Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(globals.remoteKey.getEncoded()));
+
+        ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
+        ostream.writeObject(globals.pubKey);
+
+        //Receive pin and compare to real value
+        String tryPin = (String)RSA.decrypt((byte[])inFromServer.readObject());
+        if( !tryPin.equals(globals.PIN) ){
+            ostream.writeObject(RSA.encrypt("WRONG_PIN"));
+
+            Log.Write("Connection finished: wrong pin value!");
+        }else {//if not wrong, proceed
+            ostream.writeObject(RSA.encrypt("OK"));
+
+            globals.symmetricKey = (SecretKey) RSA.decrypt((byte[]) inFromServer.readObject());
+            Log.WriteTerminal("SymmetricKey:\n" + DatatypeConverter.printHexBinary(globals.symmetricKey.getEncoded()));
+            Log.Write("Connection set up properly!");
+        }
+
+
     }
 }
