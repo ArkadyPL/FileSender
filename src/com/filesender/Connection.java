@@ -15,6 +15,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.interfaces.RSAPublicKey;
+import java.text.SimpleDateFormat;
 
 public class Connection {
 
@@ -79,17 +80,19 @@ public class Connection {
 
         //Receive info if pin was ok. If it wasn't ok shut down the connection
         Operation response = null;
-        try { response = ((Operation)inFromServer.readObject()).decryptFields(); }
+        try { response = (Operation)inFromServer.readObject(); }
         catch (ClassNotFoundException e) { e.printStackTrace(); }
 
-        if(!response.argument1.equals("OK")){//If pin was not correct
+        String result = (String) RSA.decrypt(response.argument1Encrypted);
+
+        if(!result.equals("OK")){//If pin was not correct
             globals.remoteIP = null;
             RSA.remoteKey = null;
             Log.Write("Connection finished: wrong PIN value");
             return false;
         }
         //If pin was ok read server's symmetricKey
-        AES.symmetricKey = (SecretKey) response.obj1;
+        AES.symmetricKey = (SecretKey) RSA.decrypt(response.obj1Encrypted);
         Log.WriteTerminal("New SymmetricKey: " + DatatypeConverter.printHexBinary(AES.symmetricKey.getEncoded()));
         Log.Write("Connection set up properly!");
         return true;
@@ -108,18 +111,22 @@ public class Connection {
         //Receive pin and compare to real value
         String tryPin = (String)RSA.decrypt((byte[])inFromServer.readObject());
         Operation message = new Operation(0, null, null, null);
+        //We encrypt the message, we cannot use Operation.encryptFields() bacause it uses AES and we don't have AES Key set yet,
+        //We have to encrypt fields separately
         if( !tryPin.equals(globals.localPIN) ){
             //Pin was wrong so we only send info message
-            message.argument1 = "WRONG_PIN";
+            message.argument1Encrypted = RSA.encrypt("WRONG_PIN");
+            //Below we encrypt some random stuff so nobody knows if pin was ok or not. Otherwise this field would be null which is synonymous with wrong pin info
+            message.obj1Encrypted = RSA.encrypt(new SimpleDateFormat("HH:mm:ss"));
             ostream.writeObject(message.encryptFields());
 
             Log.Write("Connection finished: wrong pin value!");
         }else {
             //pin was alright so we send inform message together with our symmetric key
             Log.WriteTerminal("Pin ok. Sharing symmetric key...");
-            message.argument1 = "OK";
-            message.obj1 = AES.symmetricKey;
-            ostream.writeObject(RSA.encrypt(message.encryptFields()));
+            message.argument1Encrypted = RSA.encrypt("OK");
+            message.obj1Encrypted = RSA.encrypt(AES.symmetricKey);
+            ostream.writeObject(message.encryptFields());
 
             Log.Write("Connection set up properly!");
         }
