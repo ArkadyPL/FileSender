@@ -23,12 +23,14 @@ public class Connection {
             Log.Write("Error: remote IP and PIN cannot be empty!");
             return;
         }
-        try { globals.remoteIP = InetAddress.getByName(remoteIPTextField.getText()); }
-        catch (UnknownHostException e) { e.printStackTrace(); }
+
 
         Boolean isValid = new IPAddressValidator().validate(remoteIPTextField.getText());
-        Log.WriteTerminal("Connection button clicked. Remote IP value: " + globals.remoteIP  + "\tGiven IP address is " + (isValid ? "valid" : "not valid"));
+        Log.WriteTerminal("Connection button clicked. Remote IP value: " + remoteIPTextField.getText()  + "\tGiven IP address is " + (isValid ? "valid" : "not valid"));
         if(isValid) {
+            try { globals.remoteIP = InetAddress.getByName(remoteIPTextField.getText()); }
+            catch (UnknownHostException e) { e.printStackTrace(); }
+
             try {
                 Log.Write("Trying to connect to remote server...");
                 globals.connectionSocket = new Socket(globals.remoteIP, 9990);
@@ -87,6 +89,8 @@ public class Connection {
             return false;
         }
 
+        //Receive server's summetric key
+
         //Send them our symmetric key
         ostream.writeObject(RSA.encrypt(AES.symmetricKey));
         return true;
@@ -110,6 +114,7 @@ public class Connection {
             Log.Write("Connection finished: wrong pin value!");
         }else {//if not wrong, proceed
             ostream.writeObject(RSA.encrypt("OK"));
+
 
             AES.symmetricKey = (SecretKey) RSA.decrypt((byte[]) inFromServer.readObject());
             Log.WriteTerminal("SymmetricKey:\n" + DatatypeConverter.printHexBinary(AES.symmetricKey.getEncoded()));
