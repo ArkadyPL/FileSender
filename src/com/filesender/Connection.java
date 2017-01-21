@@ -87,7 +87,7 @@ public class Connection {
 
         String result = (String) RSA.decrypt(response.argument1Encrypted);
 
-        if(!result.equals("OK")){//If pin was not correct
+        if( !result.equals("OK") ){//If pin was not correct
             globals.remoteIP = null;
             RSA.remoteKey = null;
             Log.Write("Connection finished: wrong PIN value");
@@ -122,7 +122,7 @@ public class Connection {
             DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
             Date date = new Date();
             message.obj1Encrypted = RSA.encrypt(dateFormat.format(date));
-            ostream.writeObject(message.encryptFields());
+            ostream.writeObject(message);
 
             Log.Write("Connection finished: wrong pin value!");
         }else {
