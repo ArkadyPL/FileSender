@@ -26,6 +26,7 @@ public class Log {
         Date date = new Date();
         System.out.println(text);
         String logText = globals.logTextArea.getText();
-        globals.logTextArea.setText(logText + "[" + dateFormat.format(date) + "] " + text + "\n" );
+        globals.logTextArea.setText(logText + "[" + dateFormat.format(date) + "] " + text + "\n");
+        globals.logTextArea.setCaretPosition(globals.logTextArea.getText().length());
     }
 }
