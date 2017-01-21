@@ -71,7 +71,7 @@ public class Receiver {
         Path p = Paths.get(fileName);
         String fileSaveName = p.getFileName().toString();
 
-        Log.Write("Receiving the file \"" + fileSaveName + "\"");
+        Log.Write("Downloading the file \"" + fileSaveName + "\"");
         File encryptedFile = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
         encryptedFile.createNewFile();
         FileOutputStream fos = new FileOutputStream(encryptedFile);
