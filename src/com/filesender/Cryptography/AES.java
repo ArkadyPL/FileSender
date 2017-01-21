@@ -49,7 +49,6 @@ public class AES {
     }
 
     public static void generateCipher(){
-        KeyPairGenerator kpg = null;
         try { AES.cipher = Cipher.getInstance("AES");
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) { e.printStackTrace(); }
     }
