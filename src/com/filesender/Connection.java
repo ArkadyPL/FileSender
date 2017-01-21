@@ -126,7 +126,7 @@ public class Connection {
             Log.WriteTerminal("Pin ok. Sharing symmetric key...");
             message.argument1Encrypted = RSA.encrypt("OK");
             message.obj1Encrypted = RSA.encrypt(AES.symmetricKey);
-            ostream.writeObject(message.encryptFields());
+            ostream.writeObject(message);
 
             Log.Write("Connection set up properly!");
         }
