@@ -51,7 +51,7 @@ public class ConnectionListener {
             String tryPin = (String)RSA.decrypt((byte[])inFromServer.readObject());
             if( !tryPin.equals(globals.PIN) ){
                 ostream.writeObject(RSA.encrypt("WRONG_PIN"));
-                globals.remoteKey = null;
+
                 Log.Write("Connection finished: wrong pin value!");
             }else {//if not wrong, proceed
                 ostream.writeObject(RSA.encrypt("OK"));

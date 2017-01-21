@@ -8,7 +8,6 @@ public class Log {
     /**
      * Method for displaying log message to terminal only
      *
-     * @author Arkadiusz Ryszewski
      * @param text - text to be displayed
      */
     public static void WriteTerminal(String text){
@@ -18,7 +17,6 @@ public class Log {
     /**
      * Method for displaying log message to both, terminal and logTextArea
      *
-     * @author Arkadiusz Ryszewski
      * @param text - text to be displayed
      */
     public static void Write(String text){

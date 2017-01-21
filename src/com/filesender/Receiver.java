@@ -14,7 +14,7 @@ import javax.swing.tree.TreePath;
 
 public class Receiver {
 
-    public static void receiveTree(JTree remoteTree, Socket socket,Object dir, Boolean back) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public static void receiveTree(JTree remoteTree, Socket socket,Object dir, Boolean back) throws IOException, ClassNotFoundException {
         if( !globals.isConnected ) return;
         if(globals.previousDir != null) {
             if(back != true) {
@@ -81,11 +81,9 @@ public class Receiver {
         Operation basicOp = null;
         try {
             basicOp = (Operation)inFromServer.readObject();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        basicOp.decryptFields();
-        int count;
+            basicOp.decryptFields();
+        } catch (ClassNotFoundException e) { e.printStackTrace(); }
+
         out.write((byte[])basicOp.obj1, 0, Integer.parseInt(basicOp.argument1));
         out.close();
         fos.close();

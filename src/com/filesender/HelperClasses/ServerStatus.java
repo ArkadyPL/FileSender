@@ -21,11 +21,9 @@ public class ServerStatus extends Thread{
                     break;
                 }
             }
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
+            try { Thread.sleep(5000); }
+            catch (InterruptedException e) { e.printStackTrace(); }
         }
     }
 }
