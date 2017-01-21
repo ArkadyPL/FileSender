@@ -117,7 +117,7 @@ public class Connection {
             //Pin was wrong so we only send info message
             message.argument1Encrypted = RSA.encrypt("WRONG_PIN");
             //Below we encrypt some random stuff so nobody knows if pin was ok or not. Otherwise this field would be null which is synonymous with wrong pin info
-            message.obj1Encrypted = RSA.encrypt(new SimpleDateFormat("HH:mm:ss").toString());
+            message.obj1Encrypted = RSA.encrypt("SOME_RANDOM_STUFF_SO_NOBODY_CAN_DECODE_IT_SHOULD_BE_DIFFERENT_WITH_EACH_NEW_RSA_CONFIGURATION");
             ostream.writeObject(message.encryptFields());
 
             Log.Write("Connection finished: wrong pin value!");
