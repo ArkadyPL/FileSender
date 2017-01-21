@@ -1,10 +1,12 @@
 package com.filesender;
 
+import com.filesender.Cryptography.AES;
 import com.filesender.GuiElements.Toolbar;
 import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.globals;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import java.awt.*;
@@ -45,6 +47,10 @@ public class FileSender {
         globals.privKey = (RSAPrivateKey) kp.getPrivate();
         Log.WriteTerminal("Local PublicKey:\n" + DatatypeConverter.printHexBinary(globals.pubKey.getEncoded()));
 
+        //Generate Symmetric Key :
+        AES.generateSymmetricKey();
+
+        //Get our IP
         try { globals.localIP = Inet4Address.getLocalHost().getHostAddress(); } catch (UnknownHostException e) { e.printStackTrace(); }
         System.out.println("Your IP address is: " + globals.localIP);
         try { globals.serverSocket = new ServerSocket(9990); } catch (IOException e) { e.printStackTrace(); }

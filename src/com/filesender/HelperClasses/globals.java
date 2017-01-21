@@ -27,7 +27,6 @@ public class globals {
     public static RSAPublicKey pubKey = null;
     public static RSAPrivateKey privKey = null;
     public static RSAPublicKey remoteKey = null;
-    public static SecretKey symmetricKey = null;
     public static Cipher aesCipher = null;
     public static volatile boolean isConnected = false;
     public static String PIN = null;

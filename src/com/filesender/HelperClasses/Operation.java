@@ -27,7 +27,7 @@ public class Operation implements java.io.Serializable {
     }
 
     public Operation encryptFields(){
-        if(globals.symmetricKey == null) return null;
+        if(AES.symmetricKey == null) return null;
         this.argument1Encrypted = AES.encrypt(this.argument1);
         this.argument1 = null;
         this.argument2Encrypted = AES.encrypt(this.argument2);
@@ -38,7 +38,7 @@ public class Operation implements java.io.Serializable {
     }
 
     public Operation decryptFields(){
-        if(globals.symmetricKey == null) return null;
+        if(AES.symmetricKey == null) return null;
         this.argument1 = (String)AES.decrypt(this.argument1Encrypted);
         this.argument1Encrypted = null;
         this.argument2 = (String)AES.decrypt(this.argument2Encrypted);

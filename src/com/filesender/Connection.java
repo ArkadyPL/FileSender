@@ -1,5 +1,6 @@
 package com.filesender;
 
+import com.filesender.Cryptography.AES;
 import com.filesender.HelperClasses.*;
 import com.filesender.Cryptography.RSA;
 
@@ -62,6 +63,7 @@ public class Connection {
         }
     }
 
+    //after our request of connection
     public static boolean exchangeKeysClient(String remotePin) throws IOException {
         //Send our public key
         ObjectOutputStream ostream = new ObjectOutputStream(globals.connectionSocket.getOutputStream());
@@ -90,20 +92,12 @@ public class Connection {
             return false;
         }
 
-        //Create and send them our common symmetric key
-        KeyGenerator KeyGen = null;
-        try {
-            KeyGen = KeyGenerator.getInstance("AES");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        KeyGen.init(128);
-        globals.symmetricKey = KeyGen.generateKey();
-        Log.WriteTerminal("SymmetricKey:\n" + DatatypeConverter.printHexBinary(globals.symmetricKey.getEncoded()));
-        ostream.writeObject(RSA.encrypt(globals.symmetricKey));
+        //Send them our symmetric key
+        ostream.writeObject(RSA.encrypt(AES.symmetricKey));
         return true;
     }
 
+    //after someone requests us a connection
     public static void exchangeKeysServer(Operation basicOp, Socket connectedSocket, ObjectInputStream inFromServer) throws IOException, ClassNotFoundException {
         Log.Write("Setting up the connection...");
         //Receive and save remote public key
@@ -122,8 +116,8 @@ public class Connection {
         }else {//if not wrong, proceed
             ostream.writeObject(RSA.encrypt("OK"));
 
-            globals.symmetricKey = (SecretKey) RSA.decrypt((byte[]) inFromServer.readObject());
-            Log.WriteTerminal("SymmetricKey:\n" + DatatypeConverter.printHexBinary(globals.symmetricKey.getEncoded()));
+            AES.symmetricKey = (SecretKey) RSA.decrypt((byte[]) inFromServer.readObject());
+            Log.WriteTerminal("SymmetricKey:\n" + DatatypeConverter.printHexBinary(AES.symmetricKey.getEncoded()));
             Log.Write("Connection set up properly!");
         }
 
