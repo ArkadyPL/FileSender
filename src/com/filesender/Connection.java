@@ -47,7 +47,7 @@ public class Connection {
                 Log.Write("Connected to remote!");
                 try {
                     boolean result = Connection.exchangeKeys(remotePinTF.getText());
-                    if(result) return;//if something went wrong (e.g. pin incorrect)
+                    if( !result ) return;//if something went wrong (e.g. pin incorrect)
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
