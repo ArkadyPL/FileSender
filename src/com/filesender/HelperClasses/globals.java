@@ -30,6 +30,7 @@ public class globals {
     public static SecretKey symmetricKey = null;
     public static Cipher aesCipher = null;
     public static volatile boolean isConnected = false;
+    public static String PIN = null;
 
     public static byte[] toByte(Object object){
         byte[] result = null;
@@ -72,5 +73,15 @@ public class globals {
             }
         }
         return result;
+    }
+
+    public static String generatePIN(){
+        globals.PIN = "";
+        for(int i=0; i<4; i++){
+            //Get one random digit and add it to PIN
+            globals.PIN += String.valueOf(Math.random()*10).substring(0,1);
+        }
+        Log.Write("Generated PIN is " + globals.PIN);
+        return globals.PIN;
     }
 }

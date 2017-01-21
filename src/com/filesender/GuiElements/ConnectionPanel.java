@@ -7,20 +7,25 @@ import java.awt.event.ActionEvent;
 
 public class ConnectionPanel extends JPanel {
 
-    public ConnectionPanel(){
+    public ConnectionPanel() {
         super();
         this.add(new JLabel("Remote IP:"));
         JTextField remoteIPTextField = new JTextField(30);
-        Action action = new AbstractAction()
-        {
+        this.add(remoteIPTextField);
+
+        this.add(new JLabel("PIN:"));
+        JTextField remotePinTextField = new JTextField(4);
+        this.add(remotePinTextField);
+
+        Action action = new AbstractAction() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                Connection.connectToRemote(remoteIPTextField);
+            public void actionPerformed(ActionEvent e) {
+                Connection.connectToRemote(remoteIPTextField, remotePinTextField);
             }
         };
-        remoteIPTextField.addActionListener( action );
-        this.add(remoteIPTextField);
-        this.add(new ConnectButton(remoteIPTextField));
+        remoteIPTextField.addActionListener(action);
+        remotePinTextField.addActionListener(action);
+
+        this.add(new ConnectButton(remoteIPTextField, remotePinTextField));
     }
 }

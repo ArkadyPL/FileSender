@@ -46,7 +46,11 @@ public class Connection {
         ostream.writeObject(RSA.encrypt(globals.symmetricKey));
     }
 
-    public static void connectToRemote(JTextField remoteIPTextField){
+    public static void connectToRemote(JTextField remoteIPTextField, JTextField remotePinTF){
+        if(remoteIPTextField.getText().equals("") || remotePinTF.getText().equals("")) {
+            Log.Write("Connection failed: remote IP and PIN cannot be empty");
+            return;
+        }
         try {
             globals.remoteIP = InetAddress.getByName(remoteIPTextField.getText());
         } catch (UnknownHostException e) {

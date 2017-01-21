@@ -44,7 +44,7 @@ public class FileSender {
         System.out.println("Your IP address is: " + globals.localIP);
         globals.serverSocket = new ServerSocket(9990);
         globals.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        globals.frame.setMinimumSize(new Dimension(720, 300));
+        globals.frame.setMinimumSize(new Dimension(820, 300));
 
         Toolbar toolbar = new Toolbar(globals.localIP);
 
@@ -70,7 +70,7 @@ public class FileSender {
         log.setPreferredSize(new Dimension(1000, 140));
 
         // Display it all in a window and make the window appear
-        globals.frame.setSize( 1000, 600); // Set frame size
+        globals.frame.setSize( 850, 600); // Set frame size
         globals.frame.setLocationRelativeTo(null); // Put frame in center of the screen
         filesPanel.add(localTreePane);
         filesPanel.add(remoteTreePane);
