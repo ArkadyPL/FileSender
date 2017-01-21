@@ -5,9 +5,6 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import java.io.File;
 
-/**
- * Created by Arek on 23.12.2016.
- */
 public class FileTreeModel implements TreeModel,java.io.Serializable {
     // We specify the root directory when we create the model.
     protected File root;

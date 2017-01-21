@@ -26,23 +26,28 @@ import javax.xml.bind.DatatypeConverter;
 
 public class FileSender {
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+    public static void main(String[] args){
         Log.Write("Started working");
-        globals.statusSocket = new ServerSocket(7899);
+        try { globals.statusSocket = new ServerSocket(7899); } catch (IOException e) { e.printStackTrace(); }
         globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
 
-        globals.cipher = Cipher.getInstance("RSA");
-        globals.aesCipher = Cipher.getInstance("AES");
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+        KeyPairGenerator kpg = null;
+        try {
+            globals.cipher = Cipher.getInstance("RSA");
+            globals.aesCipher = Cipher.getInstance("AES");
+            kpg = KeyPairGenerator.getInstance("RSA");
+        }
+        catch (NoSuchPaddingException | NoSuchAlgorithmException e) { e.printStackTrace(); }
+
         kpg.initialize(2048);
         KeyPair kp = kpg.genKeyPair();
         globals.pubKey = (RSAPublicKey) kp.getPublic();
         globals.privKey = (RSAPrivateKey) kp.getPrivate();
         Log.WriteTerminal("Local PublicKey:\n" + DatatypeConverter.printHexBinary(globals.pubKey.getEncoded()));
 
-        globals.localIP = Inet4Address.getLocalHost().getHostAddress();
+        try { globals.localIP = Inet4Address.getLocalHost().getHostAddress(); } catch (UnknownHostException e) { e.printStackTrace(); }
         System.out.println("Your IP address is: " + globals.localIP);
-        globals.serverSocket = new ServerSocket(9990);
+        try { globals.serverSocket = new ServerSocket(9990); } catch (IOException e) { e.printStackTrace(); }
         globals.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         globals.frame.setMinimumSize(new Dimension(820, 300));
 
@@ -138,15 +143,7 @@ public class FileSender {
                         Log.WriteTerminal("PREVIOUS ROOT after: "+ globals.previousDir);
                     }
                 }
-                catch(java.lang.NullPointerException e) {
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                catch(NullPointerException | IOException | ClassNotFoundException e) { e.printStackTrace(); }
             }
 
             //If user collapsed the tree
@@ -171,19 +168,12 @@ public class FileSender {
                         globals.frame.revalidate();
                     }
                 }
-                catch(java.lang.NullPointerException e) {
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                catch(NullPointerException | IOException | ClassNotFoundException e) { e.printStackTrace(); }
             }
         };
         globals.remoteTree.addTreeExpansionListener(treeExpandListener);
 
-        globals.connectionSocket = ConnectionListener.ListenForIncomingConnections(globals.localTree.getModel(), globals.serverSocket);
+        try { globals.connectionSocket = ConnectionListener.ListenForIncomingConnections(globals.localTree.getModel(), globals.serverSocket); }
+        catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
     }
 }
