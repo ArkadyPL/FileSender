@@ -12,7 +12,6 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Stack;
 
 public class globals {
-    public static Cipher cipher = null;
     public static ServerSocket statusSocket = null;
     public static JFrame frame = new JFrame("File Sender");
     public static Object previousDir = null;
@@ -24,10 +23,6 @@ public class globals {
     public static JTree localTree = new JTree();
     public static JTree remoteTree = new JTree();
     public static JTextArea logTextArea = new JTextArea();;
-    public static RSAPublicKey pubKey = null;
-    public static RSAPrivateKey privKey = null;
-    public static RSAPublicKey remoteKey = null;
-    public static Cipher aesCipher = null;
     public static volatile boolean isConnected = false;
     public static String PIN = null;
 

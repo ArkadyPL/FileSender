@@ -1,29 +1,22 @@
 package com.filesender;
 
 import com.filesender.Cryptography.AES;
+import com.filesender.Cryptography.RSA;
 import com.filesender.GuiElements.Toolbar;
 import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.globals;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import java.io.*;
-import java.security.*;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Objects;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
-import javax.xml.bind.DatatypeConverter;
 
 
 public class FileSender {
@@ -33,22 +26,8 @@ public class FileSender {
         try { globals.statusSocket = new ServerSocket(7899); } catch (IOException e) { e.printStackTrace(); }
         globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
 
-        KeyPairGenerator kpg = null;
-        try {
-            globals.cipher = Cipher.getInstance("RSA");
-            globals.aesCipher = Cipher.getInstance("AES");
-            kpg = KeyPairGenerator.getInstance("RSA");
-        }
-        catch (NoSuchPaddingException | NoSuchAlgorithmException e) { e.printStackTrace(); }
-
-        kpg.initialize(2048);
-        KeyPair kp = kpg.genKeyPair();
-        globals.pubKey = (RSAPublicKey) kp.getPublic();
-        globals.privKey = (RSAPrivateKey) kp.getPrivate();
-        Log.WriteTerminal("Local PublicKey:\n" + DatatypeConverter.printHexBinary(globals.pubKey.getEncoded()));
-
-        //Generate Symmetric Key :
-        AES.generateSymmetricKey();
+        RSA.initialize();
+        AES.initialize();
 
         //Get our IP
         try { globals.localIP = Inet4Address.getLocalHost().getHostAddress(); } catch (UnknownHostException e) { e.printStackTrace(); }
@@ -81,7 +60,7 @@ public class FileSender {
         log.setPreferredSize(new Dimension(1000, 140));
 
         // Display it all in a window and make the window appear
-        globals.frame.setSize( 850, 600); // Set frame size
+        globals.frame.setSize( 1000, 600); // Set frame size
         globals.frame.setLocationRelativeTo(null); // Put frame in center of the screen
         filesPanel.add(localTreePane);
         filesPanel.add(remoteTreePane);
