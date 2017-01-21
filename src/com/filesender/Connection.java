@@ -15,7 +15,9 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.interfaces.RSAPublicKey;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Connection {
 
@@ -117,7 +119,9 @@ public class Connection {
             //Pin was wrong so we only send info message
             message.argument1Encrypted = RSA.encrypt("WRONG_PIN");
             //Below we encrypt some random stuff so nobody knows if pin was ok or not. Otherwise this field would be null which is synonymous with wrong pin info
-            message.obj1Encrypted = RSA.encrypt("SOME_RANDOM_STUFF_SO_NOBODY_CAN_DECODE_IT_SHOULD_BE_DIFFERENT_WITH_EACH_NEW_RSA_CONFIGURATION");
+            DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+            Date date = new Date();
+            message.obj1Encrypted = RSA.encrypt(dateFormat.format(date));
             ostream.writeObject(message.encryptFields());
 
             Log.Write("Connection finished: wrong pin value!");
