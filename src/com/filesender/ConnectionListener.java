@@ -20,27 +20,22 @@ public class ConnectionListener {
         connectedSocket = serverSocket.accept();
         String tempIP = connectedSocket.getRemoteSocketAddress().toString();
 
-        //Don't let anyone else connect us if we're connected to someone to avoid SymmetricKey leaking
-        //if(globals.remoteIP == null /*|| globals.remoteIP.toString().equals(tempIP)*/) {
-            Log.Write("Connection accepted!");
+        Log.Write("Connection accepted!");
 
-            ObjectInputStream inFromServer = new ObjectInputStream(connectedSocket.getInputStream());
-            Operation basicOp;
-            basicOp = (Operation)inFromServer.readObject();
+        ObjectInputStream inFromServer = new ObjectInputStream(connectedSocket.getInputStream());
+        Operation basicOp;
+        basicOp = (Operation)inFromServer.readObject();
 
-            if (basicOp.opID == 1) {//Rebuild tree for argument as a root
-                Log.WriteTerminal("Operation ID 1 executed");
-                basicOp.decryptFields();
-                Sender.sendTree(connectedSocket, localTreeModel, basicOp);
-            } else if (basicOp.opID == 2) {//Send requested file
-                basicOp.decryptFields();
-                Sender.sendFile(basicOp.argument1, connectedSocket);
-            } else if (basicOp.opID == 5) {//exchange keys server side
-                Connection.exchangeKeysServer(basicOp, connectedSocket, inFromServer);
-            }
-       // }else{
-         //   Log.Write("Incoming connection rejected!");
-        //}
+        if (basicOp.opID == 1) {//Rebuild tree for argument as a root
+            Log.WriteTerminal("Operation ID 1 executed");
+            basicOp.decryptFields();
+            Sender.sendTree(connectedSocket, localTreeModel, basicOp);
+        } else if (basicOp.opID == 2) {//Send requested file
+            basicOp.decryptFields();
+            Sender.sendFile(basicOp.argument1, connectedSocket);
+        } else if (basicOp.opID == 5) {//exchange keys server side
+            Connection.exchangeKeysServer(basicOp, connectedSocket, inFromServer);
+        }
     }
 
 }
