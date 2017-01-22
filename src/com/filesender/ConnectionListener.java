@@ -26,7 +26,6 @@ public class ConnectionListener {
         basicOp = (Operation)inFromServer.readObject();
 
         if (basicOp.opID == 1) {//Rebuild tree for argument as a root
-            Log.WriteTerminal("Operation ID 1 executed");
             basicOp.decryptFields();
             Sender.sendTree(connectedSocket, localTreeModel, basicOp);
         } else if (basicOp.opID == 2) {//Send requested file

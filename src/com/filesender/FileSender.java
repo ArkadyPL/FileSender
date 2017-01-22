@@ -134,7 +134,7 @@ public class FileSender {
             //If user collapsed the tree
             public void treeCollapsed(TreeExpansionEvent event) {
                 TreePath path = event.getPath();
-                Log.WriteTerminal("Collapsed" + globals.previousDir + " patho: " + path);
+                Log.WriteTerminal("Collapsed" + globals.previousDir + " path: " + path);
                 try {
                     if ( Objects.equals(path.toString(), "[...]") ){
                         if(globals.dirStack.isEmpty()) {
