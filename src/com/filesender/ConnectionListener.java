@@ -21,7 +21,7 @@ public class ConnectionListener {
         String tempIP = connectedSocket.getRemoteSocketAddress().toString();
 
         //Don't let anyone else connect us if we're connected to someone to avoid SymmetricKey leaking
-        if(globals.remoteIP == null /*|| globals.remoteIP.toString().equals(tempIP)*/) {
+        //if(globals.remoteIP == null /*|| globals.remoteIP.toString().equals(tempIP)*/) {
             Log.Write("Connection accepted!");
 
             ObjectInputStream inFromServer = new ObjectInputStream(connectedSocket.getInputStream());
@@ -38,9 +38,9 @@ public class ConnectionListener {
             } else if (basicOp.opID == 5) {//exchange keys server side
                 Connection.exchangeKeysServer(basicOp, connectedSocket, inFromServer);
             }
-        }else{
-            Log.Write("Incoming connection rejected!");
-        }
+       // }else{
+         //   Log.Write("Incoming connection rejected!");
+        //}
     }
 
 }
