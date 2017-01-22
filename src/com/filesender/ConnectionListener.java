@@ -2,7 +2,6 @@ package com.filesender;
 
 import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.Operation;
-import com.filesender.HelperClasses.globals;
 
 import javax.swing.tree.TreeModel;
 import java.io.IOException;
