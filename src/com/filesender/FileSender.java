@@ -33,7 +33,6 @@ public class FileSender {
         //Get our IP
         try { globals.localIP = Inet4Address.getLocalHost().getHostAddress(); } catch (UnknownHostException e) { e.printStackTrace(); }
         System.out.println("Your IP address is: " + globals.localIP);
-        try { globals.serverSocket = new ServerSocket(9990); } catch (IOException e) { e.printStackTrace(); }
         globals.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         globals.frame.setMinimumSize(new Dimension(700, 300));
 
@@ -135,7 +134,7 @@ public class FileSender {
             //If user collapsed the tree
             public void treeCollapsed(TreeExpansionEvent event) {
                 TreePath path = event.getPath();
-                Log.WriteTerminal("Collapsed" +globals.previousDir + " patho: " + path);
+                Log.WriteTerminal("Collapsed" + globals.previousDir + " patho: " + path);
                 try {
                     if ( Objects.equals(path.toString(), "[...]") ){
                         if(globals.dirStack.isEmpty()) {
@@ -159,7 +158,13 @@ public class FileSender {
         };
         globals.remoteTree.addTreeExpansionListener(treeExpandListener);
 
-        try { globals.connectionSocket = ConnectionListener.ListenForIncomingConnections(globals.localTree.getModel(), globals.serverSocket); }
-        catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
+        Log.Write("Opening socket for incoming connection...");
+        ServerSocket serverSocket = null;
+        try { serverSocket = new ServerSocket(9990); } catch (IOException e) { e.printStackTrace(); }
+
+        while(true){
+            try { ConnectionListener.ListenForIncomingConnections(globals.localTree.getModel(), serverSocket); }
+            catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
+        }
     }
 }

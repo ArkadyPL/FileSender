@@ -15,7 +15,6 @@ public class globals {
     public static String localIP = null;
     public static InetAddress remoteIP = null;
     public static Socket connectionSocket = null;
-    public static ServerSocket serverSocket = null;
     public static JTree localTree = new JTree();
     public static JTree remoteTree = new JTree();
     public static JTextArea logTextArea = new JTextArea();;
