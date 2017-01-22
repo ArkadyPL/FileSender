@@ -1,6 +1,5 @@
 package com.filesender;
 
-import com.filesender.Cryptography.RSA;
 import com.filesender.HelperClasses.Log;
 import com.filesender.HelperClasses.Operation;
 import com.filesender.HelperClasses.globals;
@@ -9,7 +8,6 @@ import javax.swing.tree.TreeModel;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
