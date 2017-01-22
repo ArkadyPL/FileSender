@@ -49,7 +49,7 @@ public class Connection {
                 Log.Write("Connected to remote!");
                 try {
                     boolean result = Connection.exchangeKeysClient(remotePinTF.getText());
-                    if( !result ) return;//if something went wrong (e.g. pin incorrect)
+                    if( !result ) return;//if something went wrong (e.g. pin incorrect, remote busy)
                 } catch (IOException e) { e.printStackTrace(); }
 
                 try { globals.connectionSocket = new Socket(globals.remoteIP, 9990); }
@@ -74,6 +74,11 @@ public class Connection {
         ObjectInputStream inFromServer = new ObjectInputStream(globals.connectionSocket.getInputStream());
         try { RSA.remoteKey = (RSAPublicKey) inFromServer.readObject(); }
         catch (ClassNotFoundException e) { e.printStackTrace(); }
+
+        if(RSA.remoteKey == null){
+            Log.Write("Your connection request was rejected: Remote is busy");
+            return false;
+        }
 
         Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(RSA.remoteKey.getEncoded()));
 

@@ -162,6 +162,7 @@ public class FileSender {
         ServerSocket serverSocket = null;
         try { serverSocket = new ServerSocket(9990); } catch (IOException e) { e.printStackTrace(); }
 
+        //Loop for listening for connections and commands
         while(true){
             try { ConnectionListener.ListenForIncomingConnections(globals.localTree.getModel(), serverSocket); }
             catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
