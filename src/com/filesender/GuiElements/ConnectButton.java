@@ -12,13 +12,11 @@ import java.awt.*;
 public class ConnectButton extends JButton {
 
     /**
-     * Constructor creating button and adding it proper properties and onclick listener method: {@link Connection#connectToRemote(JTextField, JTextField)}.
-     * @param remoteIPTextField Field that action listener method will fetch IP value from.
-     * @param remotePinTextField Field that action listener method will fetch PIN value from.
+     * Constructor creating button and adding it proper properties and onclick listener method: {@link Connection#connectToRemote()}.
      */
-    public ConnectButton(JTextField remoteIPTextField, JTextField remotePinTextField){
+    public ConnectButton(){
         super("Connect");
         this.setAlignmentY(Component.CENTER_ALIGNMENT);
-        this.addActionListener(ae -> Connection.connectToRemote(remoteIPTextField, remotePinTextField));
+        this.addActionListener(ae -> Connection.connectToRemote());
     }
 }

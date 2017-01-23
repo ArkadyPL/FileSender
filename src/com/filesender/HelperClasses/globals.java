@@ -1,5 +1,7 @@
 package com.filesender.HelperClasses;
 
+import com.filesender.GuiElements.ConnectButton;
+
 import javax.swing.*;
 import java.io.*;
 import java.net.InetAddress;
@@ -58,6 +60,21 @@ public class globals {
      * Password that is required if someone wants to connect to us.
      */
     public static String localPIN = generatePIN();
+
+    /**
+     * Connect button from toolbar, we need it to be global because we'll change it's content in couple of places.
+     */
+    public static ConnectButton connectButton = null;
+
+    /**
+     * Remote IP Text Field from toolbar, we need it to be global because we'll change it's content in couple of places.
+     */
+    public  static JTextField remoteIPTextField = new JTextField(20);
+
+    /**
+     * Remote PIN Text Field from toolbar, we need it to be global because we'll change it's content in couple of places.
+     */
+    public static JTextField remotePinTextField = new JTextField(4);
 
 
 

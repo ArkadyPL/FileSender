@@ -1,6 +1,7 @@
 package com.filesender.GuiElements;
 
 import com.filesender.Connection;
+import com.filesender.HelperClasses.globals;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -13,28 +14,27 @@ import java.awt.event.ActionEvent;
 public class ConnectionPanel extends JPanel {
 
     /**
-     * Constructor creating the panel. Adds the button and 'enter-clicked' action listeners method: {@link Connection#connectToRemote(JTextField, JTextField)}.
-     * @see Connection#connectToRemote(JTextField, JTextField)
+     * Constructor creating the panel. Adds the button and 'enter-clicked' action listeners method: {@link Connection#connectToRemote()}.
+     * @see Connection#connectToRemote()
      */
     public ConnectionPanel() {
         super();
         this.add(new JLabel("Remote IP:"));
-        JTextField remoteIPTextField = new JTextField(20);
-        this.add(remoteIPTextField);
+        this.add(globals.remoteIPTextField);
 
         this.add(new JLabel("PIN:"));
-        JTextField remotePinTextField = new JTextField(4);
-        this.add(remotePinTextField);
+
+        this.add(globals.remotePinTextField);
 
         Action action = new AbstractAction() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                Connection.connectToRemote(remoteIPTextField, remotePinTextField);
+            public void actionPerformed(ActionEvent e) {Connection.connectToRemote();
             }
         };
-        remoteIPTextField.addActionListener(action);
-        remotePinTextField.addActionListener(action);
+        globals.remoteIPTextField.addActionListener(action);
+        globals.remotePinTextField.addActionListener(action);
 
-        this.add(new ConnectButton(remoteIPTextField, remotePinTextField));
+        globals.connectButton = new ConnectButton();
+        this.add(globals.connectButton);
     }
 }

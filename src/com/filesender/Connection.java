@@ -21,62 +21,75 @@ import java.util.Date;
 
 public class Connection {
 
-   public static void connectToRemote(JTextField remoteIPTextField, JTextField remotePinTF){
-        if(remoteIPTextField.getText().equals("") || remotePinTF.getText().equals("")) {
-            Log.Write("Error: remote IP and PIN cannot be empty!");
-            return;
-        }
-
-        Boolean isValid = new IPAddressValidator().validate(remoteIPTextField.getText());
-        Log.Write("Connection button clicked. Remote IP value: " + remoteIPTextField.getText()  + "\tGiven IP address is " + (isValid ? "valid" : "not valid"));
-        if(isValid) {
-            try { globals.remoteIP = InetAddress.getByName(remoteIPTextField.getText()); }
-            catch (UnknownHostException e) { e.printStackTrace(); }
-
-            try {
-                Log.Write("Trying to connect to remote server...");
-                globals.connectionSocket = new Socket(globals.remoteIP, 9990);
-            }
-            catch (ConnectException e) {
-                Log.Write("Remote is not available...");
-                AppState.changeToDisconnected();
-            }
-            catch (Exception e) {
-                Log.Write("Connection error...");
-                AppState.changeToDisconnected();
+   public static void connectToRemote(){
+        if(globals.connectButton.getText().equals("Connect")) {
+            if (globals.remoteIPTextField.getText().equals("") || globals.remotePinTextField.getText().equals("")) {
+                Log.Write("Error: remote IP and PIN cannot be empty!");
+                return;
             }
 
-            if (globals.connectionSocket != null) {
-                Log.Write("Connected to remote!");
+            Boolean isValid = new IPAddressValidator().validate(globals.remoteIPTextField.getText());
+            Log.Write("Connection button clicked. Remote IP value: " + globals.remoteIPTextField.getText() + "\tGiven IP address is " + (isValid ? "valid" : "not valid"));
+            if (isValid) {
+                AppState.changeToConnected();
                 try {
-                    boolean result = Connection.exchangeKeysClient(remotePinTF.getText());
-                    if( !result ) {//if something went wrong (e.g. pin incorrect, remote busy)
+                    globals.remoteIP = InetAddress.getByName(globals.remoteIPTextField.getText());
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    Log.Write("Trying to connect to remote server...");
+                    globals.connectionSocket = new Socket(globals.remoteIP, 9990);
+                } catch (ConnectException e) {
+                    Log.Write("Remote is not available...");
+                    AppState.changeToDisconnected();
+
+                } catch (Exception e) {
+                    Log.Write("Connection error...");
+                    AppState.changeToDisconnected();
+                }
+
+                if (globals.connectionSocket != null) {
+                    Log.Write("Connected to remote!");
+                    try {
+                        boolean result = Connection.exchangeKeysClient();
+                        if (!result) {//if something went wrong (e.g. pin incorrect, remote busy)
+                            AppState.changeToDisconnected();
+                            return;
+                        }
+                    } catch (IOException e) {
                         AppState.changeToDisconnected();
-                        return;
+                        e.printStackTrace();
                     }
-                } catch (IOException e) { e.printStackTrace(); }
 
-                try { globals.connectionSocket = new Socket(globals.remoteIP, 9990); }
-                catch (IOException e) {
-                    Log.Write("Something went wrong setting up a new socket after key exchange...");
-                    AppState.changeToDisconnected();
-                    e.printStackTrace();
-                }
+                    try {
+                        globals.connectionSocket = new Socket(globals.remoteIP, 9990);
+                    } catch (IOException e) {
+                        Log.Write("Something went wrong setting up a new socket after key exchange...");
+                        AppState.changeToDisconnected();
+                        e.printStackTrace();
+                    }
 
-                try { Receiver.receiveTree(globals.remoteTree,globals.connectionSocket,"root",false); }
-                catch (IOException | ClassNotFoundException e) {
-                    Log.Write("Something went wrong while downloading the File Tree");
-                    AppState.changeToDisconnected();
-                    e.printStackTrace();
+                    try {
+                        Receiver.receiveTree(globals.remoteTree, globals.connectionSocket, "root", false);
+                    } catch (IOException | ClassNotFoundException e) {
+                        Log.Write("Something went wrong while downloading the File Tree");
+                        AppState.changeToDisconnected();
+                        e.printStackTrace();
+                    }
+                    globals.frame.repaint();
+                    globals.frame.revalidate();
                 }
-                globals.frame.repaint();
-                globals.frame.revalidate();
             }
+        }
+        else if(globals.connectButton.getText().equals("Disconnect")){
+            AppState.changeToDisconnected();
         }
     }
 
     //after our request of connection
-    public static boolean exchangeKeysClient(String remotePin) throws IOException {
+    public static boolean exchangeKeysClient() throws IOException {
         //Send our public key
         ObjectOutputStream ostream = new ObjectOutputStream(globals.connectionSocket.getOutputStream());
         Operation basicOperation = new Operation(5, null,null, RSA.pubKey);
@@ -95,7 +108,7 @@ public class Connection {
         Log.WriteTerminal("Remote PublicKey:\n" + DatatypeConverter.printHexBinary(RSA.remoteKey.getEncoded()));
 
         //Send encrypted PIN
-        ostream.writeObject(RSA.encrypt(remotePin));
+        ostream.writeObject(RSA.encrypt(globals.remotePinTextField.getText()));
 
         //Receive info if pin was ok. If it wasn't ok shut down the connection
         Operation response = null;
