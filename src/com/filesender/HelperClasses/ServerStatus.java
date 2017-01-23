@@ -13,6 +13,7 @@ public class ServerStatus extends Thread{
     @Override
     public void run() {
         while(true) {
+            Log.Write("Checking remote availability...");
             if (globals.remoteIP != null) {
                 try(Socket s = new Socket(globals.remoteIP, 7899)) {
                     Log.WriteTerminal("Server available");
@@ -24,6 +25,8 @@ public class ServerStatus extends Thread{
                     globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
                     break;
                 }
+            }else{
+                Log.Write("Not connected to any remote!");
             }
 
             try { Thread.sleep(5000); }

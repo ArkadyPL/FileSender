@@ -23,10 +23,11 @@ import javax.swing.tree.TreePath;
 public class FileSender {
 
     public static void main(String[] args){
-        Log.Write("Started working");
+        Log.WriteTerminal("Started working");
 
         //Open statusSocket to allow others to check if we are available
-        try { ServerSocket statusSocket = new ServerSocket(7899); } catch (IOException e) { e.printStackTrace(); }
+        ServerSocket statusSocket = null;
+        try { statusSocket = new ServerSocket(7899); } catch (IOException e) { e.printStackTrace(); }
 
         //Turn on daemon that will be checking if remote we are connected to is still available.
         //If we are not connected to anyone it will stay idle.
