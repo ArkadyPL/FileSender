@@ -33,12 +33,13 @@ public class globals {
     public static String localIP = null;
 
     /**
-     * IP of client that we are connected to as server.
+     * IP of the server that we are connected to as a client.
      */
     public static InetAddress remoteIP = null;
 
     /**
-     * Socket with connection to the server that we are connected to.
+     * Socket with connection to the client that has connected to us.
+     * Value of this variable is volatile and is changing after each new request.
      */
     public static Socket connectionSocket = null;
 

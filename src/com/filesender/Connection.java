@@ -27,7 +27,6 @@ public class Connection {
             return;
         }
 
-
         Boolean isValid = new IPAddressValidator().validate(remoteIPTextField.getText());
         Log.Write("Connection button clicked. Remote IP value: " + remoteIPTextField.getText()  + "\tGiven IP address is " + (isValid ? "valid" : "not valid"));
         if(isValid) {
