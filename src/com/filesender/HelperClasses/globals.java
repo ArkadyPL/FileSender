@@ -3,12 +3,15 @@ package com.filesender.HelperClasses;
 import javax.swing.*;
 import java.io.*;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Stack;
 
+/**
+ * Class containing all the properties that have global usage and are used too often to put them in the local scope.
+ * It also contains some methods of general purpose. Its name is written with small case letters to highlight special
+ * destiny of this class.
+ */
 public class globals {
-    public static ServerSocket statusSocket = null;
     public static JFrame frame = new JFrame("File Sender");
     public static Object previousDir = null;
     public static Stack dirStack = new Stack();
@@ -60,6 +63,7 @@ public class globals {
         }
         return result;
     }
+
 
     public static String generatePIN(){
         globals.localPIN = "";

@@ -23,7 +23,11 @@ public class FileSender {
 
     public static void main(String[] args){
         Log.Write("Started working");
-        try { globals.statusSocket = new ServerSocket(7899); } catch (IOException e) { e.printStackTrace(); }
+
+        //Open statusSocket to allow others to check if we are available
+        try { ServerSocket statusSocket = new ServerSocket(7899); } catch (IOException e) { e.printStackTrace(); }
+
+        //Set empty tree model as Remote File Tree
         globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
 
         globals.generatePIN();
