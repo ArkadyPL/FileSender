@@ -17,7 +17,6 @@ public class Log {
 
     /**
      * Method for displaying log messages to the terminal only.
-     *
      * @param text - Text to be displayed.
      */
     public static void WriteTerminal(String text){
@@ -26,7 +25,6 @@ public class Log {
 
     /**
      * Method for displaying log messages to both, the terminal and the {@link #textArea}.
-     *
      * @param text - Text to be displayed.
      */
     public static void Write(String text){

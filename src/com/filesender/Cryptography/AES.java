@@ -17,7 +17,6 @@ public class AES {
     /**
      * Helper object necessary for the process of the encryption/decryption.
      * Initialized with method {@link #initialize()} or {@link #generateCipher()}.
-     *
      * @see #initialize()
      * @see #generateCipher()
      */
@@ -26,7 +25,6 @@ public class AES {
     /**
      * Symmetric key used for encryption/decryption. Is generated automatically when {@link #initialize()}.
      * Initialized with method {@link #initialize()} or {@link #generateSymmetricKey()}.
-     *
      * @see #initialize()
      * @see #generateSymmetricKey()
      */
@@ -46,7 +44,6 @@ public class AES {
     /**
      * Static method for creating new symmetric key that will be saved as parameter 'symmetricKey' and used while encrypting/decrypting.
      * Is called by {@link #initialize()}.
-     *
      * @see #symmetricKey
      * @see #initialize()
      */
@@ -62,7 +59,6 @@ public class AES {
 
     /**
      * Static method for generating new cipher. It is required at least once before using encryption/decryption. It is called by {@link #initialize()}.
-     *
      * @see AES#initialize()
      */
     public static void generateCipher(){
@@ -72,11 +68,8 @@ public class AES {
 
     /**
      * Static method for AES encrypting any kind of an object of class inheriting after Object.
-     *
      * @param object Object that is meant to be encrypted. Can be of any class inheriting after the Object.
-     *
-     * @return Encrypted object in a form of byte[]. Can be read after decryption.
-     *
+     * @return Encrypted object in a form of byte[]. Can be read after decryption
      * @see #decrypt(byte[])
      */
     public static byte[] encrypt(Object object){
@@ -94,11 +87,8 @@ public class AES {
 
     /**
      * Static method for AES decrypting an object that was previously encrypted by {@link #encrypt(Object)}.
-     *
      * @param encryptedObject Object that is meant to be decrypted. Must have been previously encrypted with {@link #encrypt(Object)}.
-     *
      * @return Object of type Object. Must be casted to the proper class.
-     *
      * @see #encrypt(Object)
      */
     public static Object decrypt(byte[] encryptedObject){

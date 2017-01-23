@@ -24,7 +24,6 @@ public class RSA {
     /**
      * Helper static object necessary for the process of the encryption/decryption.
      * Initialized with method {@link #initialize()}.
-     *
      * @see #initialize()
      */
     private static Cipher cipher = null;
@@ -32,7 +31,6 @@ public class RSA {
     /**
      * Static property for storing public key that can be sent to all cooperating clients.
      * Initialized with method {@link #initialize()}.
-     *
      * @see #initialize()
      */
     public static RSAPublicKey pubKey = null;
@@ -40,7 +38,6 @@ public class RSA {
     /**
      * Static property for storing private key that we use for decrypting messages encrypted with our public key.
      * Initialized with method initialize().
-     *
      * @see #initialize()
      */
     private static RSAPrivateKey privKey = null;
@@ -72,11 +69,8 @@ public class RSA {
 
     /**
      * Static method for RSA encrypting any kind of an object of class inheriting after the Object.
-     *
      * @param object Object that is meant to be encrypted. Can be of any class inheriting after Object.
-     *
      * @return Encrypted object in a form of byte[]. Can be read after decryption.
-     *
      * @see #decrypt(byte[])
      */
     public static byte[] encrypt(Object object){
@@ -93,11 +87,8 @@ public class RSA {
 
     /**
      * Static method for RSA decrypting an object that was previously encrypted by {@link #encrypt(Object)}.
-     *
      * @param encryptedObject Object that is meant to be decrypted. Must have been previously encrypted with {@link #encrypt(Object)}.
-     *
      * @return Object of type Object. Must be casted to the proper class.
-     *
      * @see #encrypt(Object)
      */
     public static Object decrypt(byte[] encryptedObject){

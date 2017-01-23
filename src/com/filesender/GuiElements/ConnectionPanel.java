@@ -8,14 +8,12 @@ import java.awt.event.ActionEvent;
 /**
  * Class extending JPanel for needs of FileSender app.
  * It is meant to be displayed on the right part of the toolbar.
- *
  * @see javax.swing.JPanel
  */
 public class ConnectionPanel extends JPanel {
 
     /**
      * Constructor creating the panel. Adds the button and 'enter-clicked' action listeners method: {@link Connection#connectToRemote(JTextField, JTextField)}.
-     *
      * @see Connection#connectToRemote(JTextField, JTextField)
      */
     public ConnectionPanel() {

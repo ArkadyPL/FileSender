@@ -8,7 +8,6 @@ import java.awt.*;
 /**
  * Class extending JToolbar for needs of FileSender app. It hides all the 'dirty stuff' from main function and creates fully functioning toolbar
  * which meets the needs of the application.
- *
  * @see javax.swing.JToolBar
  */
 public class Toolbar extends JToolBar{

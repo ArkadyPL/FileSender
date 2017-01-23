@@ -8,7 +8,6 @@ import com.filesender.Cryptography.AES;
 public class Operation implements java.io.Serializable {
     /**
      * Property indicating what kind of operation is meant to take place.
-     *
      * ID number meaning:
      * <p>0 - no task or just connection check</p>
      * <p>1 - Rebuild tree for argument as a root</p>
@@ -54,7 +53,6 @@ public class Operation implements java.io.Serializable {
 
     /**
      * Constructor creating new Operation object with given values.
-     *
      * @param _ID New id's value
      * @param arg1 New argument1's value
      * @param arg2 New argument2's value
@@ -71,7 +69,6 @@ public class Operation implements java.io.Serializable {
      * Method that encrypts all the properties' values except ID.
      * All encrypted values are saved in appropriate alternative fields with postfix 'Encrypted'.
      * Normal fields' values are set to null.
-     *
      * @return The operation object itself but with encrypted fields
      */
     public Operation encryptFields(){
@@ -89,7 +86,6 @@ public class Operation implements java.io.Serializable {
      * Method that decrypts all the properties' values except ID.
      * All decrypted values are saved in appropriate fields without postfix 'Encrypted'.
      * Values of fields with postfix 'Encrypted' are set to null.
-     *
      * @return The operation object itself but with decrypted fields
      */
     public Operation decryptFields(){

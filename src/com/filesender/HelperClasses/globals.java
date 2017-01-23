@@ -67,7 +67,6 @@ public class globals {
 
     /**
      * Static method converting object of any class inheriting by Object to byte[] object.
-     *
      * @param object Object to be converted to byte[] form.
      * @return Converted object in form of byte[].
      */
@@ -93,9 +92,7 @@ public class globals {
 
     /**
      * Static method converting object in byte[] form to Object. Result needs to be casted to desired class.
-     *
      * @param encryptedObject byte[] object to be transformed to Object type.
-     *
      * @return Converted object of type Object. Needs to be casted to desired class.
      */
     public static Object toObject(byte[] encryptedObject){
@@ -120,7 +117,6 @@ public class globals {
 
     /**
      * Static method generating random 4-digit pin.
-     *
      * @return Random PIN code.
      */
     public static String generatePIN(){
