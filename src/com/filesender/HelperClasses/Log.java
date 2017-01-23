@@ -20,7 +20,9 @@ public class Log {
      * @param text - Text to be displayed.
      */
     public static void WriteTerminal(String text){
-        System.out.println(text);
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        Date date = new Date();
+        System.out.println("[" + dateFormat.format(date) + "] " + text);
     }
 
     /**
@@ -30,7 +32,7 @@ public class Log {
     public static void Write(String text){
         DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
         Date date = new Date();
-        System.out.println(text);
+        System.out.println("[" + dateFormat.format(date) + "] " + text);
         String logText = textArea.getText();
         textArea.setText(logText + "[" + dateFormat.format(date) + "] " + text + "\n");
         textArea.setCaretPosition(textArea.getText().length());
