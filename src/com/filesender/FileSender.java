@@ -43,7 +43,7 @@ public class FileSender {
 
         //Get our IP
         try { globals.localIP = Inet4Address.getLocalHost().getHostAddress(); } catch (UnknownHostException e) { e.printStackTrace(); }
-        System.out.println("Your IP address is: " + globals.localIP);
+        Log.Write("Your IP address is: " + globals.localIP);
         globals.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         globals.frame.setMinimumSize(new Dimension(700, 300));
 
