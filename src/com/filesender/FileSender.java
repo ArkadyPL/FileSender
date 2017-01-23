@@ -30,7 +30,6 @@ public class FileSender {
         //Set empty tree model as Remote File Tree
         globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
 
-        globals.generatePIN();
         RSA.initialize();
         AES.initialize();
 

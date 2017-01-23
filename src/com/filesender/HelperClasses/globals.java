@@ -12,23 +12,69 @@ import java.util.Stack;
  * destiny of this class.
  */
 public class globals {
+    /**
+     * Whole program's frame.
+     */
     public static JFrame frame = new JFrame("File Sender");
-    public static Object previousDir = null;
-    public static Stack dirStack = new Stack();
-    public static String localIP = null;
-    public static InetAddress remoteIP = null;
-    public static Socket connectionSocket = null;
-    public static JTree localTree = new JTree();
-    public static JTree remoteTree = new JTree();
-    public static volatile boolean isConnected = false;
-    public static String localPIN = null;
 
+    /**
+     * Previous directory address in remote tree model.
+     */
+    public static Object previousDir = null;
+
+    /**
+     * Internal variable, 'directory stack' for Remote Tree construction.
+     */
+    public static Stack dirStack = new Stack();
+
+    /**
+     * IP of local machine.
+     */
+    public static String localIP = null;
+
+    /**
+     * IP of client that we are connected to as server.
+     */
+    public static InetAddress remoteIP = null;
+
+    /**
+     * Socket with connection to the server that we are connected to.
+     */
+    public static Socket connectionSocket = null;
+
+    /**
+     * Local JTree for displaying local tree model.
+     */
+    public static JTree localTree = new JTree();
+
+    /**
+     * Remote JTree for displaying remote tree model.
+     */
+    public static JTree remoteTree = new JTree();
+
+    /**
+     * Variable used to check connection status.
+     */
+    public static volatile boolean isConnected = false;
+
+    /**
+     * Password that is required if someone wants to connect to us.
+     */
+    public static String localPIN = generatePIN();
+
+
+
+    /**
+     * Static method converting object of any class inheriting by Object to byte[] object.
+     *
+     * @param object Object to be converted to byte[] form.
+     * @return Converted object in form of byte[].
+     */
     public static byte[] toByte(Object object){
         byte[] result = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutput out = null;
         try {
-            out = new ObjectOutputStream(bos);
+            ObjectOutput out = new ObjectOutputStream(bos);
             out.writeObject(object);
             out.flush();
             result = bos.toByteArray();
@@ -44,12 +90,19 @@ public class globals {
         return result;
     }
 
-    public static Object toObject(byte[] enbytedObject){
-        ByteArrayInputStream bis = new ByteArrayInputStream(enbytedObject);
+    /**
+     * Static method converting object in byte[] form to Object. Result needs to be casted to desired class.
+     *
+     * @param encryptedObject byte[] object to be transformed to Object type.
+     *
+     * @return Converted object of type Object. Needs to be casted to desired class.
+     */
+    public static Object toObject(byte[] encryptedObject){
+        ByteArrayInputStream bis = new ByteArrayInputStream(encryptedObject);
         ObjectInput in = null;
         Object result = null;
         try {
-            in = new ObjectInputStream(bis);
+             in = new ObjectInputStream(bis);
             result = in.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -64,7 +117,11 @@ public class globals {
         return result;
     }
 
-
+    /**
+     * Static method generating random 4-digit pin.
+     *
+     * @return Random PIN code.
+     */
     public static String generatePIN(){
         globals.localPIN = "";
         for(int i=0; i<4; i++){
