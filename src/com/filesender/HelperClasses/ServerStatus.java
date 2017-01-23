@@ -5,7 +5,11 @@ import javax.swing.tree.DefaultTreeModel;
 import java.io.IOException;
 import java.net.Socket;
 
+/**
+ * Class for checking weather the server that we have connected to before is still available.
+ */
 public class ServerStatus extends Thread{
+
     @Override
     public void run() {
         while(true) {

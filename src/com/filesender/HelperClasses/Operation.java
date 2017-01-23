@@ -20,13 +20,46 @@ public class Operation implements java.io.Serializable {
      */
     public int opID;
 
-
+    /**
+     * Property used for string unencrypted version of the argument 1.
+     */
     public String argument1;
-    public String argument2;
-    public Object obj1;
+
+    /**
+     * Property used for string encrypted version of the argument 1.
+     */
     public byte[] argument1Encrypted;
+
+    /**
+     * Property used for string unencrypted version of the argument 2.
+     */
+    public String argument2;
+
+    /**
+     * Property used for string encrypted version of the argument 2.
+     */
     public byte[] argument2Encrypted;
+
+    /**
+     * Property used for string unencrypted version of the object.
+     */
+    public Object obj1;
+
+    /**
+     * Property used for string encrypted version of the object.
+     */
     public byte[] obj1Encrypted;
+
+
+
+    /**
+     * Constructor creating new Operation object with given values.
+     *
+     * @param _ID New id's value
+     * @param arg1 New argument1's value
+     * @param arg2 New argument2's value
+     * @param _obj1 New obj1's value
+     */
     public Operation(int _ID, String arg1,String arg2, Object _obj1) {
         opID = _ID;
         argument1 = arg1;
@@ -34,6 +67,13 @@ public class Operation implements java.io.Serializable {
         obj1 = _obj1;
     }
 
+    /**
+     * Method that encrypts all the properties' values except ID.
+     * All encrypted values are saved in appropriate alternative fields with postfix 'Encrypted'.
+     * Normal fields' values are set to null.
+     *
+     * @return The operation object itself but with encrypted fields
+     */
     public Operation encryptFields(){
         if(AES.symmetricKey == null) return null;
         this.argument1Encrypted = AES.encrypt(this.argument1);
@@ -45,6 +85,13 @@ public class Operation implements java.io.Serializable {
         return this;
     }
 
+    /**
+     * Method that decrypts all the properties' values except ID.
+     * All decrypted values are saved in appropriate fields without postfix 'Encrypted'.
+     * Values of fields with postfix 'Encrypted' are set to null.
+     *
+     * @return The operation object itself but with decrypted fields
+     */
     public Operation decryptFields(){
         if(AES.symmetricKey == null) return null;
         this.argument1 = (String)AES.decrypt(this.argument1Encrypted);

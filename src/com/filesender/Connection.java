@@ -43,9 +43,6 @@ public class Connection {
 
             if (globals.connectionSocket != null) {
                 globals.isConnected = true;
-                ServerStatus connectionStatusChecker = new ServerStatus();
-                connectionStatusChecker.setDaemon(true);
-                connectionStatusChecker.start();
                 Log.Write("Connected to remote!");
                 try {
                     boolean result = Connection.exchangeKeysClient(remotePinTF.getText());
