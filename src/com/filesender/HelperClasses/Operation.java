@@ -2,17 +2,25 @@ package com.filesender.HelperClasses;
 
 import com.filesender.Cryptography.AES;
 
-//   ID LIST
-/*  0 - no task, just connection check
-    1 - Rebuild tree for argument as a root
-    2 - Send given file
-    3 - Receive file of given name
-    4 - Rename given file
-    5 - accept public key from obj1 and send your public key as obj1
-    6 - accept symmetric key
+/**
+ * Objects of this class are meant to be sent as operation indicators for server with possible arguments.
  */
 public class Operation implements java.io.Serializable {
+    /**
+     * Property indicating what kind of operation is meant to take place.
+     *
+     * ID number meaning:
+     * <p>0 - no task or just connection check</p>
+     * <p>1 - Rebuild tree for argument as a root</p>
+     * <p>2 - Send given file</p>
+     * <p>3 - Receive file of given name</p>
+     * <p>4 - Rename given file</p>
+     * <p>5 - accept public key</p>
+     * <p>6 - accept symmetric key</p>
+     */
     public int opID;
+
+
     public String argument1;
     public String argument2;
     public Object obj1;

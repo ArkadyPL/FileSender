@@ -117,7 +117,7 @@ public class Connection {
 
         //Receive pin and compare to real value
         String tryPin = (String)RSA.decrypt((byte[])inFromServer.readObject());
-        Operation message = new Operation(0, null, null, null);
+        Operation message = new Operation(6, null, null, null);
         //We encrypt the message, we cannot use Operation.encryptFields() bacause it uses AES and we don't have AES Key set yet,
         //We have to encrypt fields separately
         if( !tryPin.equals(globals.localPIN) ){
