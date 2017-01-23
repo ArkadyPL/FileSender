@@ -28,7 +28,7 @@ public class Sender {
         }
         ToSend ts = new ToSend(rootObj,true);
         ostream.writeObject(AES.encrypt(ts));
-        Log.Write("Sending file tree...");
+        Log.Write("Sending the file tree...");
         for(int i = 0; i < localTreeModel.getChildCount(rootObj);i++) {
             if( localTreeModel.isLeaf(localTreeModel.getChild(rootObj,i)) ) {
                 ToSend ts2 = new ToSend(localTreeModel.getChild(rootObj,i),false);
@@ -48,7 +48,7 @@ public class Sender {
     }
 
     public static int sendFile(String current_file, Socket socket) throws IOException, ClassNotFoundException {
-        Log.Write("File to send: " + current_file);
+        Log.Write("Sending the file: " + current_file + "...");
         File myFile = new File(current_file);
         byte[] buffer = new byte[(int) myFile.length()];
         FileInputStream fis = new FileInputStream(myFile);
