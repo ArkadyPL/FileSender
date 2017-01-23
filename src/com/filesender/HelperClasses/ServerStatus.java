@@ -34,7 +34,7 @@ public class ServerStatus extends Thread{
                     break;
                 }
             }else{
-                Log.Write("Not connected to any remote!");
+                Log.WriteTerminal("Not connected to any remote!");
             }
 
             try { Thread.sleep(5000); } catch (InterruptedException e) { e.printStackTrace(); }
