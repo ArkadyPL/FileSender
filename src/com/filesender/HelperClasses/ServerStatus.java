@@ -1,5 +1,7 @@
 package com.filesender.HelperClasses;
 
+import com.filesender.AppState;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.io.IOException;
@@ -27,10 +29,8 @@ public class ServerStatus extends Thread{
                     s.close();
                 } catch (IOException e) {
                     //If didn't manage to connect to remote, set program to 'unconnected state'
-                    globals.isConnected = false;
                     Log.Write("Connection lost!");
-                    globals.previousDir = null;
-                    globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
+                    AppState.changeToDisconnected();
                     break;
                 }
             }else{

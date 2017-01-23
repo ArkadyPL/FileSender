@@ -39,7 +39,7 @@ public class ConnectionListener {
                 Connection.exchangeKeysServer(basicOp, connectedSocket, inFromServer);
             }
         }else{
-            Log.Write("Connection rejected!");
+            Log.Write("Incoming connection rejected! We are busy...");
             ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
             ostream.writeObject(null);
         }

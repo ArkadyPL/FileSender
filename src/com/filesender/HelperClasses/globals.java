@@ -34,6 +34,7 @@ public class globals {
 
     /**
      * IP of the server that we are connected to as a client.
+     * If null, it means that we are not connected.
      */
     public static InetAddress remoteIP = null;
 
@@ -52,11 +53,6 @@ public class globals {
      * Remote JTree for displaying remote tree model.
      */
     public static JTree remoteTree = new JTree();
-
-    /**
-     * Variable used to check connection status.
-     */
-    public static volatile boolean isConnected = false;
 
     /**
      * Password that is required if someone wants to connect to us.

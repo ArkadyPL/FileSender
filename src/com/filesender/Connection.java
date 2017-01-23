@@ -37,22 +37,38 @@ public class Connection {
                 Log.Write("Trying to connect to remote server...");
                 globals.connectionSocket = new Socket(globals.remoteIP, 9990);
             }
-            catch (ConnectException e) { Log.Write("Remote is not available..."); }
-            catch (Exception e) { Log.Write("Connection error..."); }
+            catch (ConnectException e) {
+                Log.Write("Remote is not available...");
+                AppState.changeToDisconnected();
+            }
+            catch (Exception e) {
+                Log.Write("Connection error...");
+                AppState.changeToDisconnected();
+            }
 
             if (globals.connectionSocket != null) {
-                globals.isConnected = true;
                 Log.Write("Connected to remote!");
                 try {
                     boolean result = Connection.exchangeKeysClient(remotePinTF.getText());
-                    if( !result ) return;//if something went wrong (e.g. pin incorrect, remote busy)
+                    if( !result ) {//if something went wrong (e.g. pin incorrect, remote busy)
+                        AppState.changeToDisconnected();
+                        return;
+                    }
                 } catch (IOException e) { e.printStackTrace(); }
 
                 try { globals.connectionSocket = new Socket(globals.remoteIP, 9990); }
-                catch (IOException e) { e.printStackTrace(); }
+                catch (IOException e) {
+                    Log.Write("Something went wrong setting up a new socket after key exchange...");
+                    AppState.changeToDisconnected();
+                    e.printStackTrace();
+                }
 
                 try { Receiver.receiveTree(globals.remoteTree,globals.connectionSocket,"root",false); }
-                catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
+                catch (IOException | ClassNotFoundException e) {
+                    Log.Write("Something went wrong while downloading the File Tree");
+                    AppState.changeToDisconnected();
+                    e.printStackTrace();
+                }
                 globals.frame.repaint();
                 globals.frame.revalidate();
             }
@@ -89,8 +105,6 @@ public class Connection {
         String result = (String) RSA.decrypt(response.argument1Encrypted);
 
         if( !result.equals("OK") ){//If pin was not correct
-            globals.remoteIP = null;
-            RSA.remoteKey = null;
             Log.Write("Connection finished: wrong PIN value");
             return false;
         }
@@ -130,6 +144,8 @@ public class Connection {
             //pin was alright so we send inform message together with our symmetric key
             Log.WriteTerminal("Pin ok. Sharing symmetric key...");
             message.argument1Encrypted = RSA.encrypt("OK");
+            //new symmetric key for new client, we lost old one but assumption is that there is only one client at the time (to be implemented)
+            AES.generateSymmetricKey();
             message.obj1Encrypted = RSA.encrypt(AES.symmetricKey);
             ostream.writeObject(message);
 
