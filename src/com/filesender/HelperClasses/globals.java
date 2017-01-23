@@ -17,7 +17,6 @@ public class globals {
     public static Socket connectionSocket = null;
     public static JTree localTree = new JTree();
     public static JTree remoteTree = new JTree();
-    public static JTextArea logTextArea = new JTextArea();;
     public static volatile boolean isConnected = false;
     public static String localPIN = null;
 

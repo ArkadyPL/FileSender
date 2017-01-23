@@ -56,7 +56,7 @@ public class FileSender {
         JScrollPane localTreePane = new JScrollPane(globals.localTree);
         JScrollPane remoteTreePane = new JScrollPane(globals.remoteTree);//Not displayed when not connected
 
-        JScrollPane log = new JScrollPane (globals.logTextArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane log = new JScrollPane (Log.textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         log.setPreferredSize(new Dimension(1000, 140));
 
         // Display it all in a window and make the window appear

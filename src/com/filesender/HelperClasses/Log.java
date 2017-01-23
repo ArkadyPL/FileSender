@@ -1,10 +1,13 @@
 package com.filesender.HelperClasses;
 
+import javax.swing.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Log {
+    public static JTextArea textArea = new JTextArea();
+
     /**
      * Method for displaying log message to terminal only
      *
@@ -23,8 +26,8 @@ public class Log {
         DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
         Date date = new Date();
         System.out.println(text);
-        String logText = globals.logTextArea.getText();
-        globals.logTextArea.setText(logText + "[" + dateFormat.format(date) + "] " + text + "\n");
-        globals.logTextArea.setCaretPosition(globals.logTextArea.getText().length());
+        String logText = textArea.getText();
+        textArea.setText(logText + "[" + dateFormat.format(date) + "] " + text + "\n");
+        textArea.setCaretPosition(textArea.getText().length());
     }
 }
