@@ -9,19 +9,30 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Class delivering all the methods necessary for using AES encryption in Java project.
+ * Class delivering all the methods necessary for using AES encryption.
  * All the methods and fields are of static type.
  * Before using, it is required to initialize class with method initialize().
  */
 public class AES {
     /**
-     * Symmetric key used for encryption/decryption. Is generated automatically when initialize().
-     */
-    public static SecretKey symmetricKey = null;
-    /**
-     * Cipher object to enable encryption/decryption. Is created when initialize().
+     * Helper object necessary for the process of the encryption/decryption.
+     * Initialized with method initialize() or generateSymmetricKey().
+     *
+     * @see #initialize()
+     * @see #generateSymmetricKey()
      */
     private static Cipher cipher = null;
+
+    /**
+     * Symmetric key used for encryption/decryption. Is generated automatically when initialize().
+     * Initialized with method initialize() or generateCipher().
+     *
+     * @see #initialize()
+     * @see #generateCipher()
+     */
+    public static SecretKey symmetricKey = null;
+
+
 
     /**
      * Static method that should be called before any usage of AES class for encoding/decoding.
@@ -36,8 +47,8 @@ public class AES {
      * Static method for creating new symmetric key that will be saved as parameter 'symmetricKey' and used while encrypting/decrypting.
      * Is callled by initialize().
      *
-     * @see AES#symmetricKey
-     * @see AES#initialize()
+     * @see #symmetricKey
+     * @see #initialize()
      */
     public static void generateSymmetricKey(){
         KeyGenerator KeyGen = null;
@@ -60,13 +71,13 @@ public class AES {
     }
 
     /**
-     * Static method for encrypting any kind of object of class inheriting after Object.
+     * Static method for AES encrypting any kind of an object of class inheriting after Object.
      *
-     * @param object Object that is meant to be encrypted. Can be of any class inheriting after Object.
+     * @param object Object that is meant to be encrypted. Can be of any class inheriting after the Object.
      *
      * @return Encrypted object in a form of byte[]. Can be read after decryption.
      *
-     * @see AES#decrypt(byte[])
+     * @see #decrypt(byte[])
      */
     public static byte[] encrypt(Object object){
         if(AES.symmetricKey == null) return null;
@@ -82,13 +93,13 @@ public class AES {
     }
 
     /**
-     * Static method for decrypting object that was previously encrypted by encrypt().
+     * Static method for AES decrypting an object that was previously encrypted by encrypt().
      *
      * @param encryptedObject Object that is meant to be decrypted. Must have been previously encrypted with encrypt()
      *
      * @return Object of type Object. Must be casted to the proper class.
      *
-     * @see AES#encrypt(Object)
+     * @see #encrypt(Object)
      */
     public static Object decrypt(byte[] encryptedObject){
         if(AES.symmetricKey == null) return null;
