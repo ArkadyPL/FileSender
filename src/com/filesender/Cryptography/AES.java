@@ -11,24 +11,24 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Class delivering all the methods necessary for using AES encryption.
  * All the methods and fields are of static type.
- * Before using, it is required to initialize class with method initialize().
+ * Before using, it is required to initialize class with method {@link #initialize()}.
  */
 public class AES {
     /**
      * Helper object necessary for the process of the encryption/decryption.
-     * Initialized with method initialize() or generateSymmetricKey().
+     * Initialized with method {@link #initialize()} or {@link #generateCipher()}.
      *
      * @see #initialize()
-     * @see #generateSymmetricKey()
+     * @see #generateCipher()
      */
     private static Cipher cipher = null;
 
     /**
-     * Symmetric key used for encryption/decryption. Is generated automatically when initialize().
-     * Initialized with method initialize() or generateCipher().
+     * Symmetric key used for encryption/decryption. Is generated automatically when {@link #initialize()}.
+     * Initialized with method {@link #initialize()} or {@link #generateSymmetricKey()}.
      *
      * @see #initialize()
-     * @see #generateCipher()
+     * @see #generateSymmetricKey()
      */
     public static SecretKey symmetricKey = null;
 
@@ -45,7 +45,7 @@ public class AES {
 
     /**
      * Static method for creating new symmetric key that will be saved as parameter 'symmetricKey' and used while encrypting/decrypting.
-     * Is callled by initialize().
+     * Is called by {@link #initialize()}.
      *
      * @see #symmetricKey
      * @see #initialize()
@@ -61,7 +61,7 @@ public class AES {
     }
 
     /**
-     * Static method for generating new cipher. It is required at least once before using encryption/decryption. It is called by initialize().
+     * Static method for generating new cipher. It is required at least once before using encryption/decryption. It is called by {@link #initialize()}.
      *
      * @see AES#initialize()
      */
@@ -93,9 +93,9 @@ public class AES {
     }
 
     /**
-     * Static method for AES decrypting an object that was previously encrypted by encrypt().
+     * Static method for AES decrypting an object that was previously encrypted by {@link #encrypt(Object)}.
      *
-     * @param encryptedObject Object that is meant to be decrypted. Must have been previously encrypted with encrypt()
+     * @param encryptedObject Object that is meant to be decrypted. Must have been previously encrypted with {@link #encrypt(Object)}.
      *
      * @return Object of type Object. Must be casted to the proper class.
      *

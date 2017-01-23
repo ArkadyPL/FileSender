@@ -23,7 +23,7 @@ import java.security.interfaces.RSAPublicKey;
 public class RSA {
     /**
      * Helper static object necessary for the process of the encryption/decryption.
-     * Initialized with method initialize().
+     * Initialized with method {@link #initialize()}.
      *
      * @see #initialize()
      */
@@ -31,7 +31,7 @@ public class RSA {
 
     /**
      * Static property for storing public key that can be sent to all cooperating clients.
-     * Initialized with method initialize().
+     * Initialized with method {@link #initialize()}.
      *
      * @see #initialize()
      */
@@ -47,7 +47,7 @@ public class RSA {
 
     /**
      * Static property for storing remote public key that we use for encrypting messages for remote systems with their public keys.
-     * Initialized with method initialize().
+     * Initialized with method {@link #initialize()}.
      */
     public static RSAPublicKey remoteKey = null;
 
@@ -92,9 +92,9 @@ public class RSA {
     }
 
     /**
-     * Static method for RSA decrypting an object that was previously encrypted by encrypt().
+     * Static method for RSA decrypting an object that was previously encrypted by {@link #encrypt(Object)}.
      *
-     * @param encryptedObject Object that is meant to be decrypted. Must have been previously encrypted with encrypt()
+     * @param encryptedObject Object that is meant to be decrypted. Must have been previously encrypted with {@link #encrypt(Object)}.
      *
      * @return Object of type Object. Must be casted to the proper class.
      *
