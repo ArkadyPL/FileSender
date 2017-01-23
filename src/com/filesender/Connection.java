@@ -5,7 +5,6 @@ import com.filesender.HelperClasses.*;
 import com.filesender.Cryptography.RSA;
 
 import javax.crypto.SecretKey;
-import javax.swing.*;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
