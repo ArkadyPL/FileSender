@@ -13,7 +13,7 @@ public class ServerStatus extends Thread{
     @Override
     public void run() {
         while(true) {
-            Log.Write("Checking remote availability...");
+            Log.WriteTerminal("Checking remote availability...");
             if (globals.remoteIP != null) {
                 try(Socket s = new Socket(globals.remoteIP, 7899)) {
                     Log.WriteTerminal("Server available");
