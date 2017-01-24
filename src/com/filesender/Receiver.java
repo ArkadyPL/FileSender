@@ -17,6 +17,15 @@ import javax.swing.tree.TreePath;
  */
 public class Receiver {
 
+    /**
+     * Static method for requesting and realizing process of receiving remote file tree and displaying it.
+     * @param remoteTree JTree object where function will display the obtained tree.
+     * @param socket Connected socket for communication.
+     * @param dir
+     * @param back
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public static void receiveTree(JTree remoteTree, Socket socket,Object dir, Boolean back) throws IOException, ClassNotFoundException {
         if( globals.remoteIP == null ) return;
         if(globals.previousDir != null) {
@@ -65,6 +74,12 @@ public class Receiver {
         }
     }
 
+    /**
+     * Static method for requesting and realizing process of receiving remote files saving them to the desktop.
+     * @param socket Connected socket for communication.
+     * @param filePath Path to the file to be sent.
+     * @throws IOException
+     */
     public static void receiveFile(Socket socket, Object filePath) throws IOException {
         if( globals.remoteIP == null ) return;
         String fileName = filePath.toString();

@@ -17,8 +17,20 @@ import javax.swing.tree.TreeModel;
  * Class containing static methods supporting sending for Files or remote files' trees to the client.
  */
 public class Sender {
-    static Queue queue = new LinkedList();
+    /**
+     * Variable for internal use of {@link #sendTree(Socket, TreeModel, Operation)} function.
+     */
+    private static Queue queue = new LinkedList();
 
+
+    /**
+     * Static method for realizing process of sending local file tree.
+     * @param connectedSocket Connected socket for communication.
+     * @param localTreeModel Local tree model reference - function's source of file tree.
+     * @param rooot
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, Operation rooot) throws IOException, ClassNotFoundException {
         ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
         File rootObj =  null;
@@ -49,7 +61,14 @@ public class Sender {
         Log.WriteTerminal("SENDING DONE");
     }
 
-    public static int sendFile(String current_file, Socket socket) throws IOException, ClassNotFoundException {
+    /**
+     * Static method for realizing the process of sending local file to the remote.
+     * @param current_file File's to be sent name.
+     * @param socket Connected socket for the communication.
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public static void sendFile(String current_file, Socket socket) throws IOException, ClassNotFoundException {
         Log.Write("Sending the file: " + current_file + "...");
         File myFile = new File(current_file);
         byte[] buffer = new byte[(int) myFile.length()];
@@ -63,7 +82,6 @@ public class Sender {
 
         in.close();
         Log.Write("Finished sending");
-        return 0;
     }
 
 }
