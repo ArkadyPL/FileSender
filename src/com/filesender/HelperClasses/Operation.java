@@ -66,10 +66,12 @@ public class Operation implements java.io.Serializable {
     }
 
     /**
-     * Method that encrypts all the properties' values except ID.
+     * Method that encrypts all the properties' values except ID with {@link AES} encryption.
      * All encrypted values are saved in appropriate alternative fields with postfix 'Encrypted'.
      * Normal fields' values are set to null.
      * @return The operation object itself but with encrypted fields
+     * @see #decryptFields()
+     * @see AES#encrypt(Object)
      */
     public Operation encryptFields(){
         if(AES.symmetricKey == null) return null;
@@ -83,10 +85,12 @@ public class Operation implements java.io.Serializable {
     }
 
     /**
-     * Method that decrypts all the properties' values except ID.
+     * Method that decrypts all the properties' values except ID with {@link AES} decryption.
      * All decrypted values are saved in appropriate fields without postfix 'Encrypted'.
      * Values of fields with postfix 'Encrypted' are set to null.
      * @return The operation object itself but with decrypted fields
+     * @see #encryptFields()
+     * @see AES#decrypt(byte[])
      */
     public Operation decryptFields(){
         if(AES.symmetricKey == null) return null;
