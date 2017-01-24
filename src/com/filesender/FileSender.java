@@ -19,7 +19,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-
+/**
+ * Main class of the project. Contains {@link #main(String[])} function.
+ */
 public class FileSender {
 
     public static void main(String[] args){
@@ -175,7 +177,7 @@ public class FileSender {
 
         //Loop for listening for connections and commands
         while(true){
-            try { ConnectionListener.ListenForIncomingConnections(globals.localTree.getModel(), serverSocket); }
+            try { Connection.ListenForIncomingConnections(globals.localTree.getModel(), serverSocket); }
             catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
         }
     }

@@ -5,21 +5,65 @@ import com.filesender.HelperClasses.*;
 import com.filesender.Cryptography.RSA;
 
 import javax.crypto.SecretKey;
+import javax.swing.tree.TreeModel;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ConnectException;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.security.interfaces.RSAPublicKey;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Class containing static methods for setting up the connection.
+ */
 public class Connection {
 
+    /**
+     * Static method for listening for incoming requests.
+     * Should be called in while(true) loop in the end of main() app function.
+     * @param localTreeModel Our local file tree that we may have to send if requested.
+     * @param serverSocket Server socket for listening. Should be the same for the all calls of the method. Port: 9990.
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public static void ListenForIncomingConnections(TreeModel localTreeModel, ServerSocket serverSocket) throws IOException, ClassNotFoundException {
+        Socket connectedSocket;
+        Log.Write("Waiting for incoming requests...");
+
+        connectedSocket = serverSocket.accept();
+        InetSocketAddress tempIP = (InetSocketAddress)connectedSocket.getRemoteSocketAddress();
+
+        if(globals.remoteIP == null || globals.remoteIP.equals(tempIP.getAddress())) {
+            Log.Write("Connection accepted!");
+
+            ObjectInputStream inFromServer = new ObjectInputStream(connectedSocket.getInputStream());
+            Operation basicOp;
+            basicOp = (Operation) inFromServer.readObject();
+
+            if (basicOp.opID == 1) {//Rebuild tree for argument as a root
+                basicOp.decryptFields();
+                Log.Write("Local file tree requested");
+                Sender.sendTree(connectedSocket, localTreeModel, basicOp);
+            } else if (basicOp.opID == 2) {//Send requested file
+                basicOp.decryptFields();
+                Log.Write("File " + basicOp.argument1 + " requested");
+                Sender.sendFile(basicOp.argument1, connectedSocket);
+            } else if (basicOp.opID == 5) {//exchange keys server side
+                Connection.exchangeKeysServer(basicOp, connectedSocket, inFromServer);
+            }
+        }else{
+            Log.Write("Incoming request from another source rejected! We are busy...");
+            ObjectOutputStream ostream = new ObjectOutputStream(connectedSocket.getOutputStream());
+            ostream.writeObject(null);
+        }
+    }
+
+    /**
+     * Static method that is called when use wishes to connected remote server.
+     */
    public static void connectToRemote(){
         if(globals.connectButton.getText().equals("Connect")) {
             if (globals.remoteIPTextField.getText().equals("") || globals.remotePinTextField.getText().equals("")) {
@@ -58,6 +102,7 @@ public class Connection {
                             return;
                         }
                     } catch (IOException e) {
+                        Log.Write("Something went wrong while exchanging the cryptographic keys");
                         AppState.changeToDisconnected();
                         e.printStackTrace();
                     }
@@ -87,7 +132,11 @@ public class Connection {
         }
     }
 
-    //after our request of connection
+    /**
+     * Static method realizing full process of exchanging cryptographic keys.
+     * @return Returns 'true' if everything is alright and 'false' in case of error.
+     * @throws IOException
+     */
     public static boolean exchangeKeysClient() throws IOException {
         //Send our public key
         ObjectOutputStream ostream = new ObjectOutputStream(globals.connectionSocket.getOutputStream());
@@ -127,7 +176,14 @@ public class Connection {
         return true;
     }
 
-    //after someone requests us a connection
+    /**
+     * Static method called on server side just after someone requested the connection.
+     * @param basicOp Object of type Operation containing all required for connection information.
+     * @param connectedSocket Socket realizing the connection.
+     * @param inFromServer Input stream to the socket.
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public static void exchangeKeysServer(Operation basicOp, Socket connectedSocket, ObjectInputStream inFromServer) throws IOException, ClassNotFoundException {
         Log.Write("Setting up the connection...");
         //Receive and save remote public key
@@ -163,7 +219,6 @@ public class Connection {
 
             Log.Write("Connection set up properly!");
         }
-
 
     }
 }
