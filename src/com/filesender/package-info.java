@@ -1,5 +1,5 @@
 /**
- * Main package for the project FileSender.
+ * <p>Main package for the project FileSender.</p>
  * <h1>How does FileSender work - general description.</h1>
  * <h2>1. Start up of the program</h2>
  * <p>On start up, {@link com.filesender.FileSender#main(java.lang.String[])} function is called.
@@ -19,8 +19,21 @@
  * click on the 'Connection' button or by pressing enter. In the form, 'tab' button works when one wants to switch
  * between the fields. After accepting data is validated and if it is proper, connection is set up.</p>
  * <h3>2.2. When connected</h3>
- * <p></p>
+ * <p>If we as a user are connected to the remote server, we can request and send files to them. We can also move
+ * between different levels of their and our files trees. To request file to be sent it is enough to double click it.
+ * All the data (including files, files trees, etc.) is encrypted using AES encryption before being sent.
+ * When we are done with our job we can disconnect from the server using 'Disconnect' button and then connected to
+ * someone else.</p>
  * <h2>3. When remote requests are coming</h2>
- * <p></p>
+ * <p>Special method was designed for receiving and handling all the incoming remote requests
+ * ({@link com.filesender.Connection#ListenForIncomingConnections}). It is called in the end of main function of program
+ * in the infinite loop while(true). Connections are accepted only if we are not connected to any server or if the connection
+ * is coming from this server. Request message always consists of object of type {@link com.filesender.HelperClasses.Operation},
+ * which contains all the necessary information. Depending on operation id we can be requested to send a file, a files tree,
+ * set up the new connection or to do some other similar things.</p>
+ * <h2>4. Additional information</h2>
+ * <p>1. FileSender application can act as both client and server at once but can be connected only to one remote device at one time.</p>
+ * <p>2. All connections are 'virtual' in a sense that for each new request, new connection socket is created
+ * and after request is realized socked is closed.</p>
  */
 package com.filesender;

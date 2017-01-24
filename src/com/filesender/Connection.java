@@ -36,6 +36,7 @@ public class Connection {
         connectedSocket = serverSocket.accept();
         InetSocketAddress tempIP = (InetSocketAddress)connectedSocket.getRemoteSocketAddress();
 
+        //Connect only if we are not connected to anyone or if request is coming from the remote that we are connected to
         if(globals.remoteIP == null || globals.remoteIP.equals(tempIP.getAddress())) {
             Log.Write("Connection accepted!");
 
