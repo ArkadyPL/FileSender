@@ -24,6 +24,10 @@ import javax.swing.tree.TreePath;
  */
 public class FileSender {
 
+    /**
+     * Main function of the FileSender application.
+     * @param args App does not use any initial arguments.
+     */
     public static void main(String[] args){
         Log.WriteTerminal("Started working");
 

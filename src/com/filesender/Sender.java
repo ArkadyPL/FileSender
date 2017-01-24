@@ -13,8 +13,10 @@ import java.util.Objects;
 import java.util.Queue;
 import javax.swing.tree.TreeModel;
 
+/**
+ * Class containing static methods supporting sending for Files or remote files' trees to the client.
+ */
 public class Sender {
-    static OutputStream out = null;
     static Queue queue = new LinkedList();
 
     public static void sendTree(Socket connectedSocket, TreeModel localTreeModel, Operation rooot) throws IOException, ClassNotFoundException {
