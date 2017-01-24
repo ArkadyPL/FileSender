@@ -9,6 +9,9 @@ import java.net.Socket;
 
 /**
  * Class for checking weather the server that we have connected to before is still available.
+ * If we are not connected to anyone it will stay idle displaying 'not connected' information every 5 seconds.
+ * Otherwise it will display 'Server available' information. It will also tell us when server is not available
+ * anymore and will start procedure of coming back to unconnected state.
  * It is turned on in the beginning of {@link com.filesender.FileSender#main(String[])}.
  */
 public class ServerStatus extends Thread{

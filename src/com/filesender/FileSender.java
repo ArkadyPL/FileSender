@@ -26,6 +26,15 @@ public class FileSender {
 
     /**
      * Main function of the FileSender application.
+     * The function opens the new server socket that is meant to accept incoming 'ping' connections,
+     * so the others know that the application is up. After it initializes {@link com.filesender.HelperClasses.ServerStatus}
+     * object which will tell us if remote that we connected to is still available. After, app initializes
+     * {@link com.filesender.Cryptography.RSA} and {@link com.filesender.Cryptography.AES} classes due to the need for
+     * future encryption/decryption. After it checks local ip address. Then it creates whole the GUI, including the
+     * {@link com.filesender.GuiElements.Toolbar} and JTree panes for {@link com.filesender.FileTreeModel} to fill with
+     * the data. After it turns on some listeners to enable files trees' servicing. In the very end, there is a call
+     * of {@link com.filesender.Connection#ListenForIncomingConnections}, a function that will listen for and handle
+     * all incoming requests.
      * @param args App does not use any initial arguments.
      */
     public static void main(String[] args){
@@ -50,11 +59,13 @@ public class FileSender {
         //Get our IP
         try { globals.localIP = Inet4Address.getLocalHost().getHostAddress(); } catch (UnknownHostException e) { e.printStackTrace(); }
         Log.Write("Your IP address is: " + globals.localIP);
+
+        //Setup the frame
         globals.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         globals.frame.setMinimumSize(new Dimension(700, 300));
 
+        //Add toolbar
         Toolbar toolbar = new Toolbar(globals.localIP);
-
         Container contentPane = globals.frame.getContentPane();
         contentPane.add(toolbar, BorderLayout.NORTH);
 

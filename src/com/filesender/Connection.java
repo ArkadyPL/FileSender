@@ -22,8 +22,8 @@ import java.util.Date;
 public class Connection {
 
     /**
-     * Static method for listening for incoming requests.
-     * Should be called in while(true) loop in the end of main() app function.
+     * Static method for listening and handling of all incoming requests.
+     * Should be called in while(true) loop in the end of {@link FileSender#main(String[])} app function.
      * @param localTreeModel Our local file tree that we may have to send if requested.
      * @param serverSocket Server socket for listening. Should be the same for the all calls of the method. Port: 9990.
      * @throws IOException
