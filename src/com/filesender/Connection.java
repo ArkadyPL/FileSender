@@ -3,6 +3,7 @@ package com.filesender;
 import com.filesender.Cryptography.AES;
 import com.filesender.HelperClasses.*;
 import com.filesender.Cryptography.RSA;
+import com.sun.corba.se.spi.activation.Server;
 
 import javax.crypto.SecretKey;
 import javax.swing.tree.TreeModel;
@@ -35,7 +36,7 @@ public class Connection {
 
         connectedSocket = serverSocket.accept();
         InetSocketAddress tempIP = (InetSocketAddress)connectedSocket.getRemoteSocketAddress();
-        globals.remoteIP = connectedSocket.getInetAddress();
+        globals.remoteIP =  ((InetSocketAddress) connectedSocket.getRemoteSocketAddress()).getAddress();
         //Connect only if we are not connected to anyone or if request is coming from the remote that we are connected to
         if(globals.remoteIP == null || globals.remoteIP.equals(tempIP.getAddress())) {
             Log.Write("Connection accepted!");
@@ -56,10 +57,13 @@ public class Connection {
             }
             else if (basicOp.opID == 5) {//exchange keys server side
                 Connection.exchangeKeysServer(basicOp, connectedSocket, inFromServer);
+                ServerSocket sso = new ServerSocket(9990);
+                Connection.ListenForIncomingConnections(globals.localTree.getModel(),sso);
             }
-            else if (basicOp.opID == 6) {//receive file
+            else if (basicOp.opID == 7) {//receive file
                 basicOp.decryptFields();
-                Receiver.receiveFile(connectedSocket,basicOp.obj1);
+                globals.connectionSocket = new Socket(globals.remoteIP, 9990);
+                Receiver.receiveFile(globals.connectionSocket,basicOp.obj1);
             }
         }else{
             Log.Write("Incoming request from another source rejected! We are busy...");
@@ -106,6 +110,7 @@ public class Connection {
                         boolean result = Connection.exchangeKeysClient();
                         if (!result) {//if something went wrong (e.g. pin incorrect, remote busy)
                             AppState.changeToDisconnected();
+                            ;
                             return;
                         }
                     } catch (IOException e) {

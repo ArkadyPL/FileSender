@@ -112,7 +112,8 @@ public class Receiver {
     }
     public static void sendLocalFile(Socket socket, Object filePath) throws IOException {
         ObjectOutputStream ostream = new ObjectOutputStream(globals.connectionSocket.getOutputStream());
-        Operation basicOperation = new Operation(6, null,null, filePath);
+        Operation basicOperation = new Operation(7, null,null, filePath);
         ostream.writeObject(basicOperation.encryptFields());
+        ostream.flush();
     }
 }
