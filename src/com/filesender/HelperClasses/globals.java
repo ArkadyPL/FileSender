@@ -1,42 +1,93 @@
 package com.filesender.HelperClasses;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
+import com.filesender.GuiElements.ConnectButton;
+
 import javax.swing.*;
 import java.io.*;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Stack;
 
+/**
+ * Class containing all the properties that have global usage and are used too often to put them in the local scope.
+ * It also contains some methods of general purpose. Its name is written with small case letters to highlight special
+ * destiny of this class.
+ */
 public class globals {
-    public static Cipher cipher = null;
-    public static ServerSocket statusSocket = null;
+    /**
+     * Whole program's frame.
+     */
     public static JFrame frame = new JFrame("File Sender");
-    public static Object previousDir = null;
-    public static Stack dirStack = new Stack();
-    public static String localIP = null;
-    public static InetAddress remoteIP = null;
-    public static Socket connectionSocket = null;
-    public static ServerSocket serverSocket = null;
-    public static JTree localTree = new JTree();
-    public static JTree remoteTree = new JTree();
-    public static JTextArea logTextArea = new JTextArea();;
-    public static RSAPublicKey pubKey = null;
-    public static RSAPrivateKey privKey = null;
-    public static RSAPublicKey remoteKey = null;
-    public static SecretKey symmetricKey = null;
-    public static Cipher aesCipher = null;
-    public static volatile boolean isConnected = false;
 
+    /**
+     * Previous directory address in remote tree model.
+     */
+    public static Object previousDir = null;
+
+    /**
+     * Internal variable, 'directory stack' for Remote Tree construction.
+     */
+    public static Stack dirStack = new Stack();
+
+    /**
+     * IP of local machine.
+     */
+    public static String localIP = null;
+
+    /**
+     * IP of the server that we are connected to as a client.
+     * If null, it means that we are not connected.
+     */
+    public static InetAddress remoteIP = null;
+
+    /**
+     * Socket with connection to the client that has connected to us.
+     * Value of this variable is volatile and is changing after each new request.
+     */
+    public static Socket connectionSocket = null;
+
+    /**
+     * Local JTree for displaying local tree model.
+     */
+    public static JTree localTree = new JTree();
+
+    /**
+     * Remote JTree for displaying remote tree model.
+     */
+    public static JTree remoteTree = new JTree();
+
+    /**
+     * Password that is required if someone wants to connect to us.
+     */
+    public static String localPIN = generatePIN();
+
+    /**
+     * Connect button from toolbar, we need it to be global because we'll change it's content in couple of places.
+     */
+    public static ConnectButton connectButton = null;
+
+    /**
+     * Remote IP Text Field from toolbar, we need it to be global because we'll change it's content in couple of places.
+     */
+    public  static JTextField remoteIPTextField = new JTextField(20);
+
+    /**
+     * Remote PIN Text Field from toolbar, we need it to be global because we'll change it's content in couple of places.
+     */
+    public static JTextField remotePinTextField = new JTextField(4);
+
+
+
+    /**
+     * Static method converting object of any class inheriting by Object to byte[] object.
+     * @param object Object to be converted to byte[] form.
+     * @return Converted object in form of byte[].
+     */
     public static byte[] toByte(Object object){
         byte[] result = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutput out = null;
         try {
-            out = new ObjectOutputStream(bos);
+            ObjectOutput out = new ObjectOutputStream(bos);
             out.writeObject(object);
             out.flush();
             result = bos.toByteArray();
@@ -52,16 +103,19 @@ public class globals {
         return result;
     }
 
-    public static Object toObject(byte[] enbytedObject){
-        ByteArrayInputStream bis = new ByteArrayInputStream(enbytedObject);
+    /**
+     * Static method converting object in byte[] form to Object. Result needs to be casted to desired class.
+     * @param encryptedObject byte[] object to be transformed to Object type.
+     * @return Converted object of type Object. Needs to be casted to desired class.
+     */
+    public static Object toObject(byte[] encryptedObject){
+        ByteArrayInputStream bis = new ByteArrayInputStream(encryptedObject);
         ObjectInput in = null;
         Object result = null;
         try {
-            in = new ObjectInputStream(bis);
+             in = new ObjectInputStream(bis);
             result = in.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -72,5 +126,19 @@ public class globals {
             }
         }
         return result;
+    }
+
+    /**
+     * Static method generating random 4-digit pin.
+     * @return Random PIN code.
+     */
+    public static String generatePIN(){
+        globals.localPIN = "";
+        for(int i=0; i<4; i++){
+            //Get one random digit and add it to PIN
+            globals.localPIN += String.valueOf(Math.random()*10).substring(0,1);
+        }
+        Log.Write("Generated PIN is " + globals.localPIN);
+        return globals.localPIN;
     }
 }

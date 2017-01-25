@@ -12,10 +12,22 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+/**
+ * Class containing static methods supporting requesting the server for Files or remote files' trees.
+ */
 public class Receiver {
 
-    public static void receiveTree(JTree remoteTree, Socket socket,Object dir, Boolean back) throws FileNotFoundException, IOException, ClassNotFoundException {
-        if( !globals.isConnected ) return;
+    /**
+     * Static method for requesting and realizing process of receiving remote file tree and displaying it.
+     * @param remoteTree JTree object where function will display the obtained tree.
+     * @param socket Connected socket for communication.
+     * @param dir
+     * @param back
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public static void receiveTree(JTree remoteTree, Socket socket,Object dir, Boolean back) throws IOException, ClassNotFoundException {
+        if( globals.remoteIP == null ) return;
         if(globals.previousDir != null) {
             if(back != true) {
                 globals.previousDir = remoteTree.getModel().getChild(remoteTree.getModel().getRoot(), 0);
@@ -62,8 +74,14 @@ public class Receiver {
         }
     }
 
+    /**
+     * Static method for requesting and realizing process of receiving remote files saving them to the desktop.
+     * @param socket Connected socket for communication.
+     * @param filePath Path to the file to be sent.
+     * @throws IOException
+     */
     public static void receiveFile(Socket socket, Object filePath) throws IOException {
-        if( !globals.isConnected ) return;
+        if( globals.remoteIP == null ) return;
         String fileName = filePath.toString();
         ObjectOutputStream ostream = new ObjectOutputStream(socket.getOutputStream());
         Operation basicOperation = new Operation(2,fileName,null,filePath);
@@ -71,7 +89,7 @@ public class Receiver {
         Path p = Paths.get(fileName);
         String fileSaveName = p.getFileName().toString();
 
-        Log.Write("Receiving the file \"" + fileSaveName + "\"");
+        Log.Write("Downloading the file \"" + fileSaveName + "\"");
         File encryptedFile = new File(System.getProperty("user.home") + "\\Desktop\\"+fileSaveName);
         encryptedFile.createNewFile();
         FileOutputStream fos = new FileOutputStream(encryptedFile);
@@ -81,11 +99,9 @@ public class Receiver {
         Operation basicOp = null;
         try {
             basicOp = (Operation)inFromServer.readObject();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        basicOp.decryptFields();
-        int count;
+            basicOp.decryptFields();
+        } catch (ClassNotFoundException e) { e.printStackTrace(); }
+
         out.write((byte[])basicOp.obj1, 0, Integer.parseInt(basicOp.argument1));
         out.close();
         fos.close();

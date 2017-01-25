@@ -1,53 +1,71 @@
 package com.filesender;
 
+import com.filesender.Cryptography.AES;
+import com.filesender.Cryptography.RSA;
 import com.filesender.GuiElements.Toolbar;
 import com.filesender.HelperClasses.Log;
+import com.filesender.HelperClasses.ServerStatus;
 import com.filesender.HelperClasses.globals;
 
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import java.io.*;
-import java.security.*;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Objects;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
-import javax.xml.bind.DatatypeConverter;
 
-
+/**
+ * Main class of the project. Contains {@link #main(String[])} function.
+ */
 public class FileSender {
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
-        Log.Write("Started working");
-        globals.statusSocket = new ServerSocket(7899);
+    /**
+     * Main function of the FileSender application.
+     * The function opens the new server socket that is meant to accept incoming 'ping' connections,
+     * so the others know that the application is up. After it initializes {@link com.filesender.HelperClasses.ServerStatus}
+     * object which will tell us if remote that we connected to is still available. After, app initializes
+     * {@link com.filesender.Cryptography.RSA} and {@link com.filesender.Cryptography.AES} classes due to the need for
+     * future encryption/decryption. After it checks local ip address. Then it creates whole the GUI, including the
+     * {@link com.filesender.GuiElements.Toolbar} and JTree panes for {@link com.filesender.FileTreeModel} to fill with
+     * the data. After it turns on some listeners to enable files trees' servicing. In the very end, there is a call
+     * of {@link com.filesender.Connection#ListenForIncomingConnections}, a function that will listen for and handle
+     * all incoming requests.
+     * @param args App does not use any initial arguments.
+     */
+    public static void main(String[] args){
+        Log.WriteTerminal("Started working");
+
+        //Open statusSocket to allow others to check if we are available
+        ServerSocket statusSocket = null;
+        try { statusSocket = new ServerSocket(7899); } catch (IOException e) { e.printStackTrace(); }
+
+        //Turn on daemon that will be checking if remote we are connected to is still available.
+        //If we are not connected to anyone it will stay idle.
+        ServerStatus connectionStatusChecker = new ServerStatus();
+        connectionStatusChecker.setDaemon(true);
+        connectionStatusChecker.start();
+
+        //Set empty tree model as Remote File Tree
         globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
 
-        globals.cipher = Cipher.getInstance("RSA");
-        globals.aesCipher = Cipher.getInstance("AES");
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(2048);
-        KeyPair kp = kpg.genKeyPair();
-        globals.pubKey = (RSAPublicKey) kp.getPublic();
-        globals.privKey = (RSAPrivateKey) kp.getPrivate();
-        Log.WriteTerminal("Local PublicKey:\n" + DatatypeConverter.printHexBinary(globals.pubKey.getEncoded()));
+        RSA.initialize();
+        AES.initialize();
 
-        globals.localIP = Inet4Address.getLocalHost().getHostAddress();
-        System.out.println("Your IP address is: " + globals.localIP);
-        globals.serverSocket = new ServerSocket(9990);
+        //Get our IP
+        try { globals.localIP = Inet4Address.getLocalHost().getHostAddress(); } catch (UnknownHostException e) { e.printStackTrace(); }
+        Log.Write("Your IP address is: " + globals.localIP);
+
+        //Setup the frame
         globals.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        globals.frame.setMinimumSize(new Dimension(720, 300));
+        globals.frame.setMinimumSize(new Dimension(700, 300));
 
+        //Add toolbar
         Toolbar toolbar = new Toolbar(globals.localIP);
-
         Container contentPane = globals.frame.getContentPane();
         contentPane.add(toolbar, BorderLayout.NORTH);
 
@@ -66,7 +84,7 @@ public class FileSender {
         JScrollPane localTreePane = new JScrollPane(globals.localTree);
         JScrollPane remoteTreePane = new JScrollPane(globals.remoteTree);//Not displayed when not connected
 
-        JScrollPane log = new JScrollPane (globals.logTextArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane log = new JScrollPane (Log.textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         log.setPreferredSize(new Dimension(1000, 140));
 
         // Display it all in a window and make the window appear
@@ -138,21 +156,13 @@ public class FileSender {
                         Log.WriteTerminal("PREVIOUS ROOT after: "+ globals.previousDir);
                     }
                 }
-                catch(java.lang.NullPointerException e) {
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                catch(NullPointerException | IOException | ClassNotFoundException e) { e.printStackTrace(); }
             }
 
             //If user collapsed the tree
             public void treeCollapsed(TreeExpansionEvent event) {
                 TreePath path = event.getPath();
-                Log.WriteTerminal("Collapsed" +globals.previousDir + " patho: " + path);
+                Log.WriteTerminal("Collapsed" + globals.previousDir + " path: " + path);
                 try {
                     if ( Objects.equals(path.toString(), "[...]") ){
                         if(globals.dirStack.isEmpty()) {
@@ -171,19 +181,19 @@ public class FileSender {
                         globals.frame.revalidate();
                     }
                 }
-                catch(java.lang.NullPointerException e) {
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                catch(NullPointerException | IOException | ClassNotFoundException e) { e.printStackTrace(); }
             }
         };
         globals.remoteTree.addTreeExpansionListener(treeExpandListener);
 
-        globals.connectionSocket = ConnectionListener.ListenForIncomingConnections(globals.localTree.getModel(), globals.serverSocket);
+        Log.Write("Opening socket for incoming connection...");
+        ServerSocket serverSocket = null;
+        try { serverSocket = new ServerSocket(9990); } catch (IOException e) { e.printStackTrace(); }
+
+        //Loop for listening for connections and commands
+        while(true){
+            try { Connection.ListenForIncomingConnections(globals.localTree.getModel(), serverSocket); }
+            catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
+        }
     }
 }

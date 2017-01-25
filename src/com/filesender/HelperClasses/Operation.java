@@ -2,23 +2,62 @@ package com.filesender.HelperClasses;
 
 import com.filesender.Cryptography.AES;
 
-//   ID LIST
-/*  0 - no task, just connection check
-    1 - Rebuild tree for argument as a root
-    2 - Send given file
-    3 - Receive file of given name
-    4 - Rename given file
-    5 - accept public key from obj1 and send your public key as obj1
-    6 - accept symmetric key
+/**
+ * Objects of this class are meant to be sent as operation indicators for server with possible arguments.
  */
 public class Operation implements java.io.Serializable {
+    /**
+     * Property indicating what kind of operation is meant to take place.
+     * ID number meaning:
+     * <p>0 - no task or just connection check</p>
+     * <p>1 - Rebuild tree for argument as a root</p>
+     * <p>2 - Send given file</p>
+     * <p>3 - Receive file of given name</p>
+     * <p>4 - Rename given file</p>
+     * <p>5 - accept public key</p>
+     * <p>6 - accept symmetric key</p>
+     */
     public int opID;
+
+    /**
+     * Property used for string unencrypted version of the argument 1.
+     */
     public String argument1;
-    public String argument2;
-    public Object obj1;
+
+    /**
+     * Property used for string encrypted version of the argument 1.
+     */
     public byte[] argument1Encrypted;
+
+    /**
+     * Property used for string unencrypted version of the argument 2.
+     */
+    public String argument2;
+
+    /**
+     * Property used for string encrypted version of the argument 2.
+     */
     public byte[] argument2Encrypted;
+
+    /**
+     * Property used for string unencrypted version of the object.
+     */
+    public Object obj1;
+
+    /**
+     * Property used for string encrypted version of the object.
+     */
     public byte[] obj1Encrypted;
+
+
+
+    /**
+     * Constructor creating new Operation object with given values.
+     * @param _ID New id's value
+     * @param arg1 New argument1's value
+     * @param arg2 New argument2's value
+     * @param _obj1 New obj1's value
+     */
     public Operation(int _ID, String arg1,String arg2, Object _obj1) {
         opID = _ID;
         argument1 = arg1;
@@ -26,8 +65,16 @@ public class Operation implements java.io.Serializable {
         obj1 = _obj1;
     }
 
+    /**
+     * Method that encrypts all the properties' values except ID with {@link AES} encryption.
+     * All encrypted values are saved in appropriate alternative fields with postfix 'Encrypted'.
+     * Normal fields' values are set to null.
+     * @return The operation object itself but with encrypted fields
+     * @see #decryptFields()
+     * @see AES#encrypt(Object)
+     */
     public Operation encryptFields(){
-        if(globals.symmetricKey == null) return null;
+        if(AES.symmetricKey == null) return null;
         this.argument1Encrypted = AES.encrypt(this.argument1);
         this.argument1 = null;
         this.argument2Encrypted = AES.encrypt(this.argument2);
@@ -37,8 +84,16 @@ public class Operation implements java.io.Serializable {
         return this;
     }
 
+    /**
+     * Method that decrypts all the properties' values except ID with {@link AES} decryption.
+     * All decrypted values are saved in appropriate fields without postfix 'Encrypted'.
+     * Values of fields with postfix 'Encrypted' are set to null.
+     * @return The operation object itself but with decrypted fields
+     * @see #encryptFields()
+     * @see AES#decrypt(byte[])
+     */
     public Operation decryptFields(){
-        if(globals.symmetricKey == null) return null;
+        if(AES.symmetricKey == null) return null;
         this.argument1 = (String)AES.decrypt(this.argument1Encrypted);
         this.argument1Encrypted = null;
         this.argument2 = (String)AES.decrypt(this.argument2Encrypted);
