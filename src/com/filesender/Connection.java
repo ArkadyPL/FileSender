@@ -134,6 +134,8 @@ public class Connection {
                         AppState.changeToDisconnected();
                         e.printStackTrace();
                     }
+                    //Turn on daemon that will be checking if remote we are connected to is still available.
+                    //If we are not connected to anyone it will stay idle.
                     ServerStatus connectionStatusChecker = new ServerStatus();
                     connectionStatusChecker.setDaemon(true);
                     connectionStatusChecker.start();

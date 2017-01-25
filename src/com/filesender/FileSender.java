@@ -4,7 +4,6 @@ import com.filesender.Cryptography.AES;
 import com.filesender.Cryptography.RSA;
 import com.filesender.GuiElements.Toolbar;
 import com.filesender.HelperClasses.Log;
-import com.filesender.HelperClasses.ServerStatus;
 import com.filesender.HelperClasses.globals;
 
 import javax.swing.*;
@@ -39,12 +38,6 @@ public class FileSender {
      */
     public static void main(String[] args){
         Log.WriteTerminal("Started working");
-
-        //Open statusSocket to allow others to check if we are available
-
-
-        //Turn on daemon that will be checking if remote we are connected to is still available.
-        //If we are not connected to anyone it will stay idle.
 
         //Set empty tree model as Remote File Tree
         globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
@@ -188,6 +181,7 @@ public class FileSender {
         };
         globals.remoteTree.addTreeExpansionListener(treeExpandListener);
 
+        //Open statusSocket to allow others to check if we are available
         Log.Write("Opening socket for incoming connection...");
         ServerSocket serverSocket = null;
         try { serverSocket = new ServerSocket(9990); } catch (IOException e) { e.printStackTrace(); }
