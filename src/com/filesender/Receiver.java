@@ -1,6 +1,7 @@
 package com.filesender;
 
 import com.filesender.Cryptography.AES;
+import com.filesender.Cryptography.RSA;
 import com.filesender.HelperClasses.*;
 
 import java.io.*;
@@ -108,5 +109,10 @@ public class Receiver {
         inFromServer.close();
 
         Log.Write("File \"" + fileSaveName + "\" saved");
+    }
+    public static void sendLocalFile(Socket socket, Object filePath) throws IOException {
+        ObjectOutputStream ostream = new ObjectOutputStream(globals.connectionSocket.getOutputStream());
+        Operation basicOperation = new Operation(6, null,null, filePath);
+        ostream.writeObject(basicOperation.encryptFields());
     }
 }

@@ -41,14 +41,10 @@ public class FileSender {
         Log.WriteTerminal("Started working");
 
         //Open statusSocket to allow others to check if we are available
-        ServerSocket statusSocket = null;
-        try { statusSocket = new ServerSocket(7899); } catch (IOException e) { e.printStackTrace(); }
+
 
         //Turn on daemon that will be checking if remote we are connected to is still available.
         //If we are not connected to anyone it will stay idle.
-        ServerStatus connectionStatusChecker = new ServerStatus();
-        connectionStatusChecker.setDaemon(true);
-        connectionStatusChecker.start();
 
         //Set empty tree model as Remote File Tree
         globals.remoteTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("<No connection>")));
@@ -109,7 +105,12 @@ public class FileSender {
                     }
                     else if(e.getClickCount() == 2) {
                         Log.WriteTerminal("Double click on row #" + selRow + "\t File: " + selPath.getLastPathComponent());
-                        //todo: send file
+                        try {
+                            globals.connectionSocket = new Socket(globals.remoteIP, 9990);
+                            Receiver.sendLocalFile(globals.connectionSocket,selPath.getLastPathComponent());
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 }
             }
@@ -156,7 +157,8 @@ public class FileSender {
                         Log.WriteTerminal("PREVIOUS ROOT after: "+ globals.previousDir);
                     }
                 }
-                catch(NullPointerException | IOException | ClassNotFoundException e) { e.printStackTrace(); }
+                catch(NullPointerException | IOException | ClassNotFoundException e) { e.printStackTrace();
+                }
             }
 
             //If user collapsed the tree

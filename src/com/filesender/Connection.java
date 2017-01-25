@@ -35,7 +35,7 @@ public class Connection {
 
         connectedSocket = serverSocket.accept();
         InetSocketAddress tempIP = (InetSocketAddress)connectedSocket.getRemoteSocketAddress();
-
+        globals.remoteIP = connectedSocket.getInetAddress();
         //Connect only if we are not connected to anyone or if request is coming from the remote that we are connected to
         if(globals.remoteIP == null || globals.remoteIP.equals(tempIP.getAddress())) {
             Log.Write("Connection accepted!");
@@ -48,12 +48,18 @@ public class Connection {
                 basicOp.decryptFields();
                 Log.Write("Local file tree requested");
                 Sender.sendTree(connectedSocket, localTreeModel, basicOp);
-            } else if (basicOp.opID == 2) {//Send requested file
+            }
+            else if (basicOp.opID == 2) {//Send requested file
                 basicOp.decryptFields();
                 Log.Write("File " + basicOp.argument1 + " requested");
                 Sender.sendFile(basicOp.argument1, connectedSocket);
-            } else if (basicOp.opID == 5) {//exchange keys server side
+            }
+            else if (basicOp.opID == 5) {//exchange keys server side
                 Connection.exchangeKeysServer(basicOp, connectedSocket, inFromServer);
+            }
+            else if (basicOp.opID == 6) {//receive file
+                basicOp.decryptFields();
+                Receiver.receiveFile(connectedSocket,basicOp.obj1);
             }
         }else{
             Log.Write("Incoming request from another source rejected! We are busy...");
@@ -123,6 +129,9 @@ public class Connection {
                         AppState.changeToDisconnected();
                         e.printStackTrace();
                     }
+                    ServerStatus connectionStatusChecker = new ServerStatus();
+                    connectionStatusChecker.setDaemon(true);
+                    connectionStatusChecker.start();
                     globals.frame.repaint();
                     globals.frame.revalidate();
                 }

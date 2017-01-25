@@ -29,12 +29,13 @@ public class ServerStatus extends Thread{
                 //Try to connect to remote socket to see if connection is still maintained
                 try(Socket s = new Socket(globals.remoteIP, 7899)) {
                     Log.WriteTerminal("Server available");
-                    s.close();
+
+                    s.setReuseAddress(true);
                 } catch (IOException e) {
                     //If didn't manage to connect to remote, set program to 'unconnected state'
                     Log.Write("Connection lost!");
                     AppState.changeToDisconnected();
-                    break;
+                    return;
                 }
             }else{
                 Log.WriteTerminal("Not connected to any remote!");
@@ -42,5 +43,6 @@ public class ServerStatus extends Thread{
 
             try { Thread.sleep(5000); } catch (InterruptedException e) { e.printStackTrace(); }
         }
+
     }
 }

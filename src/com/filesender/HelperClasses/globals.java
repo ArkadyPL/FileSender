@@ -5,6 +5,7 @@ import com.filesender.GuiElements.ConnectButton;
 import javax.swing.*;
 import java.io.*;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Stack;
 
@@ -75,7 +76,15 @@ public class globals {
      * Remote PIN Text Field from toolbar, we need it to be global because we'll change it's content in couple of places.
      */
     public static JTextField remotePinTextField = new JTextField(4);
+    public static ServerSocket statusSocket;
 
+    static {
+        try {
+            statusSocket = new ServerSocket(7899);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     /**
